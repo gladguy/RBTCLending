@@ -17,7 +17,7 @@ import { IoWarningSharp } from "react-icons/io5";
 import { MdContentCopy } from "react-icons/md";
 import { RiInformationFill } from "react-icons/ri";
 import { Bars } from "react-loading-icons";
-import Aptos from "../../assets/wallet-logo/aptos_logo.png";
+import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
 import CustomButton from "../../component/Button";
 import ModalDisplay from "../../component/modal";
 import Notify from "../../component/notification";
@@ -25,31 +25,27 @@ import TableComponent from "../../component/table";
 import WalletConnectDisplay from "../../component/wallet-error-display";
 import { propsContainer } from "../../container/props-container";
 import {
-  API_METHODS,
   Capitalaize,
   IS_USER,
   MAGICEDEN_WALLET_KEY,
   UNISAT_WALLET_KEY,
   XVERSE_WALLET_KEY,
-  apiUrl,
   sliceAddress,
 } from "../../utils/common";
 
 const MyAssets = (props) => {
   const { api_agent } = props.wallet;
-  const { reduxState, dispatch, isPlugError } = props.redux;
+  const { reduxState, isPlugError } = props.redux;
   const activeWallet = reduxState.wallet.active;
 
   const walletState = reduxState.wallet;
   const btcValue = reduxState.constant.btcvalue;
-  const aptosvalue = reduxState.constant.aptosvalue;
-  const collection = reduxState.constant.collection;
+  const userAssets = reduxState.constant.userAssets;
+  console.log("userAssets", userAssets);
 
   const xverseAddress = walletState.xverse.ordinals.address;
   const unisatAddress = walletState.unisat.address;
   const magicEdenAddress = walletState.magicEden.ordinals.address;
-
-  const metaAddress = walletState.meta.address;
 
   const { Text } = Typography;
 
@@ -82,8 +78,6 @@ const MyAssets = (props) => {
     repaymentAmount: 0,
     interestAmount: null,
   });
-
-  const [loopCount, setLoopCount] = useState(0);
 
   const BTC_ZERO = process.env.REACT_APP_BTC_ZERO;
   const CONTENT_API = process.env.REACT_APP_ORDINALS_CONTENT_API;
@@ -152,105 +146,6 @@ const MyAssets = (props) => {
   ];
 
   // API FUNCTIONS ---------------------------------------------------
-
-  const getCollectionDetails = async (filteredData) => {
-    try {
-      const isFromApprovedAssets = filteredData.map(async (asset) => {
-        return new Promise(async (resolve, reject) => {
-          const result = await API_METHODS.get(
-            `${apiUrl.Asset_server_base_url}/api/v2/fetch/asset/${asset.id}`
-          );
-          resolve(...result.data?.data?.tokens);
-        });
-      });
-      const revealedPromise = await Promise.all(isFromApprovedAssets);
-      let collectionSymbols = {};
-      collection.forEach(
-        (collection) =>
-          (collectionSymbols = {
-            ...collectionSymbols,
-            [collection.symbol]: collection,
-          })
-      );
-      const collectionNames = collection.map((collection) => collection.symbol);
-      const isFromApprovedCollections = revealedPromise.filter((assets) =>
-        collectionNames.includes(assets.collectionSymbol)
-      );
-
-      const finalPromise = isFromApprovedCollections.map((asset) => {
-        const collection = collectionSymbols[asset.collectionSymbol];
-        return {
-          ...asset,
-          collection,
-        };
-      });
-      return finalPromise;
-    } catch (error) {
-      console.log("getCollectionDetails error", error);
-    }
-  };
-
-  const fetchWalletAssets = async (address) => {
-    try {
-      const result = await API_METHODS.get(
-        `${apiUrl.Asset_server_base_url}/api/v1/fetch/assets/${address}`
-      );
-      if (result.data?.data?.length) {
-        const filteredData = result.data.data.filter(
-          (asset) =>
-            asset.mimeType === "text/html" ||
-            asset.mimeType === "image/webp" ||
-            asset.mimeType === "image/jpeg" ||
-            asset.mimeType === "image/png" ||
-            asset.mimeType === "image/svg+xml"
-        );
-        const finalPromise = await getCollectionDetails(filteredData);
-        return finalPromise;
-      }
-    } catch (error) {
-      console.log("error", error);
-      setLoadingState((prev) => ({ ...prev, isBorrowData: false }));
-    }
-  };
-
-  // USeEFFECT DATA FETCHING ---------------------------------------------------
-  // Fetching User's All Assets
-  // Fetching User's All Assets
-  useEffect(() => {
-    (async () => {
-      if (
-        api_agent &&
-        (activeWallet.includes(XVERSE_WALLET_KEY) ||
-          activeWallet.includes(UNISAT_WALLET_KEY) ||
-          activeWallet.includes(MAGICEDEN_WALLET_KEY)) &&
-        collection[0]?.symbol &&
-        loopCount < 2
-      ) {
-        setLoopCount(loopCount + 1);
-        setLoadingState((prev) => ({ ...prev, isBorrowData: true }));
-        const result = await fetchWalletAssets(
-          IS_USER
-            ? xverseAddress
-              ? xverseAddress
-              : unisatAddress
-              ? unisatAddress
-              : magicEdenAddress
-            : WAHEED_ADDRESS
-        );
-        const uniqueData = result?.filter(
-          (obj, index, self) =>
-            index ===
-            self.findIndex((o) => o.collectionSymbol === obj.collectionSymbol)
-        );
-        console.log("uniqueData", uniqueData);
-
-        uniqueData?.length ? setBorrowData(uniqueData) : setBorrowData([]);
-        setLoadingState((prev) => ({ ...prev, isBorrowData: false }));
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeWallet, api_agent, dispatch, collection]);
-
   const handleAskRequest = async () => {
     if (askModalData.repaymentAmount) {
       setLoadingState((prev) => ({ ...prev, isAskBtn: true }));
@@ -366,11 +261,8 @@ const MyAssets = (props) => {
                   gap={3}
                   className="text-color-two font-small letter-spacing-small"
                 >
-                  <img src={Aptos} alt="noimage" width={20} height={20} />
-                  {(
-                    ((obj.collection.floorPrice / BTC_ZERO) * btcValue) /
-                    aptosvalue
-                  ).toFixed(2)}
+                  <img src={Bitcoin} alt="noimage" width={20} height={20} />
+                  {(obj.collection.floorPrice / BTC_ZERO).toFixed(2)}
                 </Flex>
                 <span className="text-color-one font-xsmall letter-spacing-small">
                   ${" "}
@@ -435,7 +327,7 @@ const MyAssets = (props) => {
     <>
       <Row justify={"space-between"} align={"middle"}>
         <Col>
-          <h1 className="font-xlarge gradient-text-one">My Assets</h1>
+          <h1 className="font-xlarge gradient-text-two">My Assets</h1>
         </Col>
       </Row>
       {walletState.active.includes(XVERSE_WALLET_KEY) ||
@@ -474,13 +366,13 @@ const MyAssets = (props) => {
                     ),
                   }}
                   loading={{
-                    spinning: loadingState.isBorrowData || borrowData === null,
+                    spinning: userAssets === null,
                     indicator: <Bars />,
                   }}
                   pagination={{ pageSize: 5 }}
                   rowKey={(e) => `${e?.id}-${e?.inscriptionNumber}`}
                   tableColumns={AssetsToSupplyTableColumns}
-                  tableData={borrowData}
+                  tableData={userAssets}
                 />
               </Col>
             </Row>
@@ -777,7 +669,7 @@ const MyAssets = (props) => {
                   placeholder={
                     askModalData.isApprovedCollection
                       ? (askModalData.floorPrice / BTC_ZERO).toFixed(8)
-                      : (10 / aptosvalue).toFixed(8)
+                      : (10 / BTC_ZERO).toFixed(8)
                   }
                   value={askModalData.loanAmount}
                   maxLength={8}
@@ -789,7 +681,7 @@ const MyAssets = (props) => {
                     }
                   }}
                   prefix={
-                    <img src={Aptos} alt="noimage" width={15} height={15} />
+                    <img src={Bitcoin} alt="noimage" width={15} height={15} />
                   }
                 />
               </Row>
@@ -809,7 +701,7 @@ const MyAssets = (props) => {
                 style={{ border: "none", fontSize: "18px" }}
                 placeholder="0"
                 prefix={
-                  <img src={Aptos} alt="noimage" width={15} height={15} />
+                  <img src={Bitcoin} alt="noimage" width={15} height={15} />
                 }
               />
             </Row>

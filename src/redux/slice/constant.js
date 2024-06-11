@@ -19,9 +19,12 @@ const state = {
   withdrawAgent: null,
   affiliateCanister: null,
   LendRequests: null,
-  allAssets: [],
+  userAssets: null,
   isPlugError: false,
-  approvedCollections: ["", "", "", "", "", "", "", "", "", "", "", ""]
+  approvedCollections: ["", "", "", "", "", "", "", "", "", "", "", ""],
+  maxOffers: {},
+  offers: null,
+  userOffers: null
 };
 
 const constantSlice = createSlice({
@@ -104,9 +107,25 @@ const constantSlice = createSlice({
       state.LendRequests = action.payload;
     },
 
-    setAllAssets: (state, action) => {
-      state.allAssets = action.payload;
+    setUserAssets: (state, action) => {
+      state.userAssets = action.payload;
     },
+
+    setMaxOffers: (state, action) => {
+      state.maxOffers = action.payload;
+    },
+
+    setOffers: (state, action) => {
+      state.offers = action.payload;
+    },
+
+    setUserOffers: (state, action) => {
+      state.userOffers = action.payload;
+    },
+
+    clearStates: (state, action) => {
+      state.userAssets = null;
+    }
   },
 });
 
@@ -119,6 +138,10 @@ export const {
   setAirPoints,
   setCollectionName,
   setLendHeader,
+  clearStates,
+  setMaxOffers,
+  setOffers,
+  setUserOffers,
   setAgent,
   setLendRequests,
   setCkBtcAgent,
@@ -128,7 +151,7 @@ export const {
   setCkBtcActorAgent,
   setCkEthActorAgent,
   setwithdrawAgent,
-  setAllAssets,
+  setUserAssets,
   setAffiliateCanister,
   setApprovedCollection
 } = constantSlice.actions;

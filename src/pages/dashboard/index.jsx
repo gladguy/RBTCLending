@@ -13,8 +13,6 @@ import {
   Tooltip,
   Typography,
 } from "antd";
-import _ from "lodash";
-import Aptos from "../../assets/wallet-logo/aptos_logo.png";
 import axios from "axios";
 import { load } from "cheerio";
 import React, { useEffect, useState } from "react";
@@ -35,7 +33,6 @@ import {
   MdContentCopy,
   MdDashboardCustomize,
   MdLockClock,
-  MdOutlineCurrencyBitcoin,
 } from "react-icons/md";
 import { PiMagicWandFill } from "react-icons/pi";
 import { RiInformationFill } from "react-icons/ri";
@@ -43,6 +40,7 @@ import { Bars } from "react-loading-icons";
 import ThreeDots from "react-loading-icons/dist/esm/components/three-dots";
 import { Link } from "react-router-dom";
 import Bitcoin from "../../assets/coin_logo/ckbtc.png";
+import Aptos from "../../assets/wallet-logo/aptos_logo.png";
 import CustomButton from "../../component/Button";
 import Loading from "../../component/loading-wrapper/secondary-loader";
 import ModalDisplay from "../../component/modal";

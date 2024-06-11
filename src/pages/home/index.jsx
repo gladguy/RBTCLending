@@ -1,61 +1,19 @@
-import { Col, Grid, Row, Skeleton, Space, Tooltip, Typography } from "antd";
+import { Col, Grid, Row, Skeleton, Tooltip, Typography } from "antd";
 import gsap from "gsap";
-import React, { useEffect, useState } from "react";
-import BallTriangle from "react-loading-icons/dist/esm/components/ball-triangle";
+import React from "react";
 import bitcoin from "../../assets/coin_logo/Bitcoin.png";
 import CardDisplay from "../../component/card";
-import Loading from "../../component/loading-wrapper/secondary-loader";
 import { propsContainer } from "../../container/props-container";
 
 const Home = (props) => {
   const { reduxState } = props.redux;
-  const { api_agent } = props.wallet;
   const collections = reduxState.constant.approvedCollections;
-  const btcvalue = reduxState.constant.btcvalue;
-  const ethvalue = reduxState.constant.ethvalue;
-  const aptosvalue = reduxState.constant.aptosvalue;
 
   const { Title, Text } = Typography;
   const { useBreakpoint } = Grid;
   const breakpoints = useBreakpoint();
 
   const BTC_ZERO = process.env.REACT_APP_BTC_ZERO;
-  const ETH_ZERO = process.env.REACT_APP_ETH_ZERO;
-
-  const [dashboards, setDashboards] = useState({
-    activeCkBtcVol: null,
-    activeCkEthVol: null,
-    totalCkBtc: null,
-    totalCkEth: null,
-    totalVolInUSD: null,
-    activeVolInUSD: null,
-  });
-
-  useEffect(() => {
-    (async () => {
-      if (api_agent) {
-        const ckBtcBalance = await api_agent.ckBTCBalance();
-        setDashboards((prev) => ({
-          ...prev,
-          activeCkBtcVol: Number(ckBtcBalance) / BTC_ZERO,
-        }));
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [api_agent]);
-
-  useEffect(() => {
-    (async () => {
-      if (api_agent) {
-        const ckEthBalance = await api_agent.ckEthBalance();
-        setDashboards((prev) => ({
-          ...prev,
-          activeCkEthVol: Number(ckEthBalance) / ETH_ZERO,
-        }));
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [api_agent]);
 
   gsap.to(".box", {
     y: 10,
@@ -73,7 +31,7 @@ const Home = (props) => {
     <React.Fragment>
       <Row>
         <Col>
-          <Title level={2} className="gradient-text-one ">
+          <Title level={2} className="gradient-text-two">
             Bitcoin Ordinal Collections
           </Title>
         </Col>
@@ -81,8 +39,8 @@ const Home = (props) => {
 
       <Row justify={"start"} className="pad-bottom-30" gutter={32}>
         {collections?.map((collection, index) => {
-          const name = collection?.data?.name;
-          const nameSplitted = collection?.data?.name?.split(" ");
+          const name = collection?.name;
+          const nameSplitted = collection?.name?.split(" ");
           let modifiedName = "";
           nameSplitted?.forEach((word) => {
             if ((modifiedName + word).length < 25) {
@@ -109,12 +67,12 @@ const Home = (props) => {
                       <div style={{ display: "grid", placeContent: "center" }}>
                         {name?.length > 35 ? (
                           <Tooltip arrow title={name}>
-                            <Text className="heading-one font-medium text-color-one">
+                            <Text className="heading-one text-color-four font-medium">
                               {`${modifiedName}...`}
                             </Text>
                           </Tooltip>
                         ) : (
-                          <Text className="heading-one font-medium text-color-one">
+                          <Text className="heading-one font-medium text-color-four">
                             {modifiedName}
                           </Text>
                         )}
@@ -132,11 +90,11 @@ const Home = (props) => {
                           width={breakpoints.xs ? "90px" : "100%"}
                           height={"75dvw"}
                           alt={name}
-                          src={collection?.data?.imageURI}
+                          src={collection?.imageURI}
                           onError={(e) =>
-                            (e.target.src = `${process.env.PUBLIC_URL}/collections/${collection?.data?.symbol}.png`)
+                            (e.target.src = `${process.env.PUBLIC_URL}/collections/${collection?.symbol}.png`)
                           }
-                          // src={`${process.env.PUBLIC_URL}/collections/${collection?.data?.symbol}.png`}
+                          // src={`${process.env.PUBLIC_URL}/collections/${collection?.symbol}.png`}
                         />
                       </Row>
                     </Col>

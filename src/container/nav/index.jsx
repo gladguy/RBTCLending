@@ -23,18 +23,23 @@ import { RiWallet3Fill } from "react-icons/ri";
 import { RxHamburgerMenu } from "react-icons/rx";
 import TailSpin from "react-loading-icons/dist/esm/components/tail-spin";
 import { AddressPurpose, BitcoinNetworkType, getAddress } from "sats-connect";
+import Web3 from "web3";
 import ordinals_O_logo from "../../assets/brands/ordinals_O_logo.png";
 import Bitcoin from "../../assets/coin_logo/Bitcoin.png";
-import Eth from "../../assets/coin_logo/cketh.png";
-import logo from "../../assets/logo/ordinalslogo.png";
-import rootstock_logo from "../../assets/coin_logo/rootstock_orange_logo.jpg";
 import bitcoin_rootstock from "../../assets/coin_logo/bitcoin-rootstock.png";
+import Eth from "../../assets/coin_logo/cketh.png";
+import rootstock_logo from "../../assets/coin_logo/rootstock_orange_logo.jpg";
+import logo from "../../assets/logo/RBTC_logo.png";
 import CustomButton from "../../component/Button";
 import CardDisplay from "../../component/card";
 import Loading from "../../component/loading-wrapper/secondary-loader";
 import ModalDisplay from "../../component/modal";
 import Notify from "../../component/notification";
-import { setLendHeader, setLoading } from "../../redux/slice/constant";
+import {
+  clearStates,
+  setLendHeader,
+  setLoading,
+} from "../../redux/slice/constant";
 import {
   clearWalletState,
   setMagicEdenCredentials,
@@ -56,7 +61,6 @@ import {
   sliceAddress,
 } from "../../utils/common";
 import { propsContainer } from "../props-container";
-import Web3 from "web3";
 
 const Nav = (props) => {
   const { Text } = Typography;
@@ -349,7 +353,7 @@ const Nav = (props) => {
         }
       } else if (window.web3) {
         // Legacy dapp browsers...
-        const web3 = new Web3(window.web3.currentProvider);
+        // const web3 = new Web3(window.web3.currentProvider);
       } else {
         Notify(
           "warning",
@@ -579,6 +583,7 @@ const Nav = (props) => {
   return (
     <>
       <Row
+        style={{ marginTop: "10px" }}
         justify={{
           xs: "space-between",
           lg: "space-between",
@@ -589,23 +594,16 @@ const Nav = (props) => {
         <Col>
           <Row align={"middle"}>
             <Col>
-              <div className="hover14 column">
-                <div>
-                  <figure>
-                    <img
-                      style={{ marginRight: "20px" }}
-                      src={logo}
-                      alt="logo"
-                      className="pointer"
-                      width="70px"
-                      onClick={() => {
-                        navigate("/");
-                        dispatch(setLendHeader(false));
-                      }}
-                    />
-                  </figure>
-                </div>
-              </div>
+              <img
+                src={logo}
+                alt="logo"
+                className="pointer"
+                width="70px"
+                onClick={() => {
+                  navigate("/");
+                  dispatch(setLendHeader(false));
+                }}
+              />
             </Col>
           </Row>
         </Col>
@@ -642,6 +640,22 @@ const Nav = (props) => {
                   ref={ref2}
                 >
                   Lending
+                </Text>
+                <Text className="font-xsmall color-grey">|</Text>
+
+                <Text
+                  className={`${
+                    location.pathname === "/borrowing"
+                      ? "headertitle headerStyle"
+                      : "font-style headerCompanyName"
+                  } pointer heading-one `}
+                  onClick={() => {
+                    navigate("/borrowing");
+                    dispatch(setLendHeader(false));
+                  }}
+                  ref={ref2}
+                >
+                  Borrowing
                 </Text>
                 <Text className="font-xsmall color-grey">|</Text>
 
@@ -717,7 +731,7 @@ const Nav = (props) => {
                 {!breakPoint.xs ? (
                   <Row justify={"end"}>
                     <CustomButton
-                      className="click-btn gradient-bg white-color"
+                      className="click-btn font-weight-600 letter-spacing-small"
                       // old btn style
                       // className="button-css lend-button"
                       title={"Connect"}
@@ -786,8 +800,9 @@ const Nav = (props) => {
               } gradient-text-one biticon heading-one`}
             >
               <RiWallet3Fill
+                color="#8A2F3E"
                 size={breakPoint.xs ? 27 : 35}
-                className="main-bg-gradient-two border-radius-5"
+                className="border-radius-5"
               />{" "}
               Connect Wallet{" "}
             </Text>
@@ -901,33 +916,40 @@ const Nav = (props) => {
         footer={
           <>
             {screenDimensions.width > 1199 && (
-              <Row
-                justify={"end"}
-                className="iconalignment pointer"
-                onClick={() => {
-                  successMessageNotify("Your are signed out!");
-                  walletState.active.forEach(async (wallet) => {
-                    if (wallet === XVERSE_WALLET_KEY) {
-                      dispatch(clearWalletState(XVERSE_WALLET_KEY));
-                    } else if (wallet === UNISAT_WALLET_KEY) {
-                      dispatch(clearWalletState(UNISAT_WALLET_KEY));
-                    } else if (wallet === MAGICEDEN_WALLET_KEY) {
-                      dispatch(clearWalletState(MAGICEDEN_WALLET_KEY));
-                    } else if (wallet === META_WALLET_KEY) {
-                      dispatch(clearWalletState(META_WALLET_KEY));
-                    }
-                  });
-                  onClose();
-                }}
-              >
-                <AiOutlineDisconnect
-                  color="white"
-                  style={{ fill: "chocolate" }}
-                  size={25}
+              <Row justify={"end"} className="iconalignment pointer">
+                <CustomButton
+                  className={"click-btn font-weight-600 letter-spacing-small"}
+                  onClick={async () => {
+                    dispatch(clearStates());
+                    successMessageNotify("Your are signed out!");
+                    walletState.active.forEach(async (wallet) => {
+                      if (wallet === XVERSE_WALLET_KEY) {
+                        dispatch(clearWalletState(XVERSE_WALLET_KEY));
+                      } else if (wallet === UNISAT_WALLET_KEY) {
+                        dispatch(clearWalletState(UNISAT_WALLET_KEY));
+                      } else if (wallet === MAGICEDEN_WALLET_KEY) {
+                        dispatch(clearWalletState(MAGICEDEN_WALLET_KEY));
+                      } else if (wallet === META_WALLET_KEY) {
+                        dispatch(clearWalletState(META_WALLET_KEY));
+                      }
+                    });
+                    onClose();
+                  }}
+                  title={
+                    <Flex align="center" justify="center" gap={3}>
+                      <AiOutlineDisconnect
+                        color="white"
+                        style={{ fill: "chocolate" }}
+                        size={25}
+                      />
+                      <Text className="text-color-two font-small heading-one">
+                        Disconnect
+                      </Text>
+                    </Flex>
+                  }
+                  block
+                  size="medium"
                 />
-                <Text className="text-color-two font-small heading-one">
-                  Disconnect
-                </Text>
               </Row>
             )}
           </>
@@ -1012,6 +1034,16 @@ const Nav = (props) => {
               </Flex>
             </Col>
 
+            {/* <Col>
+              <CustomButton
+                className="font-size-18 black-bg text-color-one border-none"
+                title={"Connect"}
+                onClick={() => {
+                  handleTransfer();
+                }}
+              />
+            </Col> */}
+
             <Col>
               {walletState.active.includes(XVERSE_WALLET_KEY) ||
               walletState.active.includes(UNISAT_WALLET_KEY) ||
@@ -1043,30 +1075,40 @@ const Nav = (props) => {
                   xl: "end",
                 }}
                 className="iconalignment pointer"
-                onClick={async () => {
-                  successMessageNotify("Your are signed out!");
-                  walletState.active.forEach(async (wallet) => {
-                    if (wallet === XVERSE_WALLET_KEY) {
-                      dispatch(clearWalletState(XVERSE_WALLET_KEY));
-                    } else if (wallet === UNISAT_WALLET_KEY) {
-                      dispatch(clearWalletState(UNISAT_WALLET_KEY));
-                    } else if (wallet === MAGICEDEN_WALLET_KEY) {
-                      dispatch(clearWalletState(MAGICEDEN_WALLET_KEY));
-                    } else if (wallet === META_WALLET_KEY) {
-                      dispatch(clearWalletState(META_WALLET_KEY));
-                    }
-                  });
-                  onClose();
-                }}
               >
-                <AiOutlineDisconnect
-                  color="white"
-                  style={{ fill: "chocolate" }}
-                  size={25}
+                <CustomButton
+                  className={"click-btn font-weight-600 letter-spacing-small"}
+                  onClick={async () => {
+                    dispatch(clearStates());
+                    successMessageNotify("Your are signed out!");
+                    walletState.active.forEach(async (wallet) => {
+                      if (wallet === XVERSE_WALLET_KEY) {
+                        dispatch(clearWalletState(XVERSE_WALLET_KEY));
+                      } else if (wallet === UNISAT_WALLET_KEY) {
+                        dispatch(clearWalletState(UNISAT_WALLET_KEY));
+                      } else if (wallet === MAGICEDEN_WALLET_KEY) {
+                        dispatch(clearWalletState(MAGICEDEN_WALLET_KEY));
+                      } else if (wallet === META_WALLET_KEY) {
+                        dispatch(clearWalletState(META_WALLET_KEY));
+                      }
+                    });
+                    onClose();
+                  }}
+                  title={
+                    <>
+                      <AiOutlineDisconnect
+                        color="white"
+                        style={{ fill: "chocolate" }}
+                        size={25}
+                      />
+                      <Text className="text-color-two font-small heading-one">
+                        Disconnect
+                      </Text>
+                    </>
+                  }
+                  block
+                  size="medium"
                 />
-                <Text className="text-color-two font-small heading-one">
-                  Disconnect
-                </Text>
               </Row>
               <Row justify={"center"}>
                 <Divider />

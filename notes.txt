@@ -1,0 +1,88 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract MyOrdinalsLoanContract20 {
+
+    struct BorrowRequest {
+        uint256 CollectionID;
+        uint256 OrdinalID;
+        uint256 loanTime;
+        address borrower;
+        Terms terms;
+    }
+
+    struct Terms {
+        uint256 terms;
+        uint256 loanToValue;
+        uint256 loanAmount;
+        uint256 platformFee;
+        uint256 yieldRate;
+        uint256 yieldAccured;
+        uint256 floorValue;
+    }
+
+    mapping(uint256 => BorrowRequest) public borrowRequests;
+
+    uint256 public requestCount;
+
+    event BorrowRequestCreated(
+        uint256 requestId,
+        uint256 collectionId,
+        uint256 ordinalId,
+        uint256 loanTime,
+        address borrower,
+        Terms terms
+    );
+
+    function createBorrowRequest(
+        uint256 _collectionId,
+        uint256 _ordinalId,
+        uint256 _terms,
+        uint256 _loanToValue,
+        uint256 _loanAmount,
+        uint256 _platformFee,
+        uint256 _loanTime,
+        uint256 _yieldRate,
+        uint256 _yieldAccured,
+        uint256 _floorValue,
+        address _borrower
+    ) public {
+        Terms memory newTerms = Terms({
+            terms: _terms,
+            loanToValue: _loanToValue,
+            loanAmount: _loanAmount,
+            platformFee: _platformFee,
+            yieldRate: _yieldRate,
+            yieldAccured: _yieldAccured,
+            floorValue: _floorValue
+        });
+
+        BorrowRequest memory newRequest = BorrowRequest({
+            CollectionID: _collectionId,
+            OrdinalID: _ordinalId,
+            loanTime: _loanTime,
+            borrower: _borrower,
+            terms: newTerms
+        });
+
+        requestCount++;
+        borrowRequests[requestCount] = newRequest;
+
+        emit BorrowRequestCreated(
+            requestCount,
+            _collectionId,
+            _ordinalId,
+            _loanTime,
+            _borrower,
+            newTerms
+        );
+    }
+
+    function getAllBorrowRequests() public view returns (BorrowRequest[] memory) {
+        BorrowRequest[] memory allRequests = new BorrowRequest[](requestCount);
+        for (uint256 i = 1; i <= requestCount; i++) {
+            allRequests[i - 1] = borrowRequests[i];
+        }
+        return allRequests;
+    }
+}

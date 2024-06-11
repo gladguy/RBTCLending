@@ -1,24 +1,17 @@
-import { Badge, Col, Descriptions, Grid, Row, Tooltip, Typography } from "antd";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { Badge, Col, Descriptions, Row, Tooltip, Typography } from "antd";
+import React, { useState } from "react";
 import { MdTour } from "react-icons/md";
 import WalletUI from "../../component/download-wallets-UI";
 import ModalDisplay from "../../component/modal";
-import Notify from "../../component/notification";
 import { propsContainer } from "../../container/props-container";
-import { setLoading } from "../../redux/slice/constant";
 import {
-  API_METHODS,
-  IS_USER,
   MAGICEDEN_WALLET_KEY,
   UNISAT_WALLET_KEY,
   XVERSE_WALLET_KEY,
-  apiUrl,
 } from "../../utils/common";
 
 const Portfolio = (props) => {
-  const { api_agent } = props.wallet;
-  const { reduxState, dispatch } = props.redux;
+  const { reduxState } = props.redux;
   const activeWallet = reduxState.wallet.active;
   const walletState = reduxState.wallet;
   const xverseAddress = walletState.xverse.ordinals.address;
@@ -27,127 +20,17 @@ const Portfolio = (props) => {
   const metaAddress = walletState.meta.address;
 
   const { Text } = Typography;
-  const { useBreakpoint } = Grid;
-  const breakPoint = useBreakpoint();
   const [copy, setCopy] = useState("Copy");
-  const [isIcon, setIcon] = useState(false);
-  const [imageUrl, setImageUrl] = useState({});
-  const [imageType, setImageType] = useState({});
-  const [borrowData, setBorrowData] = useState(null);
-  const [isPopupOpen, setPopupOpen] = useState(false);
   const [downloadWalletModal, setDownloadWalletModal] = useState(false);
-  const [isDeleteIcon, setDeleteIcon] = useState(false);
-  const [lendRequests, setLendRequests] = useState(null);
   const [enableTour, setEnableTour] = useState(false);
 
-  const WAHEED_ADDRESS = process.env.REACT_APP_WAHEED_ADDRESS;
   const TOUR_SVG = process.env.REACT_APP_TOUR_SVG;
   const TOUR_ID = process.env.REACT_APP_TOUR_ID;
-  const ASSET_SERVER = process.env.REACT_APP_ASSET_SERVER;
 
   const handleTour = () => {
     localStorage.setItem("isTourEnabled", true);
     setEnableTour(!enableTour);
   };
-
-  const deleteLoanRequest = async (inscriptionId) => {
-    try {
-      dispatch(setLoading(true));
-      const deleteRequest = await api_agent.removeLoanRequest(inscriptionId);
-      dispatch(setLoading(false));
-      if (deleteRequest) {
-        Notify("success", "Deleted loan request succcessfully");
-        const remainingData = lendRequests.filter(
-          (data) => data.inscriptionid !== inscriptionId
-        );
-        setLendRequests(remainingData);
-      }
-    } catch (error) {
-      Notify("error", error.message);
-    }
-  };
-
-  useEffect(() => {
-    (async () => {
-      if (
-        api_agent &&
-        (activeWallet.includes(XVERSE_WALLET_KEY) ||
-          activeWallet.includes(UNISAT_WALLET_KEY) ||
-          activeWallet.includes(MAGICEDEN_WALLET_KEY))
-      ) {
-        try {
-          const result = await API_METHODS.get(
-            `${apiUrl.Asset_server_base_url}/api/v1/fetch/assets/${
-              IS_USER
-                ? xverseAddress
-                  ? xverseAddress
-                  : unisatAddress
-                  ? unisatAddress
-                  : magicEdenAddress
-                : WAHEED_ADDRESS
-            }`
-          );
-          if (result.data.data.length) {
-            const filteredData = result.data.data.filter(
-              (asset) =>
-                asset.mimeType === "text/html" ||
-                asset.mimeType === "image/webp" ||
-                asset.mimeType === "image/jpeg" ||
-                asset.mimeType === "image/png"
-            );
-            const isFromApprovedAssets = filteredData.map(async (asset) => {
-              return new Promise(async (resolve, _) => {
-                const result = await axios.get(
-                  `${ASSET_SERVER}/api/v1/fetch/asset/${asset.id}`
-                );
-                resolve({
-                  ...result.data,
-                  ...asset,
-                });
-              });
-            });
-            const revealedPromise = await Promise.all(isFromApprovedAssets);
-            const finalAssets = revealedPromise.filter(
-              (asset) => asset.success
-            );
-            const fetchCollectionDetails = finalAssets.map(async (asset) => {
-              return new Promise(async (resolve, _) => {
-                const result = await axios.get(
-                  `${ASSET_SERVER}/api/v1/fetch/collection/${asset.data.collectionName}`
-                );
-                resolve({
-                  ...result.data.data,
-                  ...asset,
-                });
-              });
-            });
-            const finalPromise = await Promise.all(fetchCollectionDetails);
-            finalPromise?.length
-              ? setBorrowData(finalPromise)
-              : setBorrowData([]);
-            // setBorrowData(finalPromise);
-          }
-        } catch (error) {
-          setBorrowData([]);
-        }
-      }
-    })();
-  }, [
-    ASSET_SERVER,
-    WAHEED_ADDRESS,
-    activeWallet,
-    api_agent,
-    dispatch,
-    magicEdenAddress,
-    unisatAddress,
-    xverseAddress,
-  ]);
-
-  useEffect(() => {
-    if (activeWallet.length === 0) {
-      setBorrowData(null);
-    }
-  }, [activeWallet]);
 
   const renderWalletAddress = (address) => (
     <>
@@ -217,7 +100,7 @@ const Portfolio = (props) => {
     <>
       <Row justify={"space-between"} align={"middle"}>
         <Col>
-          <h1 className="font-xlarge gradient-text-one">Portfolio</h1>
+          <h1 className="font-xlarge gradient-text-two">Portfolio</h1>
         </Col>
 
         <Col>
@@ -235,7 +118,7 @@ const Portfolio = (props) => {
                 size={32}
               />
             </Col>
-            {activeWallet.length && (
+            {activeWallet.length ? (
               <Col>
                 <button
                   type="button"
@@ -258,6 +141,8 @@ const Portfolio = (props) => {
                   </span>
                 </button>
               </Col>
+            ) : (
+              ""
             )}
           </Row>
         </Col>

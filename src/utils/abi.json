@@ -1,0 +1,311 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "requestId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "collectionId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "ordinalId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "loanTime",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "borrower",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "terms",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "loanToValue",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "loanAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "platformFee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "yieldRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "yieldAccured",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "floorValue",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct MyOrdinalsLoanContract20.Terms",
+        "name": "terms",
+        "type": "tuple"
+      }
+    ],
+    "name": "BorrowRequestCreated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_collectionId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_ordinalId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_terms",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_loanToValue",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_loanAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_platformFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_loanTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_yieldRate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_yieldAccured",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_floorValue",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_borrower",
+        "type": "address"
+      }
+    ],
+    "name": "createBorrowRequest",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "borrowRequests",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "CollectionID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "OrdinalID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "loanTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "borrower",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "terms",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "loanToValue",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "loanAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "platformFee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "yieldRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "yieldAccured",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "floorValue",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct MyOrdinalsLoanContract20.Terms",
+        "name": "terms",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllBorrowRequests",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "CollectionID",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "OrdinalID",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "loanTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "borrower",
+            "type": "address"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "terms",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "loanToValue",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "loanAmount",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "platformFee",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "yieldRate",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "yieldAccured",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "floorValue",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct MyOrdinalsLoanContract20.Terms",
+            "name": "terms",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct MyOrdinalsLoanContract20.BorrowRequest[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "requestCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
