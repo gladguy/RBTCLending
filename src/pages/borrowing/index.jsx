@@ -9,16 +9,20 @@ import {
   Tooltip,
   Typography,
 } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BiSolidOffer } from "react-icons/bi";
-import { FaCaretDown, FaWallet } from "react-icons/fa";
+import { FaCaretDown } from "react-icons/fa";
 import { GoAlertFill } from "react-icons/go";
 import { PiPlusSquareThin } from "react-icons/pi";
 import { TbInfoSquareRounded } from "react-icons/tb";
 import { Bars } from "react-loading-icons";
 import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
 import CustomButton from "../../component/Button";
+import CardDisplay from "../../component/card";
+import LendModal from "../../component/lend-modal";
 import ModalDisplay from "../../component/modal";
+import Notify from "../../component/notification";
+import OffersModal from "../../component/offers-modal";
 import TableComponent from "../../component/table";
 import { propsContainer } from "../../container/props-container";
 import {
@@ -26,11 +30,6 @@ import {
   calculateDailyInterestRate,
   contractGenerator,
 } from "../../utils/common";
-import CardDisplay from "../../component/card";
-import Notify from "../../component/notification";
-import OffersModal from "../../component/offers-modal";
-import { setOffers } from "../../redux/slice/constant";
-import LendModal from "../../component/lend-modal";
 
 const Borrowing = (props) => {
   const { reduxState, dispatch } = props.redux;
@@ -45,6 +44,9 @@ const Borrowing = (props) => {
   const CONTENT_API = process.env.REACT_APP_ORDINALS_CONTENT_API;
 
   const { Text } = Typography;
+
+  const amountRef = useRef(null);
+
   // USE STATE
   const [offerModalData, setOfferModalData] = useState({});
   const [isOffersModal, setIsOffersModal] = useState(false);
@@ -119,10 +121,10 @@ const Borrowing = (props) => {
       },
     },
     {
-      key: "request",
+      key: "best_loan",
       title: "Best Loan",
       align: "center",
-      dataIndex: "request",
+      dataIndex: "best_loan",
       render: (_, obj) => {
         return (
           <Flex align="center" justify="center">
@@ -224,6 +226,9 @@ const Borrowing = (props) => {
                 ((amount * btcvalue) / (ordinalPrice * btcvalue)) * 100
               );
               toggleBorrowModal();
+              setTimeout(() => {
+                amountRef.current.focus();
+              }, 300);
               setBorrowModalData({
                 ...obj,
                 assets,
@@ -394,6 +399,26 @@ const Borrowing = (props) => {
           />
         </Col>
       </Row>
+
+      <LendModal
+        isLendEdit={"nope"}
+        modalState={isLendModal}
+        lendModalData={lendModalData}
+        toggleLendModal={toggleLendModal}
+        setLendModalData={setLendModalData}
+        collapseActiveKey={collapseActiveKey}
+        setCollapseActiveKey={setCollapseActiveKey}
+      />
+
+      <OffersModal
+        userAssets={userAssets}
+        modalState={isOffersModal}
+        offerModalData={offerModalData}
+        toggleOfferModal={toggleOfferModal}
+        toggleLendModal={toggleBorrowModal}
+        setOfferModalData={setOfferModalData}
+        setBorrowModalData={setBorrowModalData}
+      />
 
       {/* Borrow Modal */}
       <ModalDisplay
@@ -583,7 +608,7 @@ const Borrowing = (props) => {
                     interest: interest ? interest : "0.00",
                   }));
                 }}
-                // ref={amountRef}
+                ref={amountRef}
                 prefix={
                   <img
                     src={Bitcoin}
@@ -1031,26 +1056,6 @@ const Borrowing = (props) => {
           </Col>
         </Row>
       </ModalDisplay>
-
-      <LendModal
-        isLendEdit={"nope"}
-        modalState={isLendModal}
-        lendModalData={lendModalData}
-        toggleLendModal={toggleLendModal}
-        setLendModalData={setLendModalData}
-        collapseActiveKey={collapseActiveKey}
-        setCollapseActiveKey={setCollapseActiveKey}
-      />
-
-      <OffersModal
-        userAssets={userAssets}
-        modalState={isOffersModal}
-        offerModalData={offerModalData}
-        toggleOfferModal={toggleOfferModal}
-        toggleLendModal={toggleBorrowModal}
-        setOfferModalData={setOfferModalData}
-        setBorrowModalData={setBorrowModalData}
-      />
     </>
   );
 };
