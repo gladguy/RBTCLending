@@ -625,6 +625,57 @@ input::placeholder {
   text-align: center;
 }
 
+.radio-css {
+  background-color: #0e071a;
+  border-radius: 8px;
+  box-shadow: 0 0 10px 2px #bbbfc44d;
+}
+
+.ant-radio-button-wrapper:first-child {
+  border: none;
+}
+
+.ant-radio-button-wrapper {
+  background: var(--theme-dark);
+  color: white;
+  border: none;
+  padding-inline: 20px;
+  padding-block: 15px;
+  height: 52px !important;
+}
+
+.ant-radio-group-large .ant-radio-button-wrapper {
+  line-height: normal;
+}
+
+.ant-radio-button-wrapper {
+  border: none;
+  height: inherit;
+}
+
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover::before {
+  background-color: #282a36;
+}
+
+.ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
+  background: var(--theme-light);
+}
+
+.ant-radio-button-wrapper:hover {
+  color: whitesmoke;
+}
+
+.ant-radio-button-wrapper:not(:first-child)::before {
+  background-color: #282a36;
+  /* height: 155%; */
+}
+
+.ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+  color: white;
+  background-color: var(--theme-light);
+}
+
+
 /* Badge Size */
 .ant-badge.ant-badge-status .ant-badge-status-dot {
   width: 11px !important;
@@ -634,7 +685,7 @@ input::placeholder {
 }
 
 .ant-divider-horizontal {
-  margin: 18px !important;
+  margin: 18px 0 !important;
 }
 
 .ant-divider {

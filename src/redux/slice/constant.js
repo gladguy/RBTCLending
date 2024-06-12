@@ -24,7 +24,8 @@ const state = {
   approvedCollections: ["", "", "", "", "", "", "", "", "", "", "", ""],
   maxOffers: {},
   offers: null,
-  userOffers: null
+  userOffers: null,
+  dashboardData: {}
 };
 
 const constantSlice = createSlice({
@@ -125,7 +126,11 @@ const constantSlice = createSlice({
 
     clearStates: (state, action) => {
       state.userAssets = null;
-    }
+    },
+
+    setDashboardData: (state, action) => {
+      state.dashboardData = action.payload;
+    },
   },
 });
 
@@ -137,6 +142,7 @@ export const {
   setAirDropData,
   setAirPoints,
   setCollectionName,
+  setDashboardData,
   setLendHeader,
   clearStates,
   setMaxOffers,

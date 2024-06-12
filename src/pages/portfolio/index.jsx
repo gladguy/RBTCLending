@@ -1,5 +1,20 @@
-import { Badge, Col, Descriptions, Row, Tooltip, Typography } from "antd";
+import {
+  Badge,
+  Col,
+  Divider,
+  Flex,
+  Radio,
+  Row,
+  Tooltip,
+  Typography,
+} from "antd";
 import React, { useState } from "react";
+import { BiSolidSpreadsheet } from "react-icons/bi";
+import { FaHandHolding, FaMoneyBillAlt } from "react-icons/fa";
+import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
+import { FcInfo } from "react-icons/fc";
+import { FiArrowDownLeft } from "react-icons/fi";
+import { HiMiniReceiptPercent } from "react-icons/hi2";
 import { MdTour } from "react-icons/md";
 import WalletUI from "../../component/download-wallets-UI";
 import ModalDisplay from "../../component/modal";
@@ -14,6 +29,7 @@ const Portfolio = (props) => {
   const { reduxState } = props.redux;
   const activeWallet = reduxState.wallet.active;
   const walletState = reduxState.wallet;
+  const dashboardData = reduxState.constant.dashboardData;
   const xverseAddress = walletState.xverse.ordinals.address;
   const unisatAddress = walletState.unisat.address;
   const magicEdenAddress = walletState.magicEden.ordinals.address;
@@ -22,10 +38,44 @@ const Portfolio = (props) => {
   const { Text } = Typography;
   const [copy, setCopy] = useState("Copy");
   const [downloadWalletModal, setDownloadWalletModal] = useState(false);
+  const [radioBtn, setRadioBtn] = useState("Assets");
   const [enableTour, setEnableTour] = useState(false);
 
   const TOUR_SVG = process.env.REACT_APP_TOUR_SVG;
   const TOUR_ID = process.env.REACT_APP_TOUR_ID;
+
+  const portfolioCards = [
+    {
+      title: "Active Lendings",
+      icon: FaHandHolding,
+      value: Number(dashboardData.activeLendings),
+    },
+    {
+      title: "Active Borrowings",
+      icon: FiArrowDownLeft,
+      value: Number(dashboardData.activeBorrows),
+    },
+    {
+      title: "Completed Loans",
+      icon: BiSolidSpreadsheet,
+      value: Number(dashboardData.completedLoans),
+    },
+    {
+      title: "Lendings Value",
+      icon: FaMoneyBillAlt,
+      value: Number(dashboardData.lendingValue),
+    },
+    {
+      title: "Borrowings Value",
+      icon: FaMoneyBillAlt,
+      value: Number(dashboardData.borrowValue),
+    },
+    {
+      title: "Profit Earned",
+      icon: HiMiniReceiptPercent,
+      value: Number(dashboardData.profitEarned),
+    },
+  ];
 
   const handleTour = () => {
     localStorage.setItem("isTourEnabled", true);
@@ -96,6 +146,26 @@ const Portfolio = (props) => {
     ];
   };
 
+  const radioOptions = [
+    {
+      label: "Assets",
+      value: "Assets",
+    },
+    {
+      label: "Offers",
+      value: "Offers",
+    },
+    {
+      label: "Lendings",
+      value: "Lendings",
+      title: "Lendings",
+    },
+    {
+      label: "Borrowings",
+      value: "Borrowings",
+    },
+  ];
+
   return (
     <>
       <Row justify={"space-between"} align={"middle"}>
@@ -148,184 +218,84 @@ const Portfolio = (props) => {
         </Col>
       </Row>
 
+      <Row align={"middle"} className={activeWallet.length && "mt-15"}>
+        <Col>
+          <Flex align="center" gap={5}>
+            <FcInfo className="pointer" size={20} />
+            <Text className="text-color-two font-small">
+              Manage your offers, lending, and borrowing positions. Learn more.{" "}
+            </Text>
+          </Flex>
+        </Col>
+      </Row>
+
       {activeWallet.length ? (
-        <Row className="m-top-bottom" gutter={48}>
-          {activeWallet.map((wallet, index) => {
+        // && Object.keys(dashboardData).length
+        <Row justify={"space-between"} gutter={12} className="mt-15">
+          {portfolioCards.map((card, index) => {
+            const { icon: Icon, title, value } = card;
             return (
-              <Col
-                xl={8}
-                lg={10}
-                md={12}
-                xs={24}
-                key={`${wallet.key}-${index}`}
-                className="m-top-bottom"
-              >
-                <Descriptions
-                  className="pointer box-shadow-one float-up"
-                  bordered
-                  layout="vertical"
-                  contentStyle={{ fontSize: "larger" }}
-                  labelStyle={{
-                    fontSize: "larger",
-                    letterSpacing: "2px",
-                    fontWeight: "bold",
-                  }}
-                  items={walletItems(wallet)}
-                />
+              <Col md={4} key={`${title}-${index}`}>
+                <Flex
+                  vertical
+                  className={`dash-cards-css pointer`}
+                  justify="space-between"
+                >
+                  <Flex justify="space-between" align="center">
+                    <Text
+                      className={`gradient-text-one font-small letter-spacing-small`}
+                    >
+                      {title}
+                    </Text>
+                    <Icon
+                      size={25}
+                      color="grey"
+                      style={{
+                        marginTop: "-13px",
+                      }}
+                    />
+                  </Flex>
+                  <Flex
+                    gap={5}
+                    align="center"
+                    className={`text-color-two font-small letter-spacing-small`}
+                  >
+                    {title.includes("Value") ? (
+                      <img src={Bitcoin} alt="ckBtc" width={20} />
+                    ) : (
+                      ""
+                    )}{" "}
+                    {value ? value : 0}
+                  </Flex>
+                </Flex>
               </Col>
             );
           })}
         </Row>
       ) : (
-        <Row justify={"center"}>
-          <Col>
-            <button
-              type="button"
-              onClick={() => setDownloadWalletModal(true)}
-              className="dwnld-button"
-            >
-              <span className="button__text">Download Wallets</span>
-              <span className="button__icon">
-                <svg
-                  className="svg"
-                  data-name="Layer 2"
-                  id={TOUR_ID}
-                  viewBox="0 0 35 35"
-                  xmlns={TOUR_SVG}
-                >
-                  <path d="M17.5,22.131a1.249,1.249,0,0,1-1.25-1.25V2.187a1.25,1.25,0,0,1,2.5,0V20.881A1.25,1.25,0,0,1,17.5,22.131Z"></path>
-                  <path d="M17.5,22.693a3.189,3.189,0,0,1-2.262-.936L8.487,15.006a1.249,1.249,0,0,1,1.767-1.767l6.751,6.751a.7.7,0,0,0,.99,0l6.751-6.751a1.25,1.25,0,0,1,1.768,1.767l-6.752,6.751A3.191,3.191,0,0,1,17.5,22.693Z"></path>
-                  <path d="M31.436,34.063H3.564A3.318,3.318,0,0,1,.25,30.749V22.011a1.25,1.25,0,0,1,2.5,0v8.738a.815.815,0,0,0,.814.814H31.436a.815.815,0,0,0,.814-.814V22.011a1.25,1.25,0,1,1,2.5,0v8.738A3.318,3.318,0,0,1,31.436,34.063Z"></path>
-                </svg>
-              </span>
-            </button>
-            {/* <Text className="text-color-one font-medium text-decor-line value-one letter-spacing-small">
-            Download wallets
-          </Text> */}
-          </Col>
-        </Row>
+        ""
       )}
 
-      {/* <Row align={"middle"}>
-        <Col>
-          <Flex align="center" gap={10}>
-            <Title level={2} className="gradient-text-one">
-              Loan Requests
-            </Title>
-            <Tooltip
-              color="purple"
-              title={
-                <span className="text-color-one">
-                  Connect 'PLUG' wallet to display your loans!
-                </span>
-              }
-            >
-              <FcInfo className="pointer mt-15" size={25} />
-            </Tooltip>
-          </Flex>
+      <Row align={"middle"} className={activeWallet.length && "mt-15"}>
+        <Col xs={24} md={24}>
+          <Divider className="m-top-bottom" />
         </Col>
       </Row>
 
-      <Col>
-        <Flex align="center" gap={10}>
-          <Title level={2} className="gradient-text-one">
-            Your Assets
-          </Title>
-          <Tooltip
-            color={"purple"}
-            title={
-              <span className="text-color-one">
-                Connect any BTC wallet to display your assets!
-              </span>
-            }
-          >
-            <FcInfo className="pointer mt-15" size={25} />
-          </Tooltip>
-        </Flex>
-      </Col>
+      <Row align={"middle"} justify={"center"} className={"mt-15"}>
+        <Radio.Group
+          className="radio-css"
+          options={radioOptions}
+          onChange={({ target: { value } }) => {
+            setRadioBtn(value);
+          }}
+          value={radioBtn}
+          size="large"
+          buttonStyle="solid"
+          optionType="button"
+        />
+      </Row>
 
-      <Row
-        className="m-top-bottom"
-        style={{ paddingBottom: "30px" }}
-        justify={{
-          md: !borrowData
-            ? "center"
-            : borrowData.length === 0
-            ? "center"
-            : "start",
-          sm: "center",
-        }}
-        gutter={18}
-      >
-        {(activeWallet.includes(XVERSE_WALLET_KEY) ||
-          activeWallet.includes(UNISAT_WALLET_KEY) ||
-          activeWallet.includes(MAGICEDEN_WALLET_KEY)) &&
-        borrowData === null ? (
-          <Loading className={"m-top-bottom"} indicator={<Bars />}></Loading>
-        ) : borrowData === null ? (
-          <Flex className="iconalignment m-bottom">
-            <FaRegSmileWink className="text-color-one" size={25} />
-            <Text className="text-color-one font-large value-one letter-spacing-medium">
-              Connect any BTC wallet !
-            </Text>
-          </Flex>
-        ) : borrowData.length === 0 ? (
-          <Flex className="iconalignment">
-            <ImSad className="text-color-one" size={25} />
-            <Text className="text-color-one font-large value-one letter-spacing-medium">
-              Seems you have no assets!
-            </Text>
-          </Flex>
-        ) : (
-          borrowData.map((card) => {
-            const url = `${process.env.REACT_APP_ORDINALS_CONTENT_API}/content/${card.id}`;
-
-            return (
-              <>
-                <Col key={`${card.id}`} xs={24} sm={12} md={12} lg={8} xl={6}>
-                  <CardDisplay
-                    cover={
-                      card.mimeType === "text/html" ? (
-                        <iframe
-                          title={`${card.id}-borrow_image`}
-                          height={300}
-                          src={url}
-                        />
-                      ) : (
-                        <img
-                          src={url}
-                          alt={`${card.id}-borrow_image`}
-                          width={300}
-                          height={300}
-                        />
-                      )
-                    }
-                    onClick={() => {}}
-                    hoverable={true}
-                    bordered={false}
-                    className={
-                      "card-bg dashboard-card-padding m-top-bottom cardrelative dashboard-cards"
-                    }
-                  >
-                    <Row justify={"space-between"}>
-                      <Col>
-                        <Text className="heading-one font-large text-color-two">
-                          ID
-                        </Text>
-                      </Col>
-                      <Col>
-                        <Text className="text-color-one font-large value-one">
-                          {card.inscriptionNumber}
-                        </Text>
-                      </Col>
-                    </Row>
-                  </CardDisplay>
-                </Col>
-              </>
-            );
-          })
-        )}
-      </Row> */}
       <ModalDisplay
         open={enableTour}
         onOK={handleTour}
