@@ -43,12 +43,11 @@ import {
 import {
   clearWalletState,
   setMagicEdenCredentials,
-  setMetaAddress,
+  setMetaCredentials,
   setUnisatCredentials,
-  setXverseBtc,
-  setXverseOrdinals,
-  setXversePayment,
+  setXverseCredentials,
 } from "../../redux/slice/wallet";
+import { rootstockApiFactory } from "../../rootstock_canister";
 import {
   API_METHODS,
   BTCWallets,
@@ -56,8 +55,11 @@ import {
   META_WALLET_KEY,
   UNISAT_WALLET_KEY,
   XVERSE_WALLET_KEY,
+  agentCreator,
   apiUrl,
+  contractGenerator,
   paymentWallets,
+  rootstock,
   sliceAddress,
 } from "../../utils/common";
 import { propsContainer } from "../props-container";
@@ -78,14 +80,22 @@ const Nav = (props) => {
   const xverseAddress = walletState.xverse.ordinals.address;
   const unisatAddress = walletState.unisat.address;
   const magicEdenAddress = walletState.magicEden.ordinals.address;
+  const address = xverseAddress
+    ? xverseAddress
+    : unisatAddress
+    ? unisatAddress
+    : magicEdenAddress;
 
   const [isConnectModal, setConnectModal] = useState(false);
   const [open, setOpen] = useState(false);
+  const [finishBtn, setFinishBtn] = useState(false);
   const [screenDimensions, setScreenDimensions] = React.useState({
     width: window.screen.width,
     height: window.screen.height,
   });
   const [current, setCurrent] = useState();
+  const [activeConnections, setActiveConnections] = useState([]);
+  const [walletConnection, setWalletConnection] = useState({});
 
   const avatar = process.env.REACT_APP_AVATAR;
   const SatsConnectNamespace = "sats-connect:";
@@ -234,8 +244,8 @@ const Nav = (props) => {
             const payment = addresses.find(
               (ele) => ele.purpose === AddressPurpose.Payment
             );
-            dispatch(setXversePayment(payment));
-            dispatch(setXverseOrdinals(ordinals));
+            // dispatch(setXversePayment(payment));
+            // dispatch(setXverseOrdinals(ordinals));
 
             const result = await API_METHODS.get(
               `${apiUrl.Unisat_open_api}/v1/indexer/address/${payment.address}/balance`,
@@ -249,9 +259,19 @@ const Nav = (props) => {
             const xverseBtc =
               result.data.data.satoshi / process.env.REACT_APP_BTC_ZERO;
 
-            dispatch(setXverseBtc(xverseBtc));
+            // dispatch(setXverseBtc(xverseBtc));
 
-            collapseConnectedModal();
+            setWalletConnection({
+              ...walletConnection,
+              [XVERSE_WALLET_KEY]: {
+                ordinals: ordinals,
+                payment: payment,
+                btcBalance: xverseBtc,
+              },
+            });
+            // collapseConnectedModal();
+            setActiveConnections([...activeConnections, XVERSE_WALLET_KEY]);
+
             successMessageNotify("x-verse Wallet connected!");
           }
         },
@@ -272,14 +292,24 @@ const Nav = (props) => {
           let { confirmed: BtcBalance } = await window.unisat.getBalance();
           dispatch(setLoading(false));
 
-          collapseConnectedModal();
-          dispatch(
-            setUnisatCredentials({
+          // collapseConnectedModal();
+          // dispatch(
+          //   setUnisatCredentials({
+          //     address: accounts[0],
+          //     publicKey,
+          //     BtcBalance: BtcBalance / process.env.REACT_APP_BTC_ZERO,
+          //   })
+          // );
+          setWalletConnection({
+            ...walletConnection,
+            [UNISAT_WALLET_KEY]: {
               address: accounts[0],
               publicKey,
-              BtcBalance: BtcBalance / process.env.REACT_APP_BTC_ZERO,
-            })
-          );
+              btcBalance: BtcBalance / process.env.REACT_APP_BTC_ZERO,
+            },
+          });
+          setActiveConnections([...activeConnections, UNISAT_WALLET_KEY]);
+
           successMessageNotify("Unisat Wallet connected!");
         } catch (error) {
           dispatch(setLoading(false));
@@ -288,7 +318,7 @@ const Nav = (props) => {
       } else {
         errorMessageNotify("No unisat wallet installed!");
       }
-    } else if (walletName === UNISAT_WALLET_KEY) {
+    } else if (walletName === MAGICEDEN_WALLET_KEY) {
       try {
         const provider = wallets.find(isSatsConnectCompatibleWallet);
         await getAddress({
@@ -322,15 +352,24 @@ const Nav = (props) => {
             const magicEdenBtc =
               result.data.data.satoshi / process.env.REACT_APP_BTC_ZERO;
 
-            dispatch(
-              setMagicEdenCredentials({
+            // dispatch(
+            //   setMagicEdenCredentials({
+            //     ordinals,
+            //     payment,
+            //     btcBalance: magicEdenBtc,
+            //   })
+            // );
+
+            setWalletConnection({
+              ...walletConnection,
+              [MAGICEDEN_WALLET_KEY]: {
                 ordinals,
                 payment,
                 btcBalance: magicEdenBtc,
-              })
-            );
-
-            collapseConnectedModal();
+              },
+            });
+            setActiveConnections([...activeConnections, MAGICEDEN_WALLET_KEY]);
+            // collapseConnectedModal();
             successMessageNotify("Magiceden Wallet connected!");
           },
           onCancel: () => {
@@ -347,7 +386,15 @@ const Nav = (props) => {
         try {
           await window.ethereum.request({ method: "eth_requestAccounts" });
           const accounts = await web3.eth.getAccounts();
-          dispatch(setMetaAddress(accounts[0]));
+          // dispatch(setMetaAddress(accounts[0]));
+          setWalletConnection({
+            ...walletConnection,
+            [META_WALLET_KEY]: {
+              address: accounts[0],
+              publicKey: null,
+            },
+          });
+          setActiveConnections([...activeConnections, META_WALLET_KEY]);
         } catch (error) {
           console.error("User denied account access", error);
         }
@@ -360,7 +407,99 @@ const Nav = (props) => {
           "Non-Ethereum browser detected. You should consider trying MetaMask!"
         );
       }
-      collapseConnectedModal();
+    }
+  };
+
+  const storeWallets = (wallet) => {
+    if (META_WALLET_KEY === wallet) {
+      dispatch(setMetaCredentials(walletConnection[META_WALLET_KEY]));
+    } else if (XVERSE_WALLET_KEY === wallet) {
+      dispatch(setXverseCredentials(walletConnection[XVERSE_WALLET_KEY]));
+    } else if (UNISAT_WALLET_KEY === wallet) {
+      dispatch(setUnisatCredentials(walletConnection[UNISAT_WALLET_KEY]));
+    } else {
+      dispatch(setMagicEdenCredentials(walletConnection[MAGICEDEN_WALLET_KEY]));
+    }
+  };
+
+  const handleConnectionFinish = async () => {
+    try {
+      setFinishBtn(true);
+      let isConnectionExist = false;
+      const API = agentCreator(rootstockApiFactory, rootstock);
+      const btcAddress = walletConnection.xverse
+        ? walletConnection.xverse.ordinals.address
+        : walletConnection.magiceden
+        ? walletConnection.magiceden.ordinals.address
+        : walletConnection.unisat.address;
+      const metaAddress = walletConnection.meta.address;
+
+      const isBtcExist = await API.retrieveByEthereumAddress(metaAddress);
+      const isEthExist = await API.retrieveByBitcoinAddress(btcAddress);
+      const isCounterExist = await API.retrieve(metaAddress);
+      const contract = await contractGenerator();
+      const isAccountExistInABI = await contract.methods
+        .getBitcoinAddressId(metaAddress)
+        .call();
+
+      if (isAccountExistInABI) {
+        isConnectionExist = true;
+      } else if (
+        (!isBtcExist.length && !isEthExist.length) ||
+        isCounterExist.length
+      ) {
+        let counter;
+        if (isCounterExist.length) {
+          counter = isCounterExist[0];
+        } else {
+          counter = await API.storeAddress({
+            bitcoinAddress: btcAddress,
+            ethereumAddress: metaAddress,
+          });
+        }
+
+        const estimateGas = await contract.methods
+          .saveBitcoinAddress(Number(counter), metaAddress)
+          .estimateGas({ from: metaAddress });
+
+        const storeResult = await contract.methods
+          .saveBitcoinAddress(Number(counter), metaAddress)
+          .send({
+            from: metaAddress,
+            gas: Number(estimateGas).toString(),
+            gasPrice: 1000000000,
+          });
+
+        if (storeResult.transactionHash) {
+          isConnectionExist = true;
+        }
+        console.log("Store Result", storeResult);
+        Notify("success", "Account creation success!", 3000);
+      } else if (isEthExist[0] !== metaAddress) {
+        Notify(
+          "warning",
+          "Account not found, try connecting other ETH account!"
+        );
+      } else if (isBtcExist[0] !== address) {
+        Notify(
+          "warning",
+          "Account not found, try connecting other BTC account!"
+        );
+      } else {
+        Notify("success", "Account connection success!");
+      }
+
+      if (isConnectionExist) {
+        activeConnections.forEach((wallet) => {
+          storeWallets(wallet);
+        });
+        Notify("success", "Wallet connection success!");
+        collapseConnectedModal();
+      }
+      setFinishBtn(false);
+    } catch (error) {
+      setFinishBtn(false);
+      console.log("finish connection error", error);
     }
   };
 
@@ -372,26 +511,26 @@ const Nav = (props) => {
   };
 
   const isDisabled = (key) => {
-    const connected = walletState.active.includes(key);
+    const connected = activeConnections.includes(key);
     if (connected) return "card-disabled";
     const cond = (bool) => (bool ? "card-disabled" : "");
     switch (key) {
       case XVERSE_WALLET_KEY: {
         return cond(
-          walletState.active.includes(UNISAT_WALLET_KEY) ||
-            walletState.active.includes(MAGICEDEN_WALLET_KEY)
+          activeConnections.includes(UNISAT_WALLET_KEY) ||
+            activeConnections.includes(MAGICEDEN_WALLET_KEY)
         );
       }
       case UNISAT_WALLET_KEY: {
         return cond(
-          walletState.active.includes(XVERSE_WALLET_KEY) ||
-            walletState.active.includes(MAGICEDEN_WALLET_KEY)
+          activeConnections.includes(XVERSE_WALLET_KEY) ||
+            activeConnections.includes(MAGICEDEN_WALLET_KEY)
         );
       }
       case MAGICEDEN_WALLET_KEY: {
         return cond(
-          walletState.active.includes(XVERSE_WALLET_KEY) ||
-            walletState.active.includes(UNISAT_WALLET_KEY)
+          activeConnections.includes(XVERSE_WALLET_KEY) ||
+            activeConnections.includes(UNISAT_WALLET_KEY)
         );
       }
       default:
@@ -673,6 +812,23 @@ const Nav = (props) => {
                 >
                   My Assets
                 </Text>
+
+                <Text className="font-xsmall color-grey">|</Text>
+
+                <Text
+                  className={`${
+                    location.pathname === "/bridge"
+                      ? "headertitle headerStyle"
+                      : "font-style headerCompanyName"
+                  } pointer heading-one `}
+                  onClick={() => {
+                    navigate("/bridge");
+                    dispatch(setLendHeader(false));
+                  }}
+                  ref={ref3}
+                >
+                  Bridge ordinals
+                </Text>
                 <Text className="font-xsmall color-grey">|</Text>
                 <Text
                   className={`${
@@ -789,97 +945,123 @@ const Nav = (props) => {
       <ModalDisplay
         open={isConnectModal}
         footer={""}
-        onCancel={() => collapseConnectedModal()}
+        onCancel={() => {
+          collapseConnectedModal();
+          setWalletConnection({});
+          setActiveConnections([]);
+        }}
         width={breakPoint.xs ? "100%" : "32%"}
       >
-        <div>
-          <Row justify={"start"} align={"middle"}>
-            <Text
-              className={`${
-                breakPoint.xs ? "font-medium" : "font-large"
-              } gradient-text-one biticon heading-one`}
-            >
-              <RiWallet3Fill
-                color="#8A2F3E"
-                size={breakPoint.xs ? 27 : 35}
-                className="border-radius-5"
-              />{" "}
-              Connect Wallet{" "}
-            </Text>
-          </Row>
+        <Row justify={"start"} align={"middle"}>
+          <Text
+            className={`${
+              breakPoint.xs ? "font-medium" : "font-large"
+            } gradient-text-one biticon heading-one`}
+          >
+            <RiWallet3Fill
+              color="#8A2F3E"
+              size={breakPoint.xs ? 27 : 35}
+              className="border-radius-5"
+            />{" "}
+            Connect Wallet{" "}
+          </Text>
+        </Row>
 
-          <Row justify={"start"} align={"middle"}>
+        {/* <Row justify={"start"} align={"middle"}>
             <Text className={`font-small text-color-two biticon mt-15`}>
               Choose how you want to connect. If you don't have a wallet, you
               can select a provider and create one.
             </Text>
-          </Row>
+          </Row> */}
 
-          <Row className="">
-            <Col>
-              <Tabs
-                items={[
-                  {
-                    key: "1",
-                    label: (
-                      <Row align={"middle"}>
-                        <img
-                          src={rootstock_logo}
-                          alt="noimage"
-                          style={{ paddingRight: "10px" }}
-                          width="25px"
-                        />
-                        <Text className="font-weight-600 letter-spacing-medium text-color-one font-large">
-                          {" "}
-                          ROOT STOCK
-                        </Text>
-                      </Row>
-                    ),
-                    children: (
-                      <>
-                        {paymentWallets.map((wallet, index) => {
-                          return (
-                            <Row key={`index-${wallet.key}`}>
-                              {walletCards(wallet, index)}
-                            </Row>
-                          );
-                        })}
-                      </>
-                    ),
-                  },
-                  {
-                    key: "2",
-                    label: (
-                      <Row align={"middle"}>
-                        <img
-                          src={Bitcoin}
-                          alt="noimage"
-                          style={{ paddingRight: "10px" }}
-                          width="25px"
-                        />
-                        <Text className="font-weight-600 letter-spacing-medium text-color-one font-large">
-                          {" "}
-                          BTC
-                        </Text>
-                      </Row>
-                    ),
-                    children: (
-                      <>
-                        {BTCWallets.map((wallet, index) => {
-                          return (
-                            <Row key={`index-${wallet.key}`}>
-                              {walletCards(wallet, index)}
-                            </Row>
-                          );
-                        })}
-                      </>
-                    ),
-                  },
-                ]}
-              />
-            </Col>
-          </Row>
-        </div>
+        <Row justify={"start"} align={"middle"}>
+          <Text className={`font-small text-color-two biticon mt-15`}>
+            Connect the Meta wallet for payments and connect any one BTC wallet
+            for lending and borrowing.
+          </Text>
+        </Row>
+
+        <Row justify={"start"} align={"middle"}>
+          <Text className={`font-small text-color-two biticon mt-15`}>
+            Note: Connect one wallet from each category.
+          </Text>
+        </Row>
+
+        <Row>
+          <Col>
+            <Tabs
+              items={[
+                {
+                  key: "1",
+                  label: (
+                    <Row align={"middle"}>
+                      <img
+                        src={rootstock_logo}
+                        alt="noimage"
+                        style={{ paddingRight: "10px" }}
+                        width="25px"
+                      />
+                      <Text className="font-weight-600 letter-spacing-medium text-color-one font-large">
+                        {" "}
+                        ROOT STOCK
+                      </Text>
+                    </Row>
+                  ),
+                  children: (
+                    <>
+                      {paymentWallets.map((wallet, index) => {
+                        return (
+                          <Row key={`index-${wallet.key}`}>
+                            {walletCards(wallet, index)}
+                          </Row>
+                        );
+                      })}
+                    </>
+                  ),
+                },
+                {
+                  key: "2",
+                  label: (
+                    <Row align={"middle"}>
+                      <img
+                        src={Bitcoin}
+                        alt="noimage"
+                        style={{ paddingRight: "10px" }}
+                        width="25px"
+                      />
+                      <Text className="font-weight-600 letter-spacing-medium text-color-one font-large">
+                        {" "}
+                        BTC
+                      </Text>
+                    </Row>
+                  ),
+                  children: (
+                    <>
+                      {BTCWallets.map((wallet, index) => {
+                        return (
+                          <Row key={`index-${wallet.key}`}>
+                            {walletCards(wallet, index)}
+                          </Row>
+                        );
+                      })}
+                    </>
+                  ),
+                },
+              ]}
+            />
+          </Col>
+        </Row>
+
+        <Row justify={"start"} align={"middle"} className="mt-7">
+          <CustomButton
+            block
+            title={"Finish"}
+            loading={finishBtn}
+            onClick={handleConnectionFinish}
+            disabled={activeConnections.length !== 2}
+            className={"click-btn font-weight-600 letter-spacing-small"}
+          />
+        </Row>
       </ModalDisplay>
 
       <Drawer
@@ -922,17 +1104,9 @@ const Nav = (props) => {
                   onClick={async () => {
                     dispatch(clearStates());
                     successMessageNotify("Your are signed out!");
-                    walletState.active.forEach(async (wallet) => {
-                      if (wallet === XVERSE_WALLET_KEY) {
-                        dispatch(clearWalletState(XVERSE_WALLET_KEY));
-                      } else if (wallet === UNISAT_WALLET_KEY) {
-                        dispatch(clearWalletState(UNISAT_WALLET_KEY));
-                      } else if (wallet === MAGICEDEN_WALLET_KEY) {
-                        dispatch(clearWalletState(MAGICEDEN_WALLET_KEY));
-                      } else if (wallet === META_WALLET_KEY) {
-                        dispatch(clearWalletState(META_WALLET_KEY));
-                      }
-                    });
+                    dispatch(clearWalletState());
+                    setWalletConnection({});
+                    setActiveConnections([]);
                     onClose();
                   }}
                   title={
@@ -1081,17 +1255,9 @@ const Nav = (props) => {
                   onClick={async () => {
                     dispatch(clearStates());
                     successMessageNotify("Your are signed out!");
-                    walletState.active.forEach(async (wallet) => {
-                      if (wallet === XVERSE_WALLET_KEY) {
-                        dispatch(clearWalletState(XVERSE_WALLET_KEY));
-                      } else if (wallet === UNISAT_WALLET_KEY) {
-                        dispatch(clearWalletState(UNISAT_WALLET_KEY));
-                      } else if (wallet === MAGICEDEN_WALLET_KEY) {
-                        dispatch(clearWalletState(MAGICEDEN_WALLET_KEY));
-                      } else if (wallet === META_WALLET_KEY) {
-                        dispatch(clearWalletState(META_WALLET_KEY));
-                      }
-                    });
+                    dispatch(clearWalletState());
+                    setWalletConnection({});
+                    setActiveConnections([]);
                     onClose();
                   }}
                   title={

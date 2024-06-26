@@ -8,7 +8,7 @@ import { propsContainer } from "../../container/props-container";
 const Home = (props) => {
   const { reduxState } = props.redux;
   const collections = reduxState.constant.approvedCollections;
-
+  console.log("collections", collections);
   const { Title, Text } = Typography;
   const { useBreakpoint } = Grid;
   const breakpoints = useBreakpoint();

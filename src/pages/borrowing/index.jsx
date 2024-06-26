@@ -35,9 +35,9 @@ const Borrowing = (props) => {
   const { reduxState, dispatch } = props.redux;
   const approvedCollections = reduxState.constant.approvedCollections;
   const activeWallet = reduxState.wallet.active;
-  const userAssets = reduxState.constant.userAssets;
+  const userCollateral = reduxState.constant.userCollateral;
   const metaAddress = reduxState.wallet.meta.address;
-  console.log("userAssets", userAssets);
+  console.log("userCollateral", userCollateral);
 
   const btcvalue = reduxState.constant.btcvalue;
 
@@ -197,13 +197,9 @@ const Borrowing = (props) => {
             size="medium"
             onClick={() => {
               // Assets
-              let assets = userAssets?.find(
+              let assets = userCollateral?.filter(
                 (p) => p.collectionSymbol === obj.symbol
               );
-              if (assets?.duplicates) {
-                const { duplicates, ...rest } = assets;
-                assets = [rest, ...assets.duplicates];
-              }
               // Terms
               const term = Number(obj.terms);
               // Converting ordinal asset price into dollar
@@ -250,7 +246,7 @@ const Borrowing = (props) => {
       },
     },
   ];
-  console.log("borrowModalData", borrowModalData);
+
   const toggleBorrowModal = () => {
     setIsBorrowModal(!isBorrowModal);
   };
@@ -267,19 +263,19 @@ const Borrowing = (props) => {
 
   const fetchRequests = async (obj) => {
     try {
-      const contract = await contractGenerator();
-      console.log("contract", contract, "obj.collectionID", obj.collectionID);
-      const offers = await contract.methods
-        .getRequestByCollectionID(Number(obj.collectionID))
-        .call({ from: metaAddress });
-      console.log("requests", offers);
-      toggleOfferModal();
-      // dispatch(setOffers(offers));
-      setOfferModalData({
-        ...obj,
-        thumbnailURI: obj.thumbnailURI,
-        collectionName: obj.name,
-      });
+      // const contract = await contractGenerator();
+      // console.log("contract", contract, "obj.collectionID", obj.collectionID);
+      // const offers = await contract.methods
+      //   .getRequestByCollectionID(Number(obj.collectionID))
+      //   .call({ from: metaAddress });
+      // console.log("requests", offers);
+      // toggleOfferModal();
+      // // dispatch(setOffers(offers));
+      // setOfferModalData({
+      //   ...obj,
+      //   thumbnailURI: obj.thumbnailURI,
+      //   collectionName: obj.name,
+      // });
     } catch (error) {
       console.log("fetch offers modal error", error);
     }
@@ -287,21 +283,17 @@ const Borrowing = (props) => {
 
   useEffect(() => {
     // For setting user assets, after fetching user Assets when modal is open
-    if (userAssets?.length && borrowModalData?.symbol) {
-      let assets = userAssets?.find(
+    if (userCollateral?.length && borrowModalData?.symbol) {
+      let assets = userCollateral?.filter(
         (p) => p.collectionSymbol === borrowModalData.symbol
       );
-      if (assets?.duplicates) {
-        const { duplicates, ...rest } = assets;
-        assets = [rest, ...assets.duplicates];
-      }
       setBorrowModalData({
         ...borrowModalData,
         assets,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userAssets]);
+  }, [userCollateral]);
 
   const handleCreateRequest = async () => {
     if (borrowModalData.collateral) {
@@ -371,7 +363,8 @@ const Borrowing = (props) => {
   const toggleLendModal = () => {
     setIsLendModal(!isLendModal);
   };
-
+  console.log("approvedCollections", approvedCollections);
+  console.log(borrowModalData);
   return (
     <>
       <Row justify={"space-between"} align={"middle"}>
@@ -411,7 +404,7 @@ const Borrowing = (props) => {
       />
 
       <OffersModal
-        userAssets={userAssets}
+        userCollateral={userCollateral}
         modalState={isOffersModal}
         offerModalData={offerModalData}
         toggleOfferModal={toggleOfferModal}
@@ -674,7 +667,9 @@ const Borrowing = (props) => {
             columnGap: "50px",
           }}
           justify={
-            userAssets === null || !borrowModalData?.assets ? "center" : "start"
+            userCollateral === null || !borrowModalData?.assets
+              ? "center"
+              : "start"
           }
         >
           {borrowModalData?.assets?.length ? (
@@ -725,9 +720,9 @@ const Borrowing = (props) => {
                           : ""
                       } pointer`}
                       cover={
-                        asset.contentType.includes(
-                          "image/webp" || "image/jpeg" || "image/png"
-                        ) ? (
+                        asset.contentType === "image/webp" ||
+                        "image/jpeg" ||
+                        "image/png" ? (
                           <img
                             alt="asset_img"
                             src={`${CONTENT_API}/content/${asset.id}`}
@@ -786,9 +781,9 @@ const Borrowing = (props) => {
             </>
           ) : (
             <Text className={`text-color-two font-small letter-spacing-small`}>
-              {userAssets === null && activeWallet.length === 2
+              {userCollateral === null && activeWallet.length === 2
                 ? "Please wait until fetching your assets!"
-                : userAssets === null
+                : userCollateral === null
                 ? "Connect BTC wallet to see your assets!."
                 : "You don't have any collateral for this collection!."}
             </Text>

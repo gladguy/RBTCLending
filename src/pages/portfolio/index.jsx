@@ -23,6 +23,7 @@ import {
   MAGICEDEN_WALLET_KEY,
   UNISAT_WALLET_KEY,
   XVERSE_WALLET_KEY,
+  sliceAddress,
 } from "../../utils/common";
 
 const Portfolio = (props) => {
@@ -34,6 +35,11 @@ const Portfolio = (props) => {
   const unisatAddress = walletState.unisat.address;
   const magicEdenAddress = walletState.magicEden.ordinals.address;
   const metaAddress = walletState.meta.address;
+  const address = xverseAddress
+    ? xverseAddress
+    : unisatAddress
+    ? unisatAddress
+    : magicEdenAddress;
 
   const { Text } = Typography;
   const [copy, setCopy] = useState("Copy");
@@ -229,6 +235,22 @@ const Portfolio = (props) => {
         </Col>
       </Row>
 
+      {/* {activeWallet.length >= 2 ? (
+        <Row align={"middle"} className={activeWallet.length && "mt-15"}>
+          <Col>
+            <Flex align="center" gap={5} className="card-box">
+              <Text className="text-color-two font-small">Note:</Text>
+              <Text className="text-color-two font-small">
+                Accounts {sliceAddress(metaAddress)} & {sliceAddress(address)}{" "}
+                were linked internally!
+              </Text>
+            </Flex>
+          </Col>
+        </Row>
+      ) : (
+        ""
+      )} */}
+
       {activeWallet.length ? (
         // && Object.keys(dashboardData).length
         <Row justify={"space-between"} gutter={12} className="mt-15">
@@ -238,7 +260,7 @@ const Portfolio = (props) => {
               <Col md={4} key={`${title}-${index}`}>
                 <Flex
                   vertical
-                  className={`dash-cards-css pointer`}
+                  className={`cards-css pointer padding-15 card-box-shadow-light`}
                   justify="space-between"
                 >
                   <Flex justify="space-between" align="center">
@@ -247,13 +269,7 @@ const Portfolio = (props) => {
                     >
                       {title}
                     </Text>
-                    <Icon
-                      size={25}
-                      color="grey"
-                      style={{
-                        marginTop: "-13px",
-                      }}
-                    />
+                    <Icon size={25} color="grey" />
                   </Flex>
                   <Flex
                     gap={5}

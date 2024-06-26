@@ -10,18 +10,23 @@ import {
   setBtcValue,
   setCollection,
   setUserAssets,
+  setUserCollateral,
 } from "../../redux/slice/constant";
+import { rootstockApiFactory } from "../../rootstock_canister";
 import {
   API_METHODS,
   IS_USER,
   MAGICEDEN_WALLET_KEY,
-  META_WALLET_KEY,
+  TokenContractAddress,
   UNISAT_WALLET_KEY,
   XVERSE_WALLET_KEY,
+  agentCreator,
   apiUrl,
   calculateAPY,
   contractGenerator,
+  rootstock,
 } from "../../utils/common";
+import tokenAbiJson from "../../utils/tokens_abi.json";
 
 export const propsContainer = (Component) => {
   function ComponentWithRouterProp(props) {
@@ -34,15 +39,21 @@ export const propsContainer = (Component) => {
     const xverseAddress = reduxState.wallet.xverse.ordinals.address;
     const unisatAddress = reduxState.wallet.unisat.address;
     const magicEdenAddress = reduxState.wallet.magicEden.ordinals.address;
-    const metaAddress = reduxState.wallet.meta.address;
     const api_agent = reduxState.constant.agent;
     const collections = reduxState.constant.collection;
+    const approvedCollections = reduxState.constant.approvedCollections;
     const userAssets = reduxState.constant.userAssets;
     const ckBtcAgent = reduxState.constant.ckBtcAgent;
     const ckBtcActorAgent = reduxState.constant.ckBtcActorAgent;
     const ckEthAgent = reduxState.constant.ckEthAgent;
     const ckEthActorAgent = reduxState.constant.ckEthActorAgent;
     const withdrawAgent = reduxState.constant.withdrawAgent;
+
+    const address = xverseAddress
+      ? xverseAddress
+      : unisatAddress
+      ? unisatAddress
+      : magicEdenAddress;
 
     const ordinalCanisterId = process.env.REACT_APP_ORDINAL_CANISTER_ID;
     const WAHEED_ADDRESS = process.env.REACT_APP_WAHEED_ADDRESS;
@@ -265,16 +276,49 @@ export const propsContainer = (Component) => {
     }, [activeWallet, api_agent, dispatch, collections]);
 
     useEffect(() => {
-      (async () => {
-        if (activeWallet.includes(META_WALLET_KEY)) {
-          const contract = await contractGenerator();
-          const userOffers = await contract.methods
-            .getAllBorrowRequests()
-            .call({ from: metaAddress });
-          console.log("user offers", userOffers);
-        }
-      })();
-    }, [activeWallet, metaAddress]);
+      if (activeWallet.length && approvedCollections[0]) {
+        (async () => {
+          const API = agentCreator(rootstockApiFactory, rootstock);
+          const userAssets = await API.getUserSupply(
+            IS_USER ? address : WAHEED_ADDRESS
+          );
+          const supplyData = userAssets.map((asset) => JSON.parse(asset));
+          const colResult = await getCollectionDetails(supplyData);
+          const finalData = colResult.map((asset) => {
+            let data = { ...asset, collection: {} };
+            approvedCollections.forEach((col) => {
+              if (col.symbol === asset.collection.symbol) {
+                data = {
+                  ...asset,
+                  collection: col,
+                };
+              }
+            });
+            return data;
+          });
+
+          // --------------------------------------------------
+          const contract = await contractGenerator(
+            tokenAbiJson,
+            TokenContractAddress
+          );
+          const promises = finalData.map((asset) => {
+            return new Promise(async (res) => {
+              const owner = await contract.methods
+                .ownerOf(asset.inscriptionNumber)
+                .call();
+              res({
+                ...asset,
+                isToken: owner ? true : false,
+              });
+            });
+          });
+          const revealed = await Promise.all(promises);
+          dispatch(setUserCollateral(revealed));
+        })();
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeWallet, approvedCollections]);
 
     return (
       <Component

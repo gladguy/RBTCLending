@@ -1,22 +1,18 @@
-import { Col, Collapse, Divider, Flex, Row, Tooltip, Typography } from "antd";
+import { Col, Flex, Row, Tooltip, Typography } from "antd";
 import React, { useState } from "react";
 import { BiSolidOffer } from "react-icons/bi";
-import { FaCaretDown } from "react-icons/fa";
-import { TbInfoSquareRounded } from "react-icons/tb";
 import { Bars } from "react-loading-icons";
 import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
 import CustomButton from "../../component/Button";
-import ModalDisplay from "../../component/modal";
+import LendModal from "../../component/lend-modal";
 import OffersModal from "../../component/offers-modal";
 import TableComponent from "../../component/table";
 import { propsContainer } from "../../container/props-container";
 import { contractGenerator } from "../../utils/common";
-import LendModal from "../../component/lend-modal";
 
 const Lending = (props) => {
   const { reduxState } = props.redux;
   const approvedCollections = reduxState.constant.approvedCollections;
-  const activeWallet = reduxState.wallet.active;
   const userAssets = reduxState.constant.userAssets;
   const metaAddress = reduxState.wallet.meta.address;
 
@@ -203,16 +199,6 @@ const Lending = (props) => {
 
   const toggleLendModal = () => {
     setIsLendModal(!isLendModal);
-  };
-
-  const calcLendData = (amount) => {
-    const interest = (amount * lendModalData.interestTerm).toFixed(6);
-    // Calc 15% of platform fee.
-    const platformFee = ((interest * 15) / 100).toFixed(6);
-    return {
-      interest,
-      platformFee,
-    };
   };
 
   const toggleOfferModal = () => {

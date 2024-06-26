@@ -1,143 +1,13 @@
 [
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "requestId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "collectionId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "ordinalId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "loanTime",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "borrower",
-        "type": "address"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "terms",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "loanToValue",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "loanAmount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "platformFee",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "yieldRate",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "yieldAccured",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "floorValue",
-            "type": "uint256"
-          }
-        ],
-        "indexed": false,
-        "internalType": "struct MyOrdinalsLoanContract20.Terms",
-        "name": "terms",
-        "type": "tuple"
-      }
-    ],
-    "name": "BorrowRequestCreated",
-    "type": "event"
-  },
-  {
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_collectionId",
+        "name": "_ordinal",
         "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_ordinalId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_terms",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_loanToValue",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_loanAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_platformFee",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_loanTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_yieldRate",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_yieldAccured",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_floorValue",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_borrower",
-        "type": "address"
       }
     ],
-    "name": "createBorrowRequest",
+    "name": "addOrdinal",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -146,163 +16,344 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "borrowRequests",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "CollectionID",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "OrdinalID",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "loanTime",
+        "name": "_ordinal",
         "type": "uint256"
       },
       {
         "internalType": "address",
-        "name": "borrower",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "name": "addOrdinalToAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_address",
         "type": "address"
       },
       {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "terms",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "loanToValue",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "loanAmount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "platformFee",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "yieldRate",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "yieldAccured",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "floorValue",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct MyOrdinalsLoanContract20.Terms",
-        "name": "terms",
-        "type": "tuple"
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_bitcoinAddressId",
+        "type": "uint256"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "name": "BitcoinAddressIdAssigned",
+    "type": "event"
   },
   {
-    "inputs": [],
-    "name": "getAllBorrowRequests",
-    "outputs": [
+    "anonymous": false,
+    "inputs": [
       {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "CollectionID",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "OrdinalID",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "loanTime",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address",
-            "name": "borrower",
-            "type": "address"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "terms",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "loanToValue",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "loanAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "platformFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "yieldRate",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "yieldAccured",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "floorValue",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct MyOrdinalsLoanContract20.Terms",
-            "name": "terms",
-            "type": "tuple"
-          }
-        ],
-        "internalType": "struct MyOrdinalsLoanContract20.BorrowRequest[]",
-        "name": "",
-        "type": "tuple[]"
+        "indexed": true,
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_ordinal",
+        "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "name": "OrdinalAdded",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_bitcoinAddressId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "name": "saveBitcoinAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "requestCount",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_contract",
+        "type": "address"
+      }
+    ],
+    "name": "setAllowedContract",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_ordinal",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "name": "storeMintedOrdinal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_ordinal",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "name": "storeOrdinal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "addressToBitcoinAddressId",
     "outputs": [
       {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "addressToOrdinals",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "allOrdinals",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "name": "getBitcoinAddressId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "name": "getMintedOrdinals",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "name": "getOrdinals",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_ordinal",
+        "type": "uint256"
+      }
+    ],
+    "name": "isMinted",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_ordinal",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "name": "isOrdinalBelongToAddress",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_ordinal",
+        "type": "uint256"
+      }
+    ],
+    "name": "isOrdinalBelongToCaller",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "mintedOrdinals",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_ordinal",
+        "type": "uint256"
+      }
+    ],
+    "name": "ordinalExists",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",

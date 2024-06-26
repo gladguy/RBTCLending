@@ -20,6 +20,7 @@ const state = {
   affiliateCanister: null,
   LendRequests: null,
   userAssets: null,
+  userCollateral: null,
   isPlugError: false,
   approvedCollections: ["", "", "", "", "", "", "", "", "", "", "", ""],
   maxOffers: {},
@@ -112,6 +113,10 @@ const constantSlice = createSlice({
       state.userAssets = action.payload;
     },
 
+    setUserCollateral: (state, action) => {
+      state.userCollateral = action.payload;
+    },
+
     setMaxOffers: (state, action) => {
       state.maxOffers = action.payload;
     },
@@ -149,6 +154,8 @@ export const {
   setOffers,
   setUserOffers,
   setAgent,
+  setUserCollateral,
+  setUserBridgeOrdinal,
   setLendRequests,
   setCkBtcAgent,
   setEthValue,

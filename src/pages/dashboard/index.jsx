@@ -55,7 +55,6 @@ import {
   DateTimeConverter,
   IS_USER,
   MAGICEDEN_WALLET_KEY,
-  PLUG_WALLET_KEY,
   UNISAT_WALLET_KEY,
   XVERSE_WALLET_KEY,
   apiUrl,
@@ -94,13 +93,13 @@ const Dashboard = (props) => {
   const walletState = reduxState.wallet;
   const btcValue = reduxState.constant.btcvalue;
   const aptosvalue = reduxState.constant.aptosvalue;
-  let plugAddress = walletState.plug.principalId;
+  let plugAddress = "walletState?.plug?.principalId";
   const collection = reduxState.constant.collection;
 
   const xverseAddress = walletState.xverse.ordinals.address;
   const unisatAddress = walletState.unisat.address;
   const magicEdenAddress = walletState.magicEden.ordinals.address;
-  const martinAddress = walletState.martin.address;
+  const martinAddress = "walletState.martin.address";
 
   const MEMPOOL_API = process.env.REACT_APP_MEMPOOL_API;
 
@@ -812,8 +811,7 @@ const Dashboard = (props) => {
         api_agent &&
         (activeWallet.includes(XVERSE_WALLET_KEY) ||
           activeWallet.includes(UNISAT_WALLET_KEY) ||
-          activeWallet.includes(MAGICEDEN_WALLET_KEY)) &&
-        activeWallet.includes(PLUG_WALLET_KEY)
+          activeWallet.includes(MAGICEDEN_WALLET_KEY))
       ) {
         // getting Lend Side Details
         getLendRequest();

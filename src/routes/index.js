@@ -36,11 +36,16 @@ export const publicRoutes = [
     path: `/myassets`,
     component: lazy(() => import("../pages/my-assets")),
   },
-  // {
-  //   name: "Dashboard",
-  //   path: `/dashboard`,
-  //   component: lazy(() => import("../pages/dashboard")),
-  // },
+  {
+    name: "BridgeOrdinals",
+    path: `/bridge`,
+    component: lazy(() => import("../pages/bridgeOrdinals")),
+  },
+  {
+    name: "Dashboard",
+    path: `/dashboard`,
+    component: lazy(() => import("../pages/dashboard")),
+  },
   // {
   //   name: "Staking",
   //   path: `/staking`,
@@ -52,18 +57,18 @@ export const publicRoutes = [
     component: lazy(() => import("../pages/lending")),
   },
   {
-    name: "Veiw transactions",
+    name: "View transactions",
     path: "/supply/transactions",
     component: lazy(() => import("../pages/transactions")),
-  },
-  {
-    name: "Page 404",
-    path: "*",
-    component: lazy(() => import("../pages/404")),
   },
   {
     name: "btc/transaction",
     path: "/btc/transactions",
     component: lazy(() => import("../pages/btcTransaction")),
+  },
+  {
+    name: "Page 404",
+    path: "*",
+    component: lazy(() => import("../pages/404")),
   },
 ];

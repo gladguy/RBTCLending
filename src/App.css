@@ -508,6 +508,15 @@ a {
   padding: 0px 20px 0px 0px;
 }
 
+.padding-15 {
+  padding: 15px;
+}
+
+.cards-css {
+  border-radius: 0.75em;
+  padding: 10px;
+}
+
 .text-decor-line {
   text-decoration: underline;
 }
@@ -939,6 +948,10 @@ input::placeholder {
 
 .mt-20 {
   margin-top: 20px;
+}
+
+.mt-40 {
+  margin-top: 40px;
 }
 
 .m-5 {
@@ -1386,12 +1399,12 @@ body::-webkit-scrollbar-thumb {
 
 .card-selected {
   bottom: 7px;
-  right: 17.5px;
+  right: 22.5px;
 }
 
 .card-unselected {
   bottom: 7px;
-  right: 27px;
+  right: 34px;
 }
 
 .selected-dark {
@@ -2235,6 +2248,10 @@ figure:hover+span {
   color: rgb(0, 0, 0);
   font-weight: 400;
   font-family: courier;
+}
+
+.card-box-shadow-light {
+  box-shadow: 0px 5px 9px 0px #7a6bb9, 0px 6px 35px -10px #d0d0d07a;
 }
 
 .card1:before {
