@@ -429,11 +429,11 @@ const Nav = (props) => {
       setFinishBtn(true);
       let isConnectionExist = false;
       const API = agentCreator(rootstockApiFactory, rootstock);
-      const btcAddress = walletConnection.xverse
+      const btcAddress = walletConnection?.xverse
         ? walletConnection.xverse.ordinals.address
-        : walletConnection.magiceden
+        : walletConnection?.magiceden
         ? walletConnection.magiceden.ordinals.address
-        : walletConnection.unisat.address;
+        : walletConnection?.unisat?.address;
       const metaAddress = walletConnection.meta.address;
 
       const isBtcExist = await API.retrieveByEthereumAddress(metaAddress);
@@ -444,12 +444,15 @@ const Nav = (props) => {
         .getBitcoinAddressId(metaAddress)
         .call();
 
-      if (isAccountExistInABI) {
-        isConnectionExist = true;
-      } else if (
-        (!isBtcExist.length && !isEthExist.length) ||
-        isCounterExist.length
+      // console.log(isBtcExist, isEthExist, isCounterExist, isAccountExistInABI);
+
+      if (
+        isAccountExistInABI &&
+        isEthExist[0] === metaAddress &&
+        isBtcExist[0] === btcAddress
       ) {
+        isConnectionExist = true;
+      } else if (!isBtcExist.length && !isEthExist.length) {
         let counter;
         if (isCounterExist.length) {
           counter = isCounterExist[0];
@@ -459,24 +462,24 @@ const Nav = (props) => {
             ethereumAddress: metaAddress,
           });
         }
+        if (!isAccountExistInABI) {
+          const estimateGas = await contract.methods
+            .saveBitcoinAddress(Number(counter), metaAddress)
+            .estimateGas({ from: metaAddress });
 
-        const estimateGas = await contract.methods
-          .saveBitcoinAddress(Number(counter), metaAddress)
-          .estimateGas({ from: metaAddress });
+          const storeResult = await contract.methods
+            .saveBitcoinAddress(Number(counter), metaAddress)
+            .send({
+              from: metaAddress,
+              gas: Number(estimateGas).toString(),
+              gasPrice: 1000000000,
+            });
 
-        const storeResult = await contract.methods
-          .saveBitcoinAddress(Number(counter), metaAddress)
-          .send({
-            from: metaAddress,
-            gas: Number(estimateGas).toString(),
-            gasPrice: 1000000000,
-          });
-
-        if (storeResult.transactionHash) {
-          isConnectionExist = true;
+          if (storeResult.transactionHash) {
+            Notify("success", "Account creation success!", 3000);
+          }
         }
-
-        Notify("success", "Account creation success!", 3000);
+        isConnectionExist = true;
       } else if (isEthExist[0] !== metaAddress) {
         Notify(
           "warning",
@@ -487,8 +490,6 @@ const Nav = (props) => {
           "warning",
           "Account not found, try connecting other BTC account!"
         );
-      } else {
-        Notify("success", "Account connection success!");
       }
 
       if (isConnectionExist) {

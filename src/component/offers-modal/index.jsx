@@ -1,5 +1,4 @@
 import { Col, Flex, Row, Typography } from "antd";
-import Title from "antd/es/typography/Title";
 import Bars from "react-loading-icons/dist/esm/components/bars";
 import { useSelector } from "react-redux";
 import ckBtc from "../../assets/coin_logo/ckbtc.png";
@@ -19,7 +18,6 @@ const OffersModal = ({
   const { Text } = Typography;
   const state = useSelector((state) => state);
   const offers = state.constant.offers;
-  const userOffers = state.constant.userOffers;
   const BTC_ZERO = process.env.REACT_APP_BTC_ZERO;
 
   const activeOffersColumns = [
@@ -64,7 +62,7 @@ const OffersModal = ({
       ),
     },
   ];
-  console.log("offerModalData", offerModalData);
+  // console.log("offerModalData", offerModalData);
   return (
     <ModalDisplay
       width={"70%"}

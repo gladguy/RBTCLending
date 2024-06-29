@@ -39,7 +39,7 @@ import tokensJson from "../../utils/tokens_abi.json";
 
 const Borrowing = (props) => {
   const { reduxState, dispatch } = props.redux;
-  const { isEthConnected } = props.wallet;
+  const { isEthConnected, getAllBorrowRequests } = props.wallet;
   const approvedCollections = reduxState.constant.approvedCollections;
   const activeWallet = reduxState.wallet.active;
   const borrowCollateral = reduxState.constant.borrowCollateral;
@@ -69,6 +69,7 @@ const Borrowing = (props) => {
   const [collapseActiveKey, setCollapseActiveKey] = useState(["2"]);
   const [isRequestBtnLoading, setIsRequestBtnLoading] = useState(false);
   const BTC_ZERO = process.env.REACT_APP_BTC_ZERO;
+  const ETH_ZERO = process.env.REACT_APP_ETH_ZERO;
 
   const approvedCollectionColumns = [
     {
@@ -324,28 +325,30 @@ const Borrowing = (props) => {
       );
 
       try {
-        const approveEstimateGas = await tokensContract.methods
-          .setApprovalForAll(BorrowContractAddress, true)
-          .estimateGas({ from: metaAddress });
-
-        await tokensContract.methods
-          .setApprovalForAll(BorrowContractAddress, true)
-          .send({
-            from: metaAddress,
-            gas: Number(approveEstimateGas).toString(),
-            gasPrice: 1000000000,
-          });
-
         const isApproved = await tokensContract.methods
           .isApprovedForAll(metaAddress, BorrowContractAddress)
           .call({ from: metaAddress });
 
+        if (!isApproved) {
+          const approveEstimateGas = await tokensContract.methods
+            .setApprovalForAll(BorrowContractAddress, true)
+            .estimateGas({ from: metaAddress });
+
+          await tokensContract.methods
+            .setApprovalForAll(BorrowContractAddress, true)
+            .send({
+              from: metaAddress,
+              gas: Number(approveEstimateGas).toString(),
+              gasPrice: 1000000000,
+            });
+        }
+
         if (isApproved) {
-          const amount = borrowModalData.amount * BTC_ZERO;
+          const amount = borrowModalData.amount * ETH_ZERO;
           const platformFee = Number(borrowModalData.platformFee);
           const repaymentAmount =
             (borrowModalData.amount + Number(borrowModalData.interest)) *
-            BTC_ZERO;
+            ETH_ZERO;
 
           const estimateGas = await borrowContract.methods
             .createBorrowRequest(
@@ -355,7 +358,7 @@ const Borrowing = (props) => {
               borrowModalData.terms,
               Math.round(amount),
               Math.round(repaymentAmount),
-              Math.round(platformFee * BTC_ZERO)
+              Math.round(platformFee * ETH_ZERO)
             )
             .estimateGas({
               from: metaAddress,
@@ -369,7 +372,7 @@ const Borrowing = (props) => {
               borrowModalData.terms,
               Math.round(amount),
               Math.round(repaymentAmount),
-              Math.round(platformFee * BTC_ZERO)
+              Math.round(platformFee * ETH_ZERO)
             )
             .send({
               from: metaAddress,
@@ -378,9 +381,10 @@ const Borrowing = (props) => {
             });
 
           if (requestResult.transactionHash) {
+            await fetchBorrowRequests();
+            await getAllBorrowRequests();
             Notify("success", "Request submitted!");
             toggleBorrowModal();
-            await fetchBorrowRequests();
           }
           setIsRequestBtnLoading(false);
         }

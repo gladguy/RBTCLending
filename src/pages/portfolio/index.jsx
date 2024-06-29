@@ -22,8 +22,10 @@ import ckBtc from "../../assets/coin_logo/ckbtc.png";
 import CustomButton from "../../component/Button";
 import WalletUI from "../../component/download-wallets-UI";
 import ModalDisplay from "../../component/modal";
+import Notify from "../../component/notification";
 import TableComponent from "../../component/table";
 import { propsContainer } from "../../container/props-container";
+import { setLoading } from "../../redux/slice/constant";
 import borrowJson from "../../utils/borrow_abi.json";
 import {
   BorrowContractAddress,
@@ -34,21 +36,21 @@ import {
 } from "../../utils/common";
 
 const Portfolio = (props) => {
-  const { reduxState } = props.redux;
+  const { reduxState, dispatch } = props.redux;
   const activeWallet = reduxState.wallet.active;
   const walletState = reduxState.wallet;
   const dashboardData = reduxState.constant.dashboardData;
-  const xverseAddress = walletState.xverse.ordinals.address;
+  // const xverseAddress = walletState.xverse.ordinals.address;
   const userAssets = reduxState.constant.userAssets;
-  const unisatAddress = walletState.unisat.address;
-  const magicEdenAddress = walletState.magicEden.ordinals.address;
+  // const unisatAddress = walletState.unisat.address;
+  // const magicEdenAddress = walletState.magicEden.ordinals.address;
   const btcValue = reduxState.constant.btcvalue;
   const metaAddress = walletState.meta.address;
-  const address = xverseAddress
-    ? xverseAddress
-    : unisatAddress
-    ? unisatAddress
-    : magicEdenAddress;
+  // const address = xverseAddress
+  //   ? xverseAddress
+  //   : unisatAddress
+  //   ? unisatAddress
+  //   : magicEdenAddress;
   const CONTENT_API = process.env.REACT_APP_ORDINALS_CONTENT_API;
   const BTC_ZERO = process.env.REACT_APP_BTC_ZERO;
 
@@ -325,30 +327,8 @@ const Portfolio = (props) => {
       align: "center",
       dataIndex: "dueDate",
       render: (_, obj) => {
-        const time = DateTimeConverter(Number(obj.dueDate));
+        const time = DateTimeConverter(Number(obj.dueDate) * 1000);
         return <Text className="text-color-one">{time}</Text>;
-      },
-    },
-    {
-      key: "action",
-      title: " ",
-      align: "center",
-      dataIndex: "borrow",
-      render: (_, obj) => {
-        return (
-          <CustomButton
-            className={"click-btn font-weight-600 letter-spacing-small"}
-            title={
-              <Flex align="center" justify="center" gap={10}>
-                <span
-                  className={`text-color-one font-weight-600 pointer iconalignment font-size-16`}
-                >
-                  Repay
-                </span>
-              </Flex>
-            }
-          />
-        );
       },
     },
   ];
@@ -414,50 +394,80 @@ const Portfolio = (props) => {
     },
   ];
 
+  const fetchLendingRequests = async () => {
+    const contract = await contractGenerator(borrowJson, BorrowContractAddress);
+    const ActiveLendReq = await contract.methods
+      .getActiveLoansByLender(metaAddress)
+      .call();
+    setUserLendings(ActiveLendReq);
+  };
+
+  const fetchBorrowingRequests = async () => {
+    const contract = await contractGenerator(borrowJson, BorrowContractAddress);
+    const ActiveBorrowReq = await contract.methods
+      .getActiveLoansByBorrower(metaAddress)
+      .call();
+    setUserBorrowings(ActiveBorrowReq);
+  };
+
+  const fetchUserRequests = async () => {
+    const contract = await contractGenerator(borrowJson, BorrowContractAddress);
+    const UserBorrowReq = await contract.methods
+      .getBorrowRequestsByUser(metaAddress)
+      .call();
+    setUserRequests(UserBorrowReq);
+  };
+
+  const handleRepay = async (nftContract, tokenId) => {
+    try {
+      dispatch(setLoading(true));
+      const borrowContract = await contractGenerator(
+        borrowJson,
+        BorrowContractAddress
+      );
+
+      const request = await borrowContract.methods
+        .getBorrowRequestByTokenId(nftContract, tokenId)
+        .call();
+
+      const estimateGas = await borrowContract.methods
+        .loanRepayment(nftContract, tokenId)
+        .estimateGas({
+          from: metaAddress,
+          value: Number(request.repayAmount) + 4000,
+        });
+
+      const requestResult = await borrowContract.methods
+        .loanRepayment(nftContract, tokenId)
+        .send({
+          from: metaAddress,
+          value: Number(request.repayAmount) + 4000,
+          gas: Number(estimateGas).toString(),
+          gasPrice: 1000000000,
+        });
+
+      if (requestResult.transactionHash) {
+        Notify("success", "Repayment success!");
+        fetchBorrowingRequests();
+      }
+      dispatch(setLoading(false));
+    } catch (error) {
+      dispatch(setLoading(false));
+      console.log("repay error", error);
+    }
+  };
+
   useEffect(() => {
     if (activeWallet.length) {
       (async () => {
-        const contract = await contractGenerator(
-          borrowJson,
-          BorrowContractAddress
-        );
-        const ActiveLendReq = await contract.methods
-          .getActiveLoansByLender(metaAddress)
-          .call();
-        setUserLendings(ActiveLendReq);
-
-        const ActiveBorrowReq = await contract.methods
-          .getActiveLoansByBorrower(metaAddress)
-          .call();
-
-        const UserBorrowReq = await contract.methods
-          .getBorrowRequestsByUser(metaAddress)
-          .call();
-
-        // const isFromApprovedAssets = ActiveBorrowReq.map(async (asset) => {
-        //   return new Promise(async (resolve, reject) => {
-        //     const result = await API_METHODS.get(
-        //       `${apiUrl.Ordiscan_api}/v1/inscription/${Number(asset.tokenId)}`,
-        //       {
-        //         auth: `Bearer ${ordiscan_bearer}`,
-        //       }
-        //     );
-        //     resolve({ ...asset, ...result.data });
-        //   });
-        // });
-        // const revealedPromise = await Promise.all(isFromApprovedAssets);
-        setUserBorrowings(ActiveBorrowReq);
-        setUserLendings(ActiveLendReq);
-        setUserRequests(UserBorrowReq);
-
-        // console.log("ActiveLendReq", ActiveLendReq);
-        // console.log("ActiveBorrowReq", ActiveBorrowReq);
-        // console.log("UserBorrowReq", UserBorrowReq);
+        fetchLendingRequests();
+        fetchBorrowingRequests();
+        fetchUserRequests();
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeWallet]);
-  // console.log("userBorrowings", userBorrowings);
+
   return (
     <>
       <Row justify={"space-between"} align={"middle"}>
@@ -622,7 +632,43 @@ const Portfolio = (props) => {
                       }}
                       pagination={{ pageSize: 5 }}
                       rowKey={(e) => `${e?.id}-${e?.inscriptionNumber}`}
-                      tableColumns={loanColumns}
+                      tableColumns={[
+                        ...loanColumns,
+                        {
+                          key: "action",
+                          title: " ",
+                          align: "center",
+                          dataIndex: "borrow",
+                          render: (_, obj) => {
+                            return (
+                              <CustomButton
+                                className={
+                                  "click-btn font-weight-600 letter-spacing-small"
+                                }
+                                onClick={() => {
+                                  handleRepay(
+                                    obj.nftContract,
+                                    Number(obj.tokenId)
+                                  );
+                                }}
+                                title={
+                                  <Flex
+                                    align="center"
+                                    justify="center"
+                                    gap={10}
+                                  >
+                                    <span
+                                      className={`text-color-one font-weight-600 pointer iconalignment font-size-16`}
+                                    >
+                                      Repay
+                                    </span>
+                                  </Flex>
+                                }
+                              />
+                            );
+                          },
+                        },
+                      ]}
                       tableData={userBorrowings}
                     />
                   </Col>

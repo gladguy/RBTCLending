@@ -23,8 +23,6 @@ const LendModal = ({
   collapseActiveKey,
   setCollapseActiveKey,
 }) => {
-  /* global BigInt */
-
   const { Text } = Typography;
 
   const reduxState = useSelector((state) => state);
@@ -32,7 +30,7 @@ const LendModal = ({
   const activeWallet = reduxState.wallet.active;
   const metaAddress = reduxState.wallet.meta.address;
 
-  const BTC_ZERO = process.env.REACT_APP_BTC_ZERO;
+  const ETH_ZERO = process.env.REACT_APP_ETH_ZERO;
 
   const [isOfferBtnLoading, setIsOfferBtnLoading] = useState(false);
 
@@ -45,11 +43,11 @@ const LendModal = ({
       );
 
       const isApproved = await tokensContract.methods
-        .isApprovedForAll(lendModalData.lender, BorrowContractAddress)
+        .isApprovedForAll(lendModalData.borrower, BorrowContractAddress)
         .call({ from: metaAddress });
 
       if (!isApproved) {
-        Notify("warning", "Lender not approved!");
+        Notify("warning", "Borrower not approved!");
         setIsOfferBtnLoading(false);
         return;
       }
@@ -60,19 +58,17 @@ const LendModal = ({
       );
 
       const estimateGas = await borrowContract.methods
-        .acceptBorrowRequest(Number(lendModalData.requestId), {
-          value: Number(lendModalData.loanAmount),
-        })
+        .acceptBorrowRequest(Number(lendModalData.requestId))
         .estimateGas({
           from: metaAddress,
+          value: Number(lendModalData.loanAmount),
         });
 
       const acceptLoan = await borrowContract.methods
-        .acceptBorrowRequest(Number(lendModalData.requestId), {
-          value: Number(lendModalData.loanAmount),
-        })
+        .acceptBorrowRequest(Number(lendModalData.requestId))
         .send({
           from: metaAddress,
+          value: Number(lendModalData.loanAmount),
           gas: Number(estimateGas).toString(),
           gasPrice: 1000000000,
         });
@@ -136,7 +132,7 @@ const LendModal = ({
             <Text
               className={`font-size-16 text-color-two letter-spacing-small`}
             >
-              {Number(lendModalData.loanAmount) / BTC_ZERO}
+              {Number(lendModalData.loanAmount) / ETH_ZERO}
             </Text>
           </Flex>
         </Col>
@@ -236,7 +232,7 @@ const LendModal = ({
                           >
                             ${" "}
                             {(
-                              (Number(lendModalData.loanAmount) / BTC_ZERO) *
+                              (Number(lendModalData.loanAmount) / ETH_ZERO) *
                               btcvalue
                             ).toFixed(2)}
                           </Text>
@@ -244,7 +240,7 @@ const LendModal = ({
                           <Text
                             className={`font-size-16 text-color-one letter-spacing-small`}
                           >
-                            ~ {Number(lendModalData.loanAmount) / BTC_ZERO}
+                            ~ {Number(lendModalData.loanAmount) / ETH_ZERO}
                           </Text>
                           <img
                             src={Bitcoin}
@@ -271,8 +267,8 @@ const LendModal = ({
                           >
                             ${" "}
                             {(
-                              (Number(lendModalData.repayAmount) / BTC_ZERO -
-                                Number(lendModalData.loanAmount) / BTC_ZERO) *
+                              (Number(lendModalData.repayAmount) / ETH_ZERO -
+                                Number(lendModalData.loanAmount) / ETH_ZERO) *
                               btcvalue
                             ).toFixed(2)}
                           </Text>
@@ -282,8 +278,8 @@ const LendModal = ({
                           >
                             ~{" "}
                             {(
-                              Number(lendModalData.repayAmount) / BTC_ZERO -
-                              Number(lendModalData.loanAmount) / BTC_ZERO
+                              Number(lendModalData.repayAmount) / ETH_ZERO -
+                              Number(lendModalData.loanAmount) / ETH_ZERO
                             ).toFixed(6)}
                           </Text>
                           <img
@@ -311,7 +307,7 @@ const LendModal = ({
                           >
                             ${" "}
                             {(
-                              (Number(lendModalData.platformFee) / BTC_ZERO) *
+                              (Number(lendModalData.platformFee) / ETH_ZERO) *
                               btcvalue
                             ).toFixed(2)}
                           </Text>
@@ -319,7 +315,7 @@ const LendModal = ({
                           <Text
                             className={`font-size-16 text-color-one letter-spacing-small`}
                           >
-                            ~ {Number(lendModalData.platformFee) / BTC_ZERO}
+                            ~ {Number(lendModalData.platformFee) / ETH_ZERO}
                           </Text>
                           <img
                             src={Bitcoin}

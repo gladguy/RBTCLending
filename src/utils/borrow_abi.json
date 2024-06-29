@@ -90,7 +90,7 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "lender",
+        "name": "borrower",
         "type": "address"
       },
       {
@@ -210,13 +210,8 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "nftContract",
-        "type": "address"
-      },
-      {
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "requestId",
         "type": "uint256"
       }
     ],
@@ -228,20 +223,37 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "requestId",
-        "type": "uint256"
-      }
-    ],
-    "name": "giveLoan",
-    "outputs": [
+        "internalType": "address",
+        "name": "nftContract",
+        "type": "address"
+      },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "tokenId",
         "type": "uint256"
       }
     ],
+    "name": "forcloseLoan",
+    "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "nftContract",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "loanRepayment",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -375,24 +387,6 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "nftContract",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "returnNFT",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "requestId",
         "type": "uint256"
@@ -448,7 +442,7 @@
       },
       {
         "internalType": "address",
-        "name": "lender",
+        "name": "borrower",
         "type": "address"
       },
       {
@@ -469,6 +463,11 @@
       {
         "internalType": "uint256",
         "name": "platformFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "createdAt",
         "type": "uint256"
       },
       {
@@ -508,7 +507,7 @@
           },
           {
             "internalType": "address",
-            "name": "lender",
+            "name": "borrower",
             "type": "address"
           },
           {
@@ -529,6 +528,11 @@
           {
             "internalType": "uint256",
             "name": "platformFee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
             "type": "uint256"
           },
           {
@@ -568,13 +572,28 @@
             "type": "address"
           },
           {
+            "internalType": "address",
+            "name": "nftContract",
+            "type": "address"
+          },
+          {
             "internalType": "uint256",
             "name": "tokenId",
             "type": "uint256"
           },
           {
             "internalType": "uint256",
+            "name": "loanStartTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
             "name": "dueDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "repaymentTime",
             "type": "uint256"
           },
           {
@@ -614,13 +633,28 @@
             "type": "address"
           },
           {
+            "internalType": "address",
+            "name": "nftContract",
+            "type": "address"
+          },
+          {
             "internalType": "uint256",
             "name": "tokenId",
             "type": "uint256"
           },
           {
             "internalType": "uint256",
+            "name": "loanStartTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
             "name": "dueDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "repaymentTime",
             "type": "uint256"
           },
           {
@@ -632,6 +666,87 @@
         "internalType": "struct BorrowRequestContract.Lending[]",
         "name": "",
         "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "nftContract",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getBorrowRequest",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "requestId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "nftContract",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "collectionId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "borrower",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "duration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "loanAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "repayAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "platformFee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isActive",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct BorrowRequestContract.BorrowRequest",
+        "name": "",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -676,7 +791,7 @@
           },
           {
             "internalType": "address",
-            "name": "lender",
+            "name": "borrower",
             "type": "address"
           },
           {
@@ -700,6 +815,11 @@
             "type": "uint256"
           },
           {
+            "internalType": "uint256",
+            "name": "createdAt",
+            "type": "uint256"
+          },
+          {
             "internalType": "bool",
             "name": "isActive",
             "type": "bool"
@@ -717,7 +837,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "lender",
+        "name": "borrower",
         "type": "address"
       }
     ],
@@ -747,7 +867,7 @@
           },
           {
             "internalType": "address",
-            "name": "lender",
+            "name": "borrower",
             "type": "address"
           },
           {
@@ -768,6 +888,11 @@
           {
             "internalType": "uint256",
             "name": "platformFee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "createdAt",
             "type": "uint256"
           },
           {
@@ -810,13 +935,28 @@
         "type": "address"
       },
       {
+        "internalType": "address",
+        "name": "nftContract",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
+        "name": "loanStartTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "dueDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "repaymentTime",
         "type": "uint256"
       },
       {

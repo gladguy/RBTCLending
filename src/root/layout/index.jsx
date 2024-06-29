@@ -1,5 +1,4 @@
 import {
-  Carousel,
   Col,
   Divider,
   Flex,
@@ -11,9 +10,8 @@ import {
 } from "antd";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import gsap from "gsap";
-import React, { Suspense, useState } from "react";
+import React, { Suspense } from "react";
 import { FaMedium, FaSquareXTwitter, FaTelegram } from "react-icons/fa6";
-import { GiEasterEgg, GiRawEgg } from "react-icons/gi";
 import { GrMail } from "react-icons/gr";
 import { SiDiscord } from "react-icons/si";
 import {
@@ -23,24 +21,7 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import Borrow from "../../assets/Borrow-Process.png";
-import icp_partner from "../../assets/brands/INTERNET_COMPUTER_white.png";
-import {
-  default as bitCoin,
-  default as bitcoin_poweredBy,
-} from "../../assets/brands/bitcoin.png";
-import bitcoin_backed from "../../assets/brands/bitcoin_startup.png";
-import encode from "../../assets/brands/encode_black.png";
-import dfinity_backed from "../../assets/brands/icp_logo.png";
-import icrc_badge from "../../assets/brands/icrc_badge.png";
-import juno from "../../assets/brands/juno.png";
-import motokoLogo from "../../assets/brands/motoko.png";
-import on_chain_poweredBy from "../../assets/brands/on_chain_host.png";
-import xverse_partner from "../../assets/brands/xverse_logo_darkbg.png";
-import etherium from "../../assets/coin_logo/cketh.png";
-import Lend from "../../assets/lend-process.png";
 import logo from "../../assets/logo/RBTC_logo_text.png";
-import unisat from "../../assets/wallet-logo/unisatLogo.png";
 import LoadingWrapper from "../../component/loading-wrapper";
 import Mainheader from "../../container/footer";
 import Nav from "../../container/nav";
@@ -52,24 +33,11 @@ const MainLayout = () => {
   const screens = useBreakpoint();
   const navigate = useNavigate();
   const location = useLocation();
-  const [isBroken, setBroken] = useState(false);
-
-  const CKBTC = process.env.REACT_APP_CKBTC_DETAILS;
-  const CKETH = process.env.REACT_APP_CKETH_DETAILS;
   const MAIL_TO = process.env.REACT_APP_MAILTO;
   const ORDINALS_MEDIUM = process.env.REACT_APP_ORDINALS_MEDIUM;
   const TWITTER_LINK = process.env.REACT_APP_TWITTER_LINK;
 
-  const businessName = `RBTC Lending`;
   const footerText = `All rights reserved © Copyright ${new Date().getFullYear()}`;
-
-  const redirectToBorrow = () => {
-    setBroken(true);
-    setTimeout(() => {
-      navigate("/borrow");
-      setBroken(false);
-    }, 1000);
-  };
 
   gsap.to(".round", {
     rotation: 360,

@@ -5,20 +5,17 @@ import { Bars } from "react-loading-icons";
 import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
 import CustomButton from "../../component/Button";
 import LendModal from "../../component/lend-modal";
+import Notify from "../../component/notification";
 import OffersModal from "../../component/offers-modal";
 import TableComponent from "../../component/table";
 import { propsContainer } from "../../container/props-container";
-import { contractGenerator, IndexContractAddress } from "../../utils/common";
-import indexJson from "../../utils/index_abi.json";
 import { setOffers } from "../../redux/slice/constant";
-import Notify from "../../component/notification";
 
 const Lending = (props) => {
   const { reduxState, dispatch } = props.redux;
   const approvedCollections = reduxState.constant.approvedCollections;
   const userAssets = reduxState.constant.userAssets;
   const allBorrowRequest = reduxState.constant.allBorrowRequest;
-  const metaAddress = reduxState.wallet.meta.address;
 
   const btcvalue = reduxState.constant.btcvalue;
 
