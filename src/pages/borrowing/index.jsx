@@ -13,6 +13,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { BiSolidOffer } from "react-icons/bi";
 import { FaCaretDown } from "react-icons/fa";
 import { GoAlertFill } from "react-icons/go";
+import { IoInformationCircleSharp } from "react-icons/io5";
 import { PiPlusSquareThin } from "react-icons/pi";
 import { TbInfoSquareRounded } from "react-icons/tb";
 import { Bars } from "react-loading-icons";
@@ -25,19 +26,26 @@ import Notify from "../../component/notification";
 import OffersModal from "../../component/offers-modal";
 import TableComponent from "../../component/table";
 import { propsContainer } from "../../container/props-container";
+import { setOffers } from "../../redux/slice/constant";
+import borrowJson from "../../utils/borrow_abi.json";
 import {
+  BorrowContractAddress,
   META_WALLET_KEY,
+  TokenContractAddress,
   calculateDailyInterestRate,
   contractGenerator,
 } from "../../utils/common";
+import tokensJson from "../../utils/tokens_abi.json";
 
 const Borrowing = (props) => {
   const { reduxState, dispatch } = props.redux;
+  const { isEthConnected } = props.wallet;
   const approvedCollections = reduxState.constant.approvedCollections;
   const activeWallet = reduxState.wallet.active;
-  const userCollateral = reduxState.constant.userCollateral;
+  const borrowCollateral = reduxState.constant.borrowCollateral;
+  const allBorrowRequest = reduxState.constant.allBorrowRequest;
+
   const metaAddress = reduxState.wallet.meta.address;
-  console.log("userCollateral", userCollateral);
 
   const btcvalue = reduxState.constant.btcvalue;
 
@@ -48,6 +56,7 @@ const Borrowing = (props) => {
   const amountRef = useRef(null);
 
   // USE STATE
+  const [collateralData, setCollateralData] = useState(null);
   const [offerModalData, setOfferModalData] = useState({});
   const [isOffersModal, setIsOffersModal] = useState(false);
 
@@ -196,8 +205,13 @@ const Borrowing = (props) => {
             title={"Borrow"}
             size="medium"
             onClick={() => {
+              if (collateralData === null) {
+                Notify("warning", "Fetching your collateral, please wait!");
+                return;
+              }
+
               // Assets
-              let assets = userCollateral?.filter(
+              let assets = collateralData?.filter(
                 (p) => p.collectionSymbol === obj.symbol
               );
               // Terms
@@ -263,6 +277,21 @@ const Borrowing = (props) => {
 
   const fetchRequests = async (obj) => {
     try {
+      if (allBorrowRequest !== null) {
+        const collectionBorrowRequests = allBorrowRequest.filter(
+          (req) => Number(req.collectionId) === Number(obj.collectionID)
+        );
+        dispatch(setOffers(collectionBorrowRequests));
+        toggleOfferModal();
+        setOfferModalData({
+          ...obj,
+          thumbnailURI: obj.thumbnailURI,
+          collectionName: obj.name,
+        });
+      } else {
+        Notify("info", "Please wait!");
+      }
+
       // const contract = await contractGenerator();
       // console.log("contract", contract, "obj.collectionID", obj.collectionID);
       // const offers = await contract.methods
@@ -281,68 +310,80 @@ const Borrowing = (props) => {
     }
   };
 
-  useEffect(() => {
-    // For setting user assets, after fetching user Assets when modal is open
-    if (userCollateral?.length && borrowModalData?.symbol) {
-      let assets = userCollateral?.filter(
-        (p) => p.collectionSymbol === borrowModalData.symbol
-      );
-      setBorrowModalData({
-        ...borrowModalData,
-        assets,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userCollateral]);
-
   const handleCreateRequest = async () => {
     if (borrowModalData.collateral) {
       setIsRequestBtnLoading(true);
-      const contract = await contractGenerator();
-      console.log("contract", contract);
+
+      const tokensContract = await contractGenerator(
+        tokensJson,
+        TokenContractAddress
+      );
+      const borrowContract = await contractGenerator(
+        borrowJson,
+        BorrowContractAddress
+      );
 
       try {
-        const estimateGas = await contract.methods
-          .createBorrowRequest(
-            Number(borrowModalData.collectionID),
-            borrowModalData.collateral.inscriptionNumber,
-            borrowModalData.terms,
-            borrowModalData.sliderLTV,
-            borrowModalData.amount * BTC_ZERO,
-            Number(borrowModalData.platformFee) * BTC_ZERO,
-            Date.now(),
-            borrowModalData.yield * BTC_ZERO,
-            Number(borrowModalData.interest) * BTC_ZERO,
-            Number(borrowModalData.floorPrice),
-            metaAddress
-          )
+        const approveEstimateGas = await tokensContract.methods
+          .setApprovalForAll(BorrowContractAddress, true)
           .estimateGas({ from: metaAddress });
 
-        console.log("estimateGas", estimateGas);
-
-        const result = await contract.methods
-          .createBorrowRequest(
-            Number(borrowModalData.collectionID),
-            borrowModalData.collateral.inscriptionNumber,
-            borrowModalData.terms,
-            borrowModalData.sliderLTV,
-            borrowModalData.amount * BTC_ZERO,
-            Number(borrowModalData.platformFee) * BTC_ZERO,
-            Date.now(),
-            borrowModalData.yield * BTC_ZERO,
-            Number(borrowModalData.interest) * BTC_ZERO,
-            Number(borrowModalData.floorPrice),
-            metaAddress
-          )
+        await tokensContract.methods
+          .setApprovalForAll(BorrowContractAddress, true)
           .send({
             from: metaAddress,
-            gas: Number(estimateGas).toString(),
+            gas: Number(approveEstimateGas).toString(),
             gasPrice: 1000000000,
           });
-        console.log("result", result);
-        setIsRequestBtnLoading(false);
-        Notify("success", "Request submitted!");
-        toggleBorrowModal();
+
+        const isApproved = await tokensContract.methods
+          .isApprovedForAll(metaAddress, BorrowContractAddress)
+          .call({ from: metaAddress });
+
+        if (isApproved) {
+          const amount = borrowModalData.amount * BTC_ZERO;
+          const platformFee = Number(borrowModalData.platformFee);
+          const repaymentAmount =
+            (borrowModalData.amount + Number(borrowModalData.interest)) *
+            BTC_ZERO;
+
+          const estimateGas = await borrowContract.methods
+            .createBorrowRequest(
+              TokenContractAddress,
+              Number(borrowModalData.collectionID),
+              borrowModalData.collateral.inscriptionNumber,
+              borrowModalData.terms,
+              Math.round(amount),
+              Math.round(repaymentAmount),
+              Math.round(platformFee * BTC_ZERO)
+            )
+            .estimateGas({
+              from: metaAddress,
+            });
+
+          const requestResult = await borrowContract.methods
+            .createBorrowRequest(
+              TokenContractAddress,
+              Number(borrowModalData.collectionID),
+              borrowModalData.collateral.inscriptionNumber,
+              borrowModalData.terms,
+              Math.round(amount),
+              Math.round(repaymentAmount),
+              Math.round(platformFee * BTC_ZERO)
+            )
+            .send({
+              from: metaAddress,
+              gas: Number(estimateGas).toString(),
+              gasPrice: 1000000000,
+            });
+
+          if (requestResult.transactionHash) {
+            Notify("success", "Request submitted!");
+            toggleBorrowModal();
+            await fetchBorrowRequests();
+          }
+          setIsRequestBtnLoading(false);
+        }
       } catch (error) {
         console.log("Transfer error", error);
         Notify("error", "Request cancelled!");
@@ -362,9 +403,61 @@ const Borrowing = (props) => {
 
   const toggleLendModal = () => {
     setIsLendModal(!isLendModal);
+    setCollapseActiveKey(["1"]);
   };
-  console.log("approvedCollections", approvedCollections);
-  console.log(borrowModalData);
+
+  const fetchBorrowRequests = async () => {
+    try {
+      const borrowContract = await contractGenerator(
+        borrowJson,
+        BorrowContractAddress
+      );
+      const promises = borrowCollateral.map((asset) => {
+        return new Promise(async (res) => {
+          const result = await borrowContract.methods
+            .getBorrowRequestByTokenId(
+              TokenContractAddress,
+              asset.inscriptionNumber
+            )
+            .call({ from: metaAddress });
+          res({
+            ...asset,
+            request: result?.requestId ? result : {},
+          });
+        });
+      });
+      const revealed = await Promise.all(promises);
+
+      const finalData = revealed.filter((asset) => !asset.request?.requestId);
+
+      setCollateralData(finalData);
+    } catch (error) {
+      console.log("request fetching error", error);
+    }
+  };
+
+  useEffect(() => {
+    // For setting user assets, after fetching user collateral when modal is open
+    if (borrowCollateral?.length && borrowModalData?.symbol) {
+      let assets = borrowCollateral?.filter(
+        (p) => p.collectionSymbol === borrowModalData.symbol
+      );
+      setBorrowModalData({
+        ...borrowModalData,
+        assets,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [borrowCollateral]);
+
+  useEffect(() => {
+    if (activeWallet.length && borrowCollateral?.length && isEthConnected) {
+      fetchBorrowRequests();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeWallet, borrowCollateral, isEthConnected]);
+
+  // console.log("borrowModalData", borrowModalData);
   return (
     <>
       <Row justify={"space-between"} align={"middle"}>
@@ -373,7 +466,19 @@ const Borrowing = (props) => {
         </Col>
       </Row>
 
-      <Row justify={"center"} className="m-bottom">
+      <Row justify={"space-between"} align={"middle"}>
+        <Col md={24}>
+          <Flex className="page-box" align="center" gap={3}>
+            <IoInformationCircleSharp size={25} color="#a7a700" />
+            <Text className="font-small text-color-two">
+              Your minted bridge collateral will be displayed when creating a
+              borrow request.
+            </Text>
+          </Flex>
+        </Col>
+      </Row>
+
+      <Row justify={"center"} className="mt-40">
         <Col
           md={24}
           style={{
@@ -394,7 +499,6 @@ const Borrowing = (props) => {
       </Row>
 
       <LendModal
-        isLendEdit={"nope"}
         modalState={isLendModal}
         lendModalData={lendModalData}
         toggleLendModal={toggleLendModal}
@@ -404,13 +508,13 @@ const Borrowing = (props) => {
       />
 
       <OffersModal
-        userCollateral={userCollateral}
+        borrowCollateral={borrowCollateral}
         modalState={isOffersModal}
         offerModalData={offerModalData}
         toggleOfferModal={toggleOfferModal}
-        toggleLendModal={toggleBorrowModal}
+        toggleLendModal={toggleLendModal}
         setOfferModalData={setOfferModalData}
-        setBorrowModalData={setBorrowModalData}
+        setLendModalData={setLendModalData}
       />
 
       {/* Borrow Modal */}
@@ -667,7 +771,7 @@ const Borrowing = (props) => {
             columnGap: "50px",
           }}
           justify={
-            userCollateral === null || !borrowModalData?.assets
+            borrowCollateral === null || !borrowModalData?.assets
               ? "center"
               : "start"
           }
@@ -781,9 +885,9 @@ const Borrowing = (props) => {
             </>
           ) : (
             <Text className={`text-color-two font-small letter-spacing-small`}>
-              {userCollateral === null && activeWallet.length === 2
+              {borrowCollateral === null && activeWallet.length === 2
                 ? "Please wait until fetching your assets!"
-                : userCollateral === null
+                : borrowCollateral === null
                 ? "Connect BTC wallet to see your assets!."
                 : "You don't have any collateral for this collection!."}
             </Text>

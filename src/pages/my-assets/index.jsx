@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import { FaRegSmileWink } from "react-icons/fa";
 import { FcApproval } from "react-icons/fc";
 import { ImSad } from "react-icons/im";
-import { IoWarningSharp } from "react-icons/io5";
+import { IoInformationCircleSharp, IoWarningSharp } from "react-icons/io5";
 import { MdContentCopy } from "react-icons/md";
 import { RiInformationFill } from "react-icons/ri";
 import { Bars } from "react-loading-icons";
@@ -41,7 +41,6 @@ const MyAssets = (props) => {
   const walletState = reduxState.wallet;
   const btcValue = reduxState.constant.btcvalue;
   const userAssets = reduxState.constant.userAssets;
-  console.log("userAssets", userAssets);
 
   const xverseAddress = walletState.xverse.ordinals.address;
   const unisatAddress = walletState.unisat.address;
@@ -198,9 +197,9 @@ const MyAssets = (props) => {
       render: (_, obj) => (
         <>
           <Flex gap={5} vertical align="center">
-            {obj.contentType.includes(
-              "image/webp" || "image/jpeg" || "image/png"
-            ) ? (
+            {obj.contentType === "image/webp" ||
+            obj.contentType === "image/jpeg" ||
+            obj.contentType === "image/png" ? (
               <img
                 src={`${CONTENT_API}/content/${obj.id}`}
                 alt={`${obj.id}-borrow_image`}
@@ -208,10 +207,13 @@ const MyAssets = (props) => {
                 width={70}
                 height={70}
               />
-            ) : obj.contentType.includes("image/svg") ? (
+            ) : obj.contentType === "image/svg" ||
+              obj.contentType === "text/html;charset=utf-8" ||
+              obj.contentType === "text/html" ||
+              obj.contentType === "image/svg+xml" ? (
               <iframe
                 loading="lazy"
-                width={"50%"}
+                width={"80px"}
                 height={"80px"}
                 style={{ border: "none", borderRadius: "20%" }}
                 src={`${CONTENT_API}/content/${obj.id}`}
@@ -259,12 +261,12 @@ const MyAssets = (props) => {
                 <Flex
                   align="center"
                   gap={3}
-                  className="text-color-two font-small letter-spacing-small"
+                  className="text-color-one font-small letter-spacing-small"
                 >
                   <img src={Bitcoin} alt="noimage" width={20} height={20} />
                   {(obj.collection.floorPrice / BTC_ZERO).toFixed(2)}
                 </Flex>
-                <span className="text-color-one font-xsmall letter-spacing-small">
+                <span className="text-color-two font-xsmall letter-spacing-small">
                   ${" "}
                   {(
                     (Number(obj.collection.floorPrice) / BTC_ZERO) *
@@ -330,12 +332,26 @@ const MyAssets = (props) => {
           <h1 className="font-xlarge gradient-text-two">My Assets</h1>
         </Col>
       </Row>
+
+      <Row justify={"space-between"} align={"middle"}>
+        <Col md={24}>
+          <Flex className="page-box" align="center" gap={3}>
+            <IoInformationCircleSharp size={25} color="#a7a700" />
+            <Text className="font-small text-color-two">
+              Send your ordinals to our custody address to bridge your
+              inscription, obtain a new ordinal for collateral, and create
+              borrow requests.{" "}
+            </Text>
+          </Flex>
+        </Col>
+      </Row>
+
       {walletState.active.includes(XVERSE_WALLET_KEY) ||
       walletState.active.includes(UNISAT_WALLET_KEY) ||
       walletState.active.includes(MAGICEDEN_WALLET_KEY) ? (
         <Row
           justify={"space-between"}
-          className="mt-7 pad-bottom-30"
+          className="mt-40 pad-bottom-30"
           gutter={32}
         >
           <Col xl={24}>

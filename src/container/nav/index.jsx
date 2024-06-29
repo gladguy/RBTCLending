@@ -58,11 +58,13 @@ import {
   agentCreator,
   apiUrl,
   contractGenerator,
+  IndexContractAddress,
   paymentWallets,
   rootstock,
   sliceAddress,
 } from "../../utils/common";
 import { propsContainer } from "../props-container";
+import indexJson from "../../utils/index_abi.json";
 
 const Nav = (props) => {
   const { Text } = Typography;
@@ -437,7 +439,7 @@ const Nav = (props) => {
       const isBtcExist = await API.retrieveByEthereumAddress(metaAddress);
       const isEthExist = await API.retrieveByBitcoinAddress(btcAddress);
       const isCounterExist = await API.retrieve(metaAddress);
-      const contract = await contractGenerator();
+      const contract = await contractGenerator(indexJson, IndexContractAddress);
       const isAccountExistInABI = await contract.methods
         .getBitcoinAddressId(metaAddress)
         .call();
@@ -473,7 +475,7 @@ const Nav = (props) => {
         if (storeResult.transactionHash) {
           isConnectionExist = true;
         }
-        console.log("Store Result", storeResult);
+
         Notify("success", "Account creation success!", 3000);
       } else if (isEthExist[0] !== metaAddress) {
         Notify(
@@ -796,7 +798,7 @@ const Nav = (props) => {
                 >
                   Borrowing
                 </Text>
-                <Text className="font-xsmall color-grey">|</Text>
+                {/* <Text className="font-xsmall color-grey">|</Text>
 
                 <Text
                   className={`${
@@ -811,7 +813,7 @@ const Nav = (props) => {
                   ref={ref3}
                 >
                   My Assets
-                </Text>
+                </Text> */}
 
                 <Text className="font-xsmall color-grey">|</Text>
 

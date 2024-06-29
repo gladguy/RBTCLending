@@ -8,12 +8,16 @@ import LendModal from "../../component/lend-modal";
 import OffersModal from "../../component/offers-modal";
 import TableComponent from "../../component/table";
 import { propsContainer } from "../../container/props-container";
-import { contractGenerator } from "../../utils/common";
+import { contractGenerator, IndexContractAddress } from "../../utils/common";
+import indexJson from "../../utils/index_abi.json";
+import { setOffers } from "../../redux/slice/constant";
+import Notify from "../../component/notification";
 
 const Lending = (props) => {
-  const { reduxState } = props.redux;
+  const { reduxState, dispatch } = props.redux;
   const approvedCollections = reduxState.constant.approvedCollections;
   const userAssets = reduxState.constant.userAssets;
+  const allBorrowRequest = reduxState.constant.allBorrowRequest;
   const metaAddress = reduxState.wallet.meta.address;
 
   const btcvalue = reduxState.constant.btcvalue;
@@ -179,19 +183,34 @@ const Lending = (props) => {
 
   const fetchRequests = async (obj) => {
     try {
-      const contract = await contractGenerator();
-      console.log("contract", contract, "obj.collectionID", obj.collectionID);
-      const offers = await contract.methods
-        .getRequestByCollectionID(Number(obj.collectionID))
-        .call({ from: metaAddress });
-      console.log("requests", offers);
-      toggleOfferModal();
-      // dispatch(setOffers(offers));
-      setOfferModalData({
-        ...obj,
-        thumbnailURI: obj.thumbnailURI,
-        collectionName: obj.name,
-      });
+      if (allBorrowRequest !== null) {
+        const collectionBorrowRequests = allBorrowRequest.filter(
+          (req) => Number(req.collectionId) === Number(obj.collectionID)
+        );
+        dispatch(setOffers(collectionBorrowRequests));
+        toggleOfferModal();
+        setOfferModalData({
+          ...obj,
+          thumbnailURI: obj.thumbnailURI,
+          collectionName: obj.name,
+        });
+      } else {
+        Notify("info", "Please wait!");
+      }
+
+      // const contract = await contractGenerator();
+      // console.log("contract", contract, "obj.collectionID", obj.collectionID);
+      // const offers = await contract.methods
+      //   .getRequestByCollectionID(Number(obj.collectionID))
+      //   .call({ from: metaAddress });
+      // console.log("requests", offers);
+      // toggleOfferModal();
+      // // dispatch(setOffers(offers));
+      // setOfferModalData({
+      //   ...obj,
+      //   thumbnailURI: obj.thumbnailURI,
+      //   collectionName: obj.name,
+      // });
     } catch (error) {
       console.log("fetch offers modal error", error);
     }
@@ -199,6 +218,7 @@ const Lending = (props) => {
 
   const toggleLendModal = () => {
     setIsLendModal(!isLendModal);
+    setCollapseActiveKey(["1"]);
   };
 
   const toggleOfferModal = () => {
@@ -207,7 +227,7 @@ const Lending = (props) => {
     }
     setIsOffersModal(!isOffersModal);
   };
-  console.log("lendModalData", lendModalData);
+
   return (
     <>
       <Row justify={"space-between"} align={"middle"}>

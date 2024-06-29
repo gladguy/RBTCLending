@@ -1,12 +1,14 @@
 import { Actor, HttpAgent } from "@dfinity/agent";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Notify from "../../component/notification";
 import { apiFactory } from "../../ordinal_canister";
 import {
   setAgent,
+  setAllBorrowRequest,
   setApprovedCollection,
+  setBorrowCollateral,
   setBtcValue,
   setCollection,
   setUserAssets,
@@ -15,6 +17,7 @@ import {
 import { rootstockApiFactory } from "../../rootstock_canister";
 import {
   API_METHODS,
+  BorrowContractAddress,
   IS_USER,
   MAGICEDEN_WALLET_KEY,
   TokenContractAddress,
@@ -27,6 +30,7 @@ import {
   rootstock,
 } from "../../utils/common";
 import tokenAbiJson from "../../utils/tokens_abi.json";
+import borrowJson from "../../utils/borrow_abi.json";
 
 export const propsContainer = (Component) => {
   function ComponentWithRouterProp(props) {
@@ -39,6 +43,7 @@ export const propsContainer = (Component) => {
     const xverseAddress = reduxState.wallet.xverse.ordinals.address;
     const unisatAddress = reduxState.wallet.unisat.address;
     const magicEdenAddress = reduxState.wallet.magicEden.ordinals.address;
+    const metaAddress = reduxState.wallet.meta.address;
     const api_agent = reduxState.constant.agent;
     const collections = reduxState.constant.collection;
     const approvedCollections = reduxState.constant.approvedCollections;
@@ -48,6 +53,21 @@ export const propsContainer = (Component) => {
     const ckEthAgent = reduxState.constant.ckEthAgent;
     const ckEthActorAgent = reduxState.constant.ckEthActorAgent;
     const withdrawAgent = reduxState.constant.withdrawAgent;
+
+    const [isEthConnected, setIsEthConnected] = useState(false);
+
+    useEffect(() => {
+      if (activeWallet.length) {
+        (async () => {
+          try {
+            const isConnected = await window.ethereum.isConnected();
+            setIsEthConnected(isConnected);
+          } catch (error) {
+            console.log("error eth isConnected", error);
+          }
+        })();
+      }
+    }, [activeWallet.length]);
 
     const address = xverseAddress
       ? xverseAddress
@@ -162,7 +182,7 @@ export const propsContainer = (Component) => {
     const getCollectionDetails = async (filteredData) => {
       try {
         const isFromApprovedAssets = filteredData.map(async (asset) => {
-          return new Promise(async (resolve, reject) => {
+          return new Promise(async (resolve) => {
             const result = await API_METHODS.get(
               `${apiUrl.Asset_server_base_url}/api/v2/fetch/asset/${asset.id}`
             );
@@ -218,6 +238,54 @@ export const propsContainer = (Component) => {
       } catch (error) {
         console.log("error", error);
       }
+    };
+
+    const getCollaterals = async () => {
+      const API = agentCreator(rootstockApiFactory, rootstock);
+      const userAssets = await API.getUserSupply(
+        IS_USER ? address : WAHEED_ADDRESS
+      );
+      const supplyData = userAssets.map((asset) => JSON.parse(asset));
+      const colResult = await getCollectionDetails(supplyData);
+      // --------------------------------------------------
+      const contract = await contractGenerator(
+        tokenAbiJson,
+        TokenContractAddress
+      );
+
+      const tokens = await contract.methods.tokensOfOwner(metaAddress).call();
+
+      const userMintedTokens = tokens.map((token) => Number(token));
+
+      const finalData = colResult.map((asset) => {
+        let data = { ...asset, collection: {} };
+        approvedCollections.forEach((col) => {
+          if (col.symbol === asset.collection.symbol) {
+            data = {
+              ...asset,
+              collection: col,
+              isToken: userMintedTokens.includes(asset.inscriptionNumber)
+                ? true
+                : false,
+            };
+          }
+        });
+        return data;
+      });
+
+      const borrowCollateral = finalData.filter((asset) => asset.isToken);
+      dispatch(setBorrowCollateral(borrowCollateral));
+      dispatch(setUserCollateral(finalData));
+    };
+
+    const getAllBorrowRequests = async () => {
+      const contract = await contractGenerator(
+        borrowJson,
+        BorrowContractAddress
+      );
+      const ActiveReq = await contract.methods.getActiveBorrowRequests().call();
+
+      dispatch(setAllBorrowRequest(ActiveReq));
     };
 
     useEffect(() => {
@@ -277,48 +345,17 @@ export const propsContainer = (Component) => {
 
     useEffect(() => {
       if (activeWallet.length && approvedCollections[0]) {
-        (async () => {
-          const API = agentCreator(rootstockApiFactory, rootstock);
-          const userAssets = await API.getUserSupply(
-            IS_USER ? address : WAHEED_ADDRESS
-          );
-          const supplyData = userAssets.map((asset) => JSON.parse(asset));
-          const colResult = await getCollectionDetails(supplyData);
-          const finalData = colResult.map((asset) => {
-            let data = { ...asset, collection: {} };
-            approvedCollections.forEach((col) => {
-              if (col.symbol === asset.collection.symbol) {
-                data = {
-                  ...asset,
-                  collection: col,
-                };
-              }
-            });
-            return data;
-          });
-
-          // --------------------------------------------------
-          const contract = await contractGenerator(
-            tokenAbiJson,
-            TokenContractAddress
-          );
-          const promises = finalData.map((asset) => {
-            return new Promise(async (res) => {
-              const owner = await contract.methods
-                .ownerOf(asset.inscriptionNumber)
-                .call();
-              res({
-                ...asset,
-                isToken: owner ? true : false,
-              });
-            });
-          });
-          const revealed = await Promise.all(promises);
-          dispatch(setUserCollateral(revealed));
-        })();
+        getCollaterals();
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeWallet, approvedCollections]);
+
+    useEffect(() => {
+      if (activeWallet.length) {
+        getAllBorrowRequests();
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeWallet]);
 
     return (
       <Component
@@ -330,8 +367,11 @@ export const propsContainer = (Component) => {
           ckBtcAgent,
           ckEthAgent,
           withdrawAgent,
+          isEthConnected,
           ckBtcActorAgent,
           ckEthActorAgent,
+          getCollaterals,
+          getAllBorrowRequests,
         }}
       />
     );

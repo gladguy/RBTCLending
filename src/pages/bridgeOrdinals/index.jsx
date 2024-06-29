@@ -1,5 +1,6 @@
 import { Principal } from "@dfinity/principal";
 import {
+  Button,
   Col,
   Divider,
   Dropdown,
@@ -38,14 +39,13 @@ import {
 import tokenAbiJson from "../../utils/tokens_abi.json";
 
 const BridgeOrdinals = (props) => {
-  const { api_agent } = props.wallet;
+  const { api_agent, getCollaterals } = props.wallet;
   const { reduxState, isPlugError, dispatch } = props.redux;
   const activeWallet = reduxState.wallet.active;
 
   const walletState = reduxState.wallet;
   const btcValue = reduxState.constant.btcvalue;
   const userCollateral = reduxState.constant.userCollateral;
-  console.log("userCollateral", userCollateral);
   const xverseAddress = walletState.xverse.ordinals.address;
   const metaAddress = walletState.meta.address;
   const unisatAddress = walletState.unisat.address;
@@ -206,6 +206,7 @@ const BridgeOrdinals = (props) => {
 
       if (storeResult.transactionHash) {
         Notify("success", "Minting success!");
+        getCollaterals();
       }
       dispatch(setLoading(false));
     } catch (error) {
@@ -221,19 +222,21 @@ const BridgeOrdinals = (props) => {
     }
   }, [activeWallet]);
 
-  //   useEffect(() => {
-  //     if (activeWallet.length) {
-  //       (async () => {
-  //         const contract = await contractGenerator(
-  //           tokenAbiJson,
-  //           TokenContractAddress
-  //         );
-  //         const owner = await contract.methods.ownerOf(1000).call();
-  //         console.log("index", owner);
-  //       })();
-  //     }
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, [activeWallet]);
+  // useEffect(() => {
+  //   if (activeWallet.length) {
+  //     (async () => {
+  //       const contract = await contractGenerator(
+  //         borrowJson,
+  //         BorrowContractAddress
+  //       );
+  //       const ActiveReq = await contract.methods
+  //         .getActiveBorrowRequests()
+  //         .call();
+  //       console.log("index", ActiveReq);
+  //     })();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [activeWallet]);
 
   // T1 --------------------------------------------------------------
   const AssetsToSupplyTableColumns = [
@@ -245,7 +248,9 @@ const BridgeOrdinals = (props) => {
       render: (_, obj) => (
         <>
           <Flex gap={5} vertical align="center">
-            {obj.contentType === "image/webp" || "image/jpeg" || "image/png" ? (
+            {obj.contentType === "image/webp" ||
+            obj.contentType === "image/jpeg" ||
+            obj.contentType === "image/png" ? (
               <img
                 src={`${CONTENT_API}/content/${obj.id}`}
                 alt={`${obj.id}-borrow_image`}
@@ -253,10 +258,13 @@ const BridgeOrdinals = (props) => {
                 width={70}
                 height={70}
               />
-            ) : obj.contentType.includes("image/svg") ? (
+            ) : obj.contentType === "image/svg" ||
+              obj.contentType === "text/html;charset=utf-8" ||
+              obj.contentType === "text/html" ||
+              obj.contentType === "image/svg+xml" ? (
               <iframe
                 loading="lazy"
-                width={"50%"}
+                width={"80px"}
                 height={"80px"}
                 style={{ border: "none", borderRadius: "20%" }}
                 src={`${CONTENT_API}/content/${obj.id}`}
@@ -272,7 +280,7 @@ const BridgeOrdinals = (props) => {
                 src={`${
                   obj?.meta?.collection_page_img_url
                     ? obj?.meta?.collection_page_img_url
-                    : `${process.env.PUBLIC_URL}/collections/${obj?.collectionSymbol}.png`
+                    : `${process.env.PUBLIC_URL}/collections/${obj?.collectionSymbol}`
                 }`}
                 // NatBoys
                 // src={`https://ipfs.io/ipfs/QmdQboXbkTdwEa2xPkzLsCmXmgzzQg3WCxWFEnSvbnqKJr/1842.png`}
@@ -286,7 +294,7 @@ const BridgeOrdinals = (props) => {
                 height={70}
               />
             )}
-            {`${Capitalaize(obj.collection.name)} - #${obj.inscriptionNumber}`}
+            {obj.displayName}
           </Flex>
         </>
       ),
@@ -338,14 +346,14 @@ const BridgeOrdinals = (props) => {
                 <Flex
                   align="center"
                   gap={3}
-                  className="text-color-two font-small letter-spacing-small"
+                  className="text-color-one font-small letter-spacing-small"
                 >
                   <img src={Bitcoin} alt="noimage" width={20} height={20} />
                   {parseInt(floor.toFixed(2))
                     ? floor.toFixed(2)
                     : floor.toFixed(4)}
                 </Flex>
-                <span className="text-color-one font-xsmall letter-spacing-small">
+                <span className="text-color-two font-xsmall letter-spacing-small">
                   ${" "}
                   {(
                     (Number(obj.collection.floorPrice) / BTC_ZERO) *
@@ -377,23 +385,31 @@ const BridgeOrdinals = (props) => {
     },
     {
       key: "Action Buttons",
-      title: " ",
+      title: (
+        <Tooltip title="You can create borrow request using your minted collateral ordinals!">
+          <IoInformationCircleSharp size={25} color="#a7a700" />
+        </Tooltip>
+      ),
       align: "center",
       render: (_, obj) => {
         return (
-          <Flex gap={5}>
-            <Dropdown.Button
-              className="dbButtons-grey font-weight-600 letter-spacing-small"
-              trigger={"click"}
-              disabled={obj.isToken}
-              onClick={() => handleTokenMint(obj.inscriptionNumber)}
-              menu={{
-                items: options,
-                onClick: () => setSupplyModalItems(obj),
-              }}
-            >
-              Mint
-            </Dropdown.Button>
+          <Flex gap={5} justify="center">
+            {obj.isToken ? (
+              <Text className={"text-color-one font-small"}>Minted</Text>
+            ) : (
+              <Button
+                className="dbButtons-grey font-weight-600 letter-spacing-small"
+                trigger={"click"}
+                disabled={obj.isToken}
+                onClick={() => handleTokenMint(obj.inscriptionNumber)}
+                menu={{
+                  items: options,
+                  onClick: () => setSupplyModalItems(obj),
+                }}
+              >
+                Mint
+              </Button>
+            )}
           </Flex>
         );
       },
@@ -410,11 +426,7 @@ const BridgeOrdinals = (props) => {
 
       <Row justify={"space-between"} align={"middle"}>
         <Col md={24}>
-          <Flex
-            className="border pad-10 border-radius-8"
-            align="center"
-            gap={3}
-          >
+          <Flex className="page-box" align="center" gap={3}>
             <IoInformationCircleSharp size={25} color="#a7a700" />
             <Text className="font-small text-color-two">
               Your ordinal inscription has been successfully sent to our custody

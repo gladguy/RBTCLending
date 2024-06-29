@@ -41,8 +41,6 @@ const Faucet = (props) => {
     });
 
     let amount = Number(balance.coin.value);
-
-    console.log(`${name}'s balance is: ${amount}`);
     return amount;
   };
 

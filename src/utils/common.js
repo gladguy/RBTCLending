@@ -5,7 +5,6 @@ import xverse from "../assets/wallet-logo/xverse_logo_whitebg.png";
 import magiceden from "../assets/brands/magiceden.svg"
 import { Actor, HttpAgent } from "@dfinity/agent";
 import Web3 from "web3";
-import abiJson from "../utils/abi.json"
 
 export const API_METHODS = {
   get: axios.get,
@@ -20,6 +19,7 @@ export const apiUrl = {
   Coin_base_url: process.env.REACT_APP_COINBASE_API,
   Asset_server_base_url: process.env.REACT_APP_ASSET_SERVER,
   Unisat_open_api: process.env.REACT_APP_UNISAT_OPEN_API,
+  Ordiscan_api: process.env.REACT_APP_ORDISCAN_API
 };
 
 export const XVERSE_WALLET_KEY = "xverse";
@@ -36,6 +36,7 @@ const btc = process.env.REACT_APP_BTC_CANISTER_ID;
 const eth = process.env.REACT_APP_ETH_CANISTER_ID;
 const affiliates = process.env.REACT_APP_AFFILIATES_CANISTER_ID;
 const hostLink = process.env.REACT_APP_HOST;
+export const ordiscan_bearer = process.env.REACT_APP_ORDISCAN_BEARER;
 
 export const whitelist = [ordinals, btc, eth, affiliates];
 export const host = hostLink;
@@ -96,9 +97,11 @@ export const calculateFee = (bytes, preference) => {
   )
 }
 
-export const TokenContractAddress = "0xDD49b3eEc41b56BC804adB80ae117CA1d4706c00";
+export const IndexContractAddress = "0xE3fDCe323Ea5e2752ff9B04357d94D7856409172";
+export const TokenContractAddress = "0xa19BD28388E452C4DF2314B704D621B08852663a";
+export const BorrowContractAddress = "0xd43Efff5A9cD8e5bF3F2CD60a7097E612D7A14c6"
 
-export const contractGenerator = async (abi = abiJson, contractAddress = "0xE3fDCe323Ea5e2752ff9B04357d94D7856409172") => {
+export const contractGenerator = async (abi, contractAddress) => {
   const web3 = new Web3(window.ethereum);
   const contract = new web3.eth.Contract(abi, contractAddress);
   return contract;

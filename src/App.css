@@ -358,6 +358,12 @@ a {
   border-radius: 8px;
 }
 
+.page-box {
+  background-color: #573b5e63 !important;
+  padding: 8px;
+  border-radius: 8px;
+}
+
 .value-one {
   font-weight: 300;
 }

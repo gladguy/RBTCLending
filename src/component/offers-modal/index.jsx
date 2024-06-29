@@ -14,12 +14,13 @@ const OffersModal = ({
   offerModalData,
   toggleOfferModal,
   toggleLendModal,
-  setBorrowModalData,
+  setLendModalData,
 }) => {
   const { Text } = Typography;
   const state = useSelector((state) => state);
   const offers = state.constant.offers;
   const userOffers = state.constant.userOffers;
+  const BTC_ZERO = process.env.REACT_APP_BTC_ZERO;
 
   const activeOffersColumns = [
     {
@@ -33,7 +34,8 @@ const OffersModal = ({
           align="center"
           className={`text-color-one font-size-16 letter-spacing-small`}
         >
-          <img src={ckBtc} alt="noimage" width="20px" /> {obj.loanAmount}
+          <img src={ckBtc} alt="noimage" width="20px" />{" "}
+          {Number(obj.loanAmount) / BTC_ZERO}
         </Flex>
       ),
     },
@@ -120,7 +122,6 @@ const OffersModal = ({
                       // );
                       return (
                         <CustomButton
-                          // disabled={userOffer}
                           className={
                             "click-btn font-weight-600 letter-spacing-small"
                           }
@@ -129,28 +130,16 @@ const OffersModal = ({
                               <span
                                 className={`text-color-one font-weight-600 pointer iconalignment font-size-16`}
                               >
-                                Borrow
+                                Lend
                               </span>
                             </Flex>
                           }
                           onClick={() => {
-                            let assets = [];
-                            if (userAssets) {
-                              assets = userAssets.filter(
-                                (asset) =>
-                                  asset.collectionName ===
-                                  offerModalData.collectionName
-                              );
-                            }
                             toggleOfferModal();
                             toggleLendModal();
-                            setBorrowModalData({
+                            setLendModalData({
                               ...obj,
-                              assets,
-                              collateral: "",
-                              canisterId: obj.canister,
-                              thumbnailURI: offerModalData.thumbnailURI,
-                              collectionName: offerModalData.collectionName,
+                              ...offerModalData,
                             });
                           }}
                         />

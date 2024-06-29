@@ -4,14 +4,19 @@ import { FaCaretDown } from "react-icons/fa";
 import { TbInfoSquareRounded } from "react-icons/tb";
 import { useSelector } from "react-redux";
 import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
+import borrowJson from "../../utils/borrow_abi.json";
+import {
+  BorrowContractAddress,
+  TokenContractAddress,
+  contractGenerator,
+} from "../../utils/common";
+import tokensJson from "../../utils/tokens_abi.json";
 import CustomButton from "../Button";
 import ModalDisplay from "../modal";
+import Notify from "../notification";
 
 const LendModal = ({
-  API,
   modalState,
-  isLendEdit,
-  ckBtcBalance,
   lendModalData,
   toggleLendModal,
   setLendModalData,
@@ -25,25 +30,70 @@ const LendModal = ({
   const reduxState = useSelector((state) => state);
   const btcvalue = reduxState.constant.btcvalue;
   const activeWallet = reduxState.wallet.active;
+  const metaAddress = reduxState.wallet.meta.address;
 
   const BTC_ZERO = process.env.REACT_APP_BTC_ZERO;
 
-  const [isRequestBtnLoading, setIsRequestBtnLoading] = useState(false);
+  const [isOfferBtnLoading, setIsOfferBtnLoading] = useState(false);
 
-  const handleCreateRequest = async () => {
+  const handleAcceptRequest = async () => {
     try {
-      setIsRequestBtnLoading(true);
+      setIsOfferBtnLoading(true);
+      const tokensContract = await contractGenerator(
+        tokensJson,
+        TokenContractAddress
+      );
 
-      setIsRequestBtnLoading(false);
+      const isApproved = await tokensContract.methods
+        .isApprovedForAll(lendModalData.lender, BorrowContractAddress)
+        .call({ from: metaAddress });
+
+      if (!isApproved) {
+        Notify("warning", "Lender not approved!");
+        setIsOfferBtnLoading(false);
+        return;
+      }
+
+      const borrowContract = await contractGenerator(
+        borrowJson,
+        BorrowContractAddress
+      );
+
+      const estimateGas = await borrowContract.methods
+        .acceptBorrowRequest(Number(lendModalData.requestId), {
+          value: Number(lendModalData.loanAmount),
+        })
+        .estimateGas({
+          from: metaAddress,
+        });
+
+      const acceptLoan = await borrowContract.methods
+        .acceptBorrowRequest(Number(lendModalData.requestId), {
+          value: Number(lendModalData.loanAmount),
+        })
+        .send({
+          from: metaAddress,
+          gas: Number(estimateGas).toString(),
+          gasPrice: 1000000000,
+        });
+
+      if (acceptLoan.transactionHash) {
+        Notify("success", "Lending success");
+        toggleLendModal();
+      }
+
+      setIsOfferBtnLoading(false);
     } catch (error) {
-      setIsRequestBtnLoading(false);
-      console.log("create offer error", error);
+      setIsOfferBtnLoading(false);
+      console.log("Accept req error", error);
     }
   };
 
   // const handleEditLend = async () => {
   //   Notify("info", "We'r on it!");
   // };
+
+  // console.log("lendModalData", lendModalData);
 
   return (
     <ModalDisplay
@@ -59,7 +109,7 @@ const LendModal = ({
       onCancel={toggleLendModal}
       width={"35%"}
     >
-      {/* Borrow Image Display */}
+      {/* Lend Image Display */}
       <Row justify={"space-between"} className="mt-30">
         <Col md={4}>
           <img
@@ -69,7 +119,7 @@ const LendModal = ({
             onError={(e) =>
               (e.target.src = `${process.env.PUBLIC_URL}/collections/${lendModalData.symbol}.png`)
             }
-            width={90}
+            width={70}
           />
         </Col>
 
@@ -86,7 +136,7 @@ const LendModal = ({
             <Text
               className={`font-size-16 text-color-two letter-spacing-small`}
             >
-              {lendModalData.loanAmount}
+              {Number(lendModalData.loanAmount) / BTC_ZERO}
             </Text>
           </Flex>
         </Col>
@@ -104,7 +154,7 @@ const LendModal = ({
             <Text
               className={`font-size-16 text-color-two letter-spacing-small`}
             >
-              {Number(lendModalData.terms)} Days
+              {Number(lendModalData.duration)} Days
             </Text>
           </Flex>
         </Col>
@@ -122,7 +172,7 @@ const LendModal = ({
             <Text
               className={`font-size-16 text-color-two letter-spacing-small`}
             >
-              {lendModalData.loanToValue}%
+              {lendModalData?.loanToValue ? lendModalData?.loanToValue : 0}%
             </Text>
           </Flex>
         </Col>
@@ -133,120 +183,8 @@ const LendModal = ({
         <Divider />
       </Row>
 
-      {/* Borrow Alerts */}
-      {/* {activeWallet.length && 100 < lendModalData.amount ? (
-      <Row>
-        <Col md={24} className={`modalBoxRedShadow`}>
-          <Flex align="center" gap={10}>
-            <FaWallet
-              size={20}
-              //  color={true ? "#d7d73c" : "#e54b64"}
-            />
-            <span className={`font-small letter-spacing-small`}>
-              Insufficient ckBTC !
-            </span>
-          </Flex>
-        </Col>
-      </Row>
-    ) : (
-      ""
-    )} */}
-
-      <Flex align={"center"} gap={5}>
-        <Text className={`font-small text-color-one letter-spacing-small`}>
-          Collateral{" "}
-        </Text>
-        <FaCaretDown color={"#742e4c"} size={25} />
-      </Flex>
-
-      {/* Borrow collateral display */}
-      <Row
-        className={`mt-15 border border-radius-8 scroll-themed border-padding-medium`}
-        gutter={[0, 20]}
-        style={{
-          maxHeight: "210px",
-          overflowY: lendModalData?.assets?.length > 3 && "scroll",
-          columnGap: "50px",
-        }}
-        justify={"start"}
-      >
-        {lendModalData?.assets?.id ? (
-          <>
-            {/* <Col md={6} className="p-relative">
-            <div className={`selection-css pointer`}></div>
-
-            <CardDisplay
-              bordered={false}
-              className={`themed-card-dark pointer`}
-              cover={
-                lendModalData.asset.contentType.includes(
-                  "image/webp" || "image/jpeg" || "image/png"
-                ) ? (
-                  <img
-                    alt="asset_img"
-                    src={`${CONTENT_API}/content/${lendModalData.asset.id}`}
-                  />
-                ) : lendModalData.asset.contentType.includes(
-                    "image/svg"
-                  ) ? (
-                  <iframe
-                    loading="lazy"
-                    width={"50%"}
-                    height={"80px"}
-                    style={{ border: "none", borderRadius: "20%" }}
-                    src={`${CONTENT_API}/content/${lendModalData.asset.id}`}
-                    title="svg"
-                    sandbox="allow-scripts"
-                  >
-                    <svg
-                      viewBox="0 0 100 100"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <image
-                        href={lendModalData.asset.contentURI}
-                        width={"50%"}
-                        height={"80px"}
-                      />
-                    </svg>
-                  </iframe>
-                ) : (
-                  <img
-                    src={`${
-                      lendModalData.asset?.meta?.collection_page_img_url
-                        ? lendModalData.asset?.meta?.collection_page_img_url
-                        : `${process.env.PUBLIC_URL}/collections/${lendModalData.asset?.collectionSymbol}`
-                    }`}
-                    // NatBoys
-                    // src={`https://ipfs.io/ipfs/QmdQboXbkTdwEa2xPkzLsCmXmgzzQg3WCxWFEnSvbnqKJr/1842.png`}
-                    // src={`${process.env.PUBLIC_URL}/collections/${obj?.collectionSymbol}.png`}
-                    onError={(e) =>
-                      (e.target.src = `${process.env.PUBLIC_URL}/collections/${lendModalData.asset?.collectionSymbol}.png`)
-                    }
-                    alt={`${lendModalData.asset.id}-borrow_image`}
-                    width={70}
-                  />
-                )
-              }
-            >
-              <Flex justify="center">
-                <span
-                  className={`font-xsmall text-color-two letter-spacing-small`}
-                >
-                  #{lendModalData.asset.inscriptionNumber}{" "}
-                </span>
-              </Flex>
-            </CardDisplay>
-          </Col> */}
-          </>
-        ) : (
-          <Text className={`text-color-two font-small letter-spacing-small`}>
-            You don't have any collateral for this collection!.
-          </Text>
-        )}
-      </Row>
-
-      {/* Borrow Offer Summary */}
-      <Row className="mt-30">
+      {/* Lend Offer Summary */}
+      <Row className="mt-15">
         <Col md={24} className="collapse-antd">
           <Collapse
             className="border"
@@ -262,13 +200,13 @@ const LendModal = ({
                 }}
               />
             )}
-            defaultActiveKey={["2"]}
+            defaultActiveKey={["1"]}
             activeKey={collapseActiveKey}
             onChange={() => {
-              if (collapseActiveKey[0] === "2") {
-                setCollapseActiveKey(["1"]);
-              } else {
+              if (collapseActiveKey[0] === "1") {
                 setCollapseActiveKey(["2"]);
+              } else {
+                setCollapseActiveKey(["1"]);
               }
             }}
             items={[
@@ -296,16 +234,19 @@ const LendModal = ({
                           <Text
                             className={`card-box border text-color-two padding-small-box padding-small-box font-xsmall`}
                           >
-                            $ {(lendModalData.loanAmount * btcvalue).toFixed(2)}
+                            ${" "}
+                            {(
+                              (Number(lendModalData.loanAmount) / BTC_ZERO) *
+                              btcvalue
+                            ).toFixed(2)}
                           </Text>
 
                           <Text
                             className={`font-size-16 text-color-one letter-spacing-small`}
                           >
-                            ~ {lendModalData.loanAmount}
+                            ~ {Number(lendModalData.loanAmount) / BTC_ZERO}
                           </Text>
                           <img
-                            className="round"
                             src={Bitcoin}
                             alt="noimage"
                             style={{ justifyContent: "center" }}
@@ -315,7 +256,7 @@ const LendModal = ({
                       </Col>
                     </Row>
 
-                    <Row justify={"space-between"} className="mt-5">
+                    <Row justify={"space-between"} className="mt-7">
                       <Col>
                         <Text
                           className={`font-size-16 text-color-one letter-spacing-small`}
@@ -329,16 +270,23 @@ const LendModal = ({
                             className={`card-box border text-color-two padding-small-box font-xsmall`}
                           >
                             ${" "}
-                            {(lendModalData.yieldAccured * btcvalue).toFixed(2)}
+                            {(
+                              (Number(lendModalData.repayAmount) / BTC_ZERO -
+                                Number(lendModalData.loanAmount) / BTC_ZERO) *
+                              btcvalue
+                            ).toFixed(2)}
                           </Text>
 
                           <Text
                             className={`font-size-16 text-color-one letter-spacing-small`}
                           >
-                            ~ {lendModalData.yieldAccured}
+                            ~{" "}
+                            {(
+                              Number(lendModalData.repayAmount) / BTC_ZERO -
+                              Number(lendModalData.loanAmount) / BTC_ZERO
+                            ).toFixed(6)}
                           </Text>
                           <img
-                            className="round"
                             src={Bitcoin}
                             alt="noimage"
                             style={{ justifyContent: "center" }}
@@ -348,7 +296,7 @@ const LendModal = ({
                       </Col>
                     </Row>
 
-                    <Row justify={"space-between"} className="mt-5">
+                    <Row justify={"space-between"} className="mt-7">
                       <Col>
                         <Text
                           className={`font-size-16 text-color-one letter-spacing-small`}
@@ -362,16 +310,18 @@ const LendModal = ({
                             className={`card-box border text-color-two padding-small-box font-xsmall`}
                           >
                             ${" "}
-                            {(lendModalData.platformFee * btcvalue).toFixed(2)}
+                            {(
+                              (Number(lendModalData.platformFee) / BTC_ZERO) *
+                              btcvalue
+                            ).toFixed(2)}
                           </Text>
 
                           <Text
                             className={`font-size-16 text-color-one letter-spacing-small`}
                           >
-                            ~ {lendModalData.platformFee}
+                            ~ {Number(lendModalData.platformFee) / BTC_ZERO}
                           </Text>
                           <img
-                            className="round"
                             src={Bitcoin}
                             alt="noimage"
                             style={{ justifyContent: "center" }}
@@ -381,15 +331,17 @@ const LendModal = ({
                       </Col>
                     </Row>
 
-                    <Row className="mt-5">
+                    <Row className="mt-15">
                       <Col>
                         <span className={`font-xsmall text-color-two`}>
                           <TbInfoSquareRounded
                             size={12}
                             // color={true ? "#adadad" : "#333333"}
                           />{" "}
-                          {`Once a borrow accepts the offer and the loan is
-                started they will have ${lendModalData.term} days to repay the loan. If
+                          {`Once a lender accepts the offer and the loan is
+                started they will have ${Number(
+                  lendModalData.duration
+                )} days to repay the loan. If
                 the loan is not repaid you will receive the
                 collateral. Manage the loans in the portfolio page`}
                         </span>
@@ -403,7 +355,7 @@ const LendModal = ({
         </Col>
       </Row>
 
-      {/* Borrow button */}
+      {/* Lend button */}
       <Row
         justify={activeWallet.length ? "end" : "center"}
         className={`${
@@ -414,10 +366,10 @@ const LendModal = ({
           {activeWallet.length ? (
             <CustomButton
               block
-              // loading={isOfferBtnLoading}
+              loading={isOfferBtnLoading}
               className="click-btn font-weight-600 letter-spacing-small"
-              title={"Borrow"}
-              // onClick={handleBorrowOffer}
+              title={"Accept loan"}
+              onClick={handleAcceptRequest}
             />
           ) : (
             <Flex justify="center">
