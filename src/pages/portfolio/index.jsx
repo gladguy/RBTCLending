@@ -18,7 +18,6 @@ import { IoWarningSharp } from "react-icons/io5";
 import { MdContentCopy, MdDeleteForever, MdTour } from "react-icons/md";
 import { Bars } from "react-loading-icons";
 import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
-import ckBtc from "../../assets/coin_logo/ckbtc.png";
 import CustomButton from "../../component/Button";
 import WalletUI from "../../component/download-wallets-UI";
 import ModalDisplay from "../../component/modal";
@@ -64,7 +63,6 @@ const Portfolio = (props) => {
   const [userLendings, setUserLendings] = useState(null);
   const [userRequests, setUserRequests] = useState(null);
   const [userBorrowings, setUserBorrowings] = useState(null);
-
   const [radioBtn, setRadioBtn] = useState("Assets");
   const [enableTour, setEnableTour] = useState(false);
 
@@ -350,7 +348,7 @@ const Portfolio = (props) => {
       dataIndex: "loanAmount",
       render: (_, obj) => (
         <Flex align="center" justify="center" gap={3}>
-          <img src={ckBtc} alt="noimage" width="20px" />{" "}
+          <img src={Bitcoin} alt="noimage" width="20px" />{" "}
           <Text className="text-color-one">
             {Number(obj.loanAmount) / BTC_ZERO}
           </Text>
@@ -364,7 +362,7 @@ const Portfolio = (props) => {
       dataIndex: "platformFee",
       render: (_, obj) => (
         <Flex align="center" justify="center" gap={3}>
-          <img src={ckBtc} alt="noimage" width="20px" />{" "}
+          <img src={Bitcoin} alt="noimage" width="20px" />{" "}
           <Text className="text-color-one">
             {Number(obj.platformFee) / BTC_ZERO}
           </Text>
@@ -378,7 +376,7 @@ const Portfolio = (props) => {
       dataIndex: "repayAmount",
       render: (_, obj) => (
         <Flex align="center" justify="center" gap={3}>
-          <img src={ckBtc} alt="noimage" width="20px" />{" "}
+          <img src={Bitcoin} alt="noimage" width="20px" />{" "}
           <Text className="text-color-one">
             {Number(obj.repayAmount) / BTC_ZERO}
           </Text>
@@ -390,7 +388,9 @@ const Portfolio = (props) => {
       title: " ",
       align: "center",
       dataIndex: "action",
-      render: (_, obj) => <MdDeleteForever color="red" size={25} />,
+      render: (_, obj) => (
+        <MdDeleteForever className="pointer" color="red" size={25} />
+      ),
     },
   ];
 
@@ -416,6 +416,10 @@ const Portfolio = (props) => {
       .getBorrowRequestsByUser(metaAddress)
       .call();
     setUserRequests(UserBorrowReq);
+
+    // const API = agentCreator(rootstockApiFactory, rootstock);
+    // const userBorrowReq = await API.getBorrowRequestsByBorrower(metaAddress);
+    // setUserRequests(UserBorrowReq);
   };
 
   const handleRepay = async (nftContract, tokenId) => {
@@ -548,7 +552,13 @@ const Portfolio = (props) => {
                     >
                       {title}
                     </Text>
-                    <Icon size={25} color="grey" />
+                    <Icon
+                      size={25}
+                      color="grey"
+                      style={{
+                        marginTop: index === 0 ? "-13px" : "",
+                      }}
+                    />
                   </Flex>
                   <Flex
                     gap={5}
@@ -556,7 +566,7 @@ const Portfolio = (props) => {
                     className={`text-color-two font-small letter-spacing-small`}
                   >
                     {title.includes("Value") ? (
-                      <img src={Bitcoin} alt="ckBtc" width={20} />
+                      <img src={Bitcoin} alt="Bitcoin" width={20} />
                     ) : (
                       ""
                     )}{" "}
@@ -687,7 +697,37 @@ const Portfolio = (props) => {
                       }}
                       pagination={{ pageSize: 5 }}
                       rowKey={(e) => `${e?.id}-${e?.inscriptionNumber}`}
-                      tableColumns={loanColumns}
+                      tableColumns={[
+                        ...loanColumns,
+                        {
+                          key: "action",
+                          title: " ",
+                          align: "center",
+                          dataIndex: "borrow",
+                          render: (_, obj) => {
+                            return (
+                              <CustomButton
+                                className={
+                                  "click-btn font-weight-600 letter-spacing-small"
+                                }
+                                title={
+                                  <Flex
+                                    align="center"
+                                    justify="center"
+                                    gap={10}
+                                  >
+                                    <span
+                                      className={`text-color-one font-weight-600 pointer iconalignment font-size-16`}
+                                    >
+                                      Foreclose
+                                    </span>
+                                  </Flex>
+                                }
+                              />
+                            );
+                          },
+                        },
+                      ]}
                       tableData={userLendings}
                     />
                   </Col>

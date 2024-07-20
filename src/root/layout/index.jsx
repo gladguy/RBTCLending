@@ -64,7 +64,10 @@ const MainLayout = () => {
       <Layout>
         <Layout className="slide" style={{ backgroundColor: "black" }}>
           {/* Don't touch content minHeight */}
-          <Content className="theme-bg" style={{ minHeight: "85.60vh" }}>
+          <Content
+            className={location.pathname !== "/" ? "theme-bg" : ""}
+            style={{ minHeight: "85.60vh" }}
+          >
             <Row justify={"center"} className="blurEffect">
               <Col xs={23} md={21}>
                 <Routes>
@@ -95,7 +98,7 @@ const MainLayout = () => {
             {location.pathname === "/" ? (
               <>
                 <Footer
-                  className="collection-bg-one"
+                  className="collection-bg-one mt-20"
                   style={{ padding: "20px" }}
                 >
                   <Row justify={"center"} className="mt-30">
@@ -165,16 +168,38 @@ const MainLayout = () => {
                       <Row
                         justify={{ md: "space-between", xs: "center" }}
                         align={"middle"}
+                        style={{
+                          alignItems: "center",
+                        }}
                       >
-                        <Col xs={{ order: "2" }} md={{ order: "1" }}>
-                          <Flex justify="center" vertical>
+                        <Col
+                          xs={{ order: "2", span: 24 }}
+                          md={{ order: "1" }}
+                          lg={{ span: 8 }}
+                          className={
+                            screens.md || screens.sm || screens.xs ? "mt-7" : ""
+                          }
+                        >
+                          <Flex
+                            justify="center"
+                            align={
+                              screens.md || screens.sm || screens.xs
+                                ? "center"
+                                : ""
+                            }
+                            vertical
+                          >
                             <img
                               src={logo}
                               alt="logo"
                               className="pointer"
                               width={300}
                             />
-                            <Text className="gradient-text-one font-small font-family-one letter-spacing-small">
+                            <Text
+                              className={`gradient-text-one ${
+                                screens.xs ? "font-xssmall" : "font-small"
+                              } font-family-one letter-spacing-small`}
+                            >
                               {footerText}
                             </Text>
                           </Flex>
@@ -182,9 +207,14 @@ const MainLayout = () => {
 
                         <Col
                           xs={{ span: 24, order: "1" }}
-                          md={{ span: 16, order: "2" }}
-                          sm={16}
-                          lg={10}
+                          md={{ order: "2" }}
+                          sm={24}
+                          lg={{ span: 10 }}
+                          className={
+                            screens.md || screens.sm || screens.xs
+                              ? "mt-15"
+                              : ""
+                          }
                         >
                           <Flex vertical gap={15}>
                             {screens.md && (
@@ -202,30 +232,34 @@ const MainLayout = () => {
                                     </Text>
                                     <Text
                                       onClick={() => {
-                                        navigate("/myassets");
+                                        navigate("/borrowing");
                                         window.scrollTo(0, 0);
                                       }}
                                       className="text-color-two headertitle title pointer font-small letter-spacing-small"
                                     >
-                                      My Assets
+                                      Borrowing
                                     </Text>
                                     <Text
                                       onClick={() => {
-                                        navigate("/portfolio");
+                                        navigate("/bridge");
                                         window.scrollTo(0, 0);
                                       }}
                                       className="text-color-two headertitle title pointer font-small letter-spacing-small"
                                     >
-                                      Portfolio
+                                      Bridge Ordinals
                                     </Text>
                                   </Flex>
                                 </Flex>
                               </Col>
                             )}
 
-                            <Row justify={"center"}>
-                              <Divider style={{ margin: 0 }} />
-                            </Row>
+                            {!screens.xs ? (
+                              <Row justify={"center"}>
+                                <Divider style={{ margin: 0 }} />
+                              </Row>
+                            ) : (
+                              ""
+                            )}
 
                             {screens.xs && (
                               <Row
@@ -286,6 +320,14 @@ const MainLayout = () => {
                                 />
                               </Text>
                             </Flex>
+
+                            {screens.xs ? (
+                              <Row justify={"center"}>
+                                <Divider style={{ margin: 0 }} />
+                              </Row>
+                            ) : (
+                              ""
+                            )}
                           </Flex>
                         </Col>
                       </Row>
@@ -295,24 +337,6 @@ const MainLayout = () => {
               </>
             ) : null}
 
-            {/* <Footer
-              className="black-bg"
-              style={{ borderTop: "1px solid #434343" }}
-            >
-              <Row justify={"center"}>
-                <Col xs={22}>
-                  <Row justify={"center"}>
-
-                    <Col>
-                      <Text className="font-medium text-color-two">
-                        {footerText}
-                      </Text>
-                    </Col>
-
-                  </Row>
-                </Col>
-              </Row>
-            </Footer> */}
             <div className="value-header">
               <Header className="header z-index">
                 <Row justify={"center"}>

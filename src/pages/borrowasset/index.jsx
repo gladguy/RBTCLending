@@ -10,7 +10,7 @@ import { GoInfo } from "react-icons/go";
 import { LuCalendarDays } from "react-icons/lu";
 import { PiCircleHalfLight, PiMagicWandFill } from "react-icons/pi";
 import { BitcoinNetworkType, signTransaction } from "sats-connect";
-import Bitcoin from "../../assets/coin_logo/ckbtc.png";
+import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
 import CustomButton from "../../component/Button";
 import Notify from "../../component/notification";
 import { propsContainer } from "../../container/props-container";

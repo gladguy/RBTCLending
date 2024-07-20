@@ -1,4 +1,4 @@
-import { Col, Collapse, Divider, Flex, Row, Typography } from "antd";
+import { Col, Collapse, Divider, Flex, Grid, Row, Typography } from "antd";
 import { useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { TbInfoSquareRounded } from "react-icons/tb";
@@ -24,6 +24,8 @@ const LendModal = ({
   setCollapseActiveKey,
 }) => {
   const { Text } = Typography;
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
 
   const reduxState = useSelector((state) => state);
   const btcvalue = reduxState.constant.btcvalue;
@@ -51,6 +53,13 @@ const LendModal = ({
         setIsOfferBtnLoading(false);
         return;
       }
+
+      // const API = agentCreator(rootstockApiFactory, rootstock);
+      // await API.addTokenToAddress(
+      //   metaAddress,
+      //   [lendModalData.inscriptionNumber],
+      //   foundaryId
+      // );
 
       const borrowContract = await contractGenerator(
         borrowJson,
@@ -85,12 +94,6 @@ const LendModal = ({
     }
   };
 
-  // const handleEditLend = async () => {
-  //   Notify("info", "We'r on it!");
-  // };
-
-  // console.log("lendModalData", lendModalData);
-
   return (
     <ModalDisplay
       footer={null}
@@ -103,7 +106,7 @@ const LendModal = ({
       }
       open={modalState}
       onCancel={toggleLendModal}
-      width={"35%"}
+      width={screens.xl ? "35%" : screens.lg ? "50%" : "100%"}
     >
       {/* Lend Image Display */}
       <Row justify={"space-between"} className="mt-30">
@@ -115,7 +118,7 @@ const LendModal = ({
             onError={(e) =>
               (e.target.src = `${process.env.PUBLIC_URL}/collections/${lendModalData.symbol}.png`)
             }
-            width={70}
+            width={screens.xs ? 65 : 80}
           />
         </Col>
 
@@ -168,7 +171,7 @@ const LendModal = ({
             <Text
               className={`font-size-16 text-color-two letter-spacing-small`}
             >
-              {lendModalData?.loanToValue ? lendModalData?.loanToValue : 0}%
+              {lendModalData?.LTV ? lendModalData?.LTV : 0}%
             </Text>
           </Flex>
         </Col>
@@ -356,9 +359,9 @@ const LendModal = ({
         justify={activeWallet.length ? "end" : "center"}
         className={`${
           activeWallet.length ? "" : "border"
-        } border-radius-8 mt-30`}
+        } border-radius-8 mt-15`}
       >
-        <Col md={24}>
+        <Col xs={24}>
           {activeWallet.length ? (
             <CustomButton
               block

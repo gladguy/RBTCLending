@@ -1,21 +1,10 @@
-import { Principal } from "@dfinity/principal";
-import {
-  Button,
-  Col,
-  Divider,
-  Flex,
-  Input,
-  Row,
-  Tooltip,
-  Typography,
-} from "antd";
+import { Button, Col, Divider, Flex, Row, Tooltip, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import { FaRegSmileWink } from "react-icons/fa";
 import { FcApproval, FcHighPriority } from "react-icons/fc";
 import { ImSad } from "react-icons/im";
 import { IoInformationCircleSharp, IoWarningSharp } from "react-icons/io5";
 import { MdContentCopy } from "react-icons/md";
-import { RiInformationFill } from "react-icons/ri";
 import { Bars } from "react-loading-icons";
 import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
 import CustomButton from "../../component/Button";
@@ -27,7 +16,6 @@ import { propsContainer } from "../../container/props-container";
 import { setLoading } from "../../redux/slice/constant";
 import {
   Capitalaize,
-  IS_USER,
   MAGICEDEN_WALLET_KEY,
   TokenContractAddress,
   UNISAT_WALLET_KEY,
@@ -38,7 +26,7 @@ import {
 import tokenAbiJson from "../../utils/tokens_abi.json";
 
 const BridgeOrdinals = (props) => {
-  const { api_agent, getCollaterals } = props.wallet;
+  const { getCollaterals } = props.wallet;
   const { reduxState, isPlugError, dispatch } = props.redux;
   const activeWallet = reduxState.wallet.active;
 
@@ -55,37 +43,16 @@ const BridgeOrdinals = (props) => {
   // USE STATE
   const [borrowData, setBorrowData] = useState(null);
   const [lendData, setLendData] = useState([]);
-  const [askModal, setAskModal] = useState(false);
 
   const [copy, setCopy] = useState("Copy");
-  const [loadingState, setLoadingState] = useState({
-    isApproveBtn: false,
-    isSupplyBtn: false,
-    isLendCkbtcBtn: false,
-    isBorrowData: false,
-    isLendData: false,
-    isWithdrawBtn: false,
-    isRepayBtn: false,
-    isAssetSupplies: false,
-    isAssetWithdraw: false,
-    isAskBtn: false,
-  });
 
   const [supplyModalItems, setSupplyModalItems] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [handleSupplyModal, setHandleSupplyModal] = useState(false);
 
-  const [askModalData, setAskModalData] = useState({
-    loanAmount: null,
-    repaymentAmount: 0,
-    interestAmount: null,
-  });
-
   const BTC_ZERO = process.env.REACT_APP_BTC_ZERO;
   const CONTENT_API = process.env.REACT_APP_ORDINALS_CONTENT_API;
-  const WAHEED_ADDRESS = process.env.REACT_APP_WAHEED_ADDRESS;
-  const PLUG_CUSTODY_ADDRESS = process.env.REACT_APP_PLUG_CUSTODY_ADDRESS;
 
   // COMPONENTS & FUNCTIONS
   if (borrowData !== null) {
@@ -100,23 +67,6 @@ const BridgeOrdinals = (props) => {
     });
   }
 
-  const handleAskModalInput = (e) => {
-    const value = e.target.value;
-    let dotRegex = /\./;
-    const interestAmount = (5 / 100) * value;
-    const repayment = interestAmount + Number(value);
-    setAskModalData({
-      ...askModalData,
-      loanAmount: value,
-      repaymentAmount: repayment.toString().match(dotRegex)
-        ? repayment.toFixed(6)
-        : repayment,
-      interestAmount: interestAmount.toString().match(dotRegex)
-        ? interestAmount.toFixed(6)
-        : interestAmount,
-    });
-  };
-
   const handleOk = () => {
     setIsModalOpen(false);
     setHandleSupplyModal(false);
@@ -125,13 +75,6 @@ const BridgeOrdinals = (props) => {
   const handleCancel = () => {
     setIsModalOpen(false);
     setHandleSupplyModal(false);
-    setAskModal(false);
-    setAskModalData({
-      ...askModalData,
-      loanAmount: null,
-      interestAmount: null,
-      repaymentAmount: 0,
-    });
   };
 
   const options = [
@@ -148,42 +91,6 @@ const BridgeOrdinals = (props) => {
     },
   ];
 
-  // API FUNCTIONS ---------------------------------------------------
-  const handleAskRequest = async () => {
-    if (askModalData.repaymentAmount) {
-      setLoadingState((prev) => ({ ...prev, isAskBtn: true }));
-      try {
-        const setAddress = await api_agent.setAskRequest(
-          IS_USER
-            ? xverseAddress
-              ? xverseAddress
-              : unisatAddress
-              ? unisatAddress
-              : magicEdenAddress
-            : WAHEED_ADDRESS,
-          askModalData.id,
-          JSON.stringify(askModalData),
-          Principal.fromText(PLUG_CUSTODY_ADDRESS)
-        );
-        setLoadingState((prev) => ({ ...prev, isAskBtn: false }));
-
-        if (setAddress) {
-          Notify("success", "Ask successful!");
-        } else {
-          Notify("warning", "Asset Id already exists");
-        }
-
-        setLoadingState((prev) => ({ ...prev, isAskBtn: false }));
-        handleCancel();
-      } catch (error) {
-        setLoadingState((prev) => ({ ...prev, isAskBtn: false }));
-        console.log("Ask request error", error);
-      }
-    } else {
-      Notify("warning", "Enter the amount!");
-    }
-  };
-
   const handleTokenMint = async (inscriptionNumber) => {
     try {
       dispatch(setLoading(true));
@@ -191,6 +98,7 @@ const BridgeOrdinals = (props) => {
         tokenAbiJson,
         TokenContractAddress
       );
+
       const estimateGas = await contract.methods
         .mintOrdinal(inscriptionNumber)
         .estimateGas({ from: metaAddress });
@@ -293,7 +201,7 @@ const BridgeOrdinals = (props) => {
                 height={70}
               />
             )}
-            {obj.displayName}
+            {Capitalaize(obj.collectionSymbol)} - #{obj.inscriptionNumber}
           </Flex>
         </>
       ),
@@ -337,32 +245,26 @@ const BridgeOrdinals = (props) => {
       align: "center",
       dataIndex: "value",
       render: (_, obj) => {
-        const floor = Number(obj.collection.floorPrice / BTC_ZERO);
+        const floor = Number(obj.collection.floorPrice)
+          ? Number(obj.collection.floorPrice) / BTC_ZERO
+          : 25000 / BTC_ZERO;
         return (
           <>
-            {obj.collection.floorPrice ? (
-              <Flex vertical align="center">
-                <Flex
-                  align="center"
-                  gap={3}
-                  className="text-color-one font-small letter-spacing-small"
-                >
-                  <img src={Bitcoin} alt="noimage" width={20} height={20} />
-                  {parseInt(floor.toFixed(2))
-                    ? floor.toFixed(2)
-                    : floor.toFixed(4)}
-                </Flex>
-                <span className="text-color-two font-xsmall letter-spacing-small">
-                  ${" "}
-                  {(
-                    (Number(obj.collection.floorPrice) / BTC_ZERO) *
-                    btcValue
-                  ).toFixed(2)}
-                </span>
+            <Flex vertical align="center">
+              <Flex
+                align="center"
+                gap={3}
+                className="text-color-one font-small letter-spacing-small"
+              >
+                <img src={Bitcoin} alt="noimage" width={20} height={20} />
+                {parseInt(floor.toFixed(2))
+                  ? floor.toFixed(2)
+                  : floor.toFixed(4)}
               </Flex>
-            ) : (
-              "-"
-            )}
+              <span className="text-color-two font-xsmall letter-spacing-small">
+                $ {(floor * btcValue).toFixed(2)}
+              </span>
+            </Flex>
           </>
         );
       },
@@ -726,108 +628,6 @@ const BridgeOrdinals = (props) => {
             title="I Know"
             className={"m-25 width background text-color-one "}
           />
-        </Row>
-      </ModalDisplay>
-
-      {/* Ask Modal */}
-      <ModalDisplay
-        width={"35%"}
-        open={askModal}
-        footer={null}
-        onCancel={handleCancel}
-        title={
-          <Row>
-            <Text style={{ color: "white", fontSize: "25px" }}>Loan Info</Text>
-          </Row>
-        }
-      >
-        <Row className="mt-20">
-          <Text className="font-small iconalignment modalBoxYellowShadow">
-            <RiInformationFill /> After the repayment, you will get the
-            inscription
-          </Text>
-        </Row>
-        <Row justify={"space-between"}>
-          <Tooltip
-            color="purple"
-            open={
-              askModalData.isApprovedCollection &&
-              askModalData.loanAmount >
-                (askModalData.floorPrice / BTC_ZERO).toFixed(8)
-            }
-            title={"Amount higher than floor price!"}
-          >
-            <Col className="mt-30 modalBoxBlackShadow">
-              <Row>
-                <Text className="color-white font-small">
-                  Enter loan amount
-                </Text>
-              </Row>
-              <Row>
-                <Input
-                  className="mt"
-                  style={{
-                    border: "none",
-                    backgroundColor: "#2a2a29 !important",
-                    fontSize: "18px",
-                  }}
-                  placeholder={
-                    askModalData.isApprovedCollection
-                      ? (askModalData.floorPrice / BTC_ZERO).toFixed(8)
-                      : (10 / BTC_ZERO).toFixed(8)
-                  }
-                  value={askModalData.loanAmount}
-                  maxLength={8}
-                  onChange={(e) => {
-                    if (e.target.value.match(/^[0-9.]+$/)) {
-                      handleAskModalInput(e);
-                    } else if (e.target.value === "") {
-                      handleAskModalInput(e);
-                    }
-                  }}
-                  prefix={
-                    <img src={Bitcoin} alt="noimage" width={15} height={15} />
-                  }
-                />
-              </Row>
-            </Col>
-          </Tooltip>
-          <Col className="mt-30 modalBoxBlackShadow">
-            <Row>
-              <Text className="color-white font-small">
-                Total Interest Amount
-              </Text>
-            </Row>
-            <Row>
-              <Input
-                readOnly
-                value={askModalData.interestAmount}
-                className="mt"
-                style={{ border: "none", fontSize: "18px" }}
-                placeholder="0"
-                prefix={
-                  <img src={Bitcoin} alt="noimage" width={15} height={15} />
-                }
-              />
-            </Row>
-          </Col>
-        </Row>
-        <Row className="mt">
-          <Col>
-            <Text className="color-white font-small">
-              Repayment Amount: {askModalData.repaymentAmount}
-            </Text>
-          </Col>
-        </Row>
-        <Row className="mt-20">
-          <Col sm={24}>
-            <CustomButton
-              loading={loadingState.isAskBtn}
-              className={"width font-weight-600"}
-              onClick={handleAskRequest}
-              title={"Ask Loan"}
-            />
-          </Col>
         </Row>
       </ModalDisplay>
     </>

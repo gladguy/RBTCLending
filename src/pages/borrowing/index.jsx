@@ -77,6 +77,33 @@ const Borrowing = (props) => {
       title: "Collections",
       align: "center",
       dataIndex: "collectionName",
+      filters: [
+        {
+          text: "Collateral",
+          value: "Collateral",
+        },
+        {
+          text: "Requests",
+          value: "Requests",
+        },
+      ],
+      onFilter: (value, record) => {
+        if (value === "Collateral") {
+          let assets = collateralData?.filter(
+            (p) => p.collectionSymbol === record.symbol
+          );
+          if (assets.length) {
+            return record;
+          }
+        } else {
+          const collectionBorrowRequests = allBorrowRequest.filter(
+            (req) => Number(req.collectionId) === Number(record.collectionID)
+          );
+          if (collectionBorrowRequests.length) {
+            return collectionBorrowRequests;
+          }
+        }
+      },
       render: (_, obj) => {
         const name = obj?.name;
         const nameSplitted = obj?.name?.split(" ");
@@ -150,7 +177,9 @@ const Borrowing = (props) => {
       title: "APY",
       align: "center",
       dataIndex: "APY",
-      render: (_, obj) => <Text className={"text-color-one"}>{obj.APY}%</Text>,
+      render: (_, obj) => (
+        <Text className={"text-color-one"}>{Math.round(obj.APY)}%</Text>
+      ),
     },
     {
       key: "Term",
@@ -180,13 +209,13 @@ const Borrowing = (props) => {
       align: "center",
       dataIndex: "floor",
       render: (_, obj) => {
-        const floor = Number(obj.floorPrice);
+        const floor = Number(obj.floorPrice) ? Number(obj.floorPrice) : 30000;
         return (
           <Flex align="center" vertical gap={5}>
             <Flex align="center" vertical gap={5} className={"text-color-one"}>
               <Flex align="center" gap={3}>
                 <img src={Bitcoin} alt="noimage" width="20px" />{" "}
-                {(floor / BTC_ZERO).toFixed(3)}{" "}
+                {(floor / BTC_ZERO).toFixed(4)}{" "}
               </Flex>
               <div>${((floor / BTC_ZERO) * btcvalue).toFixed(2)} </div>
             </Flex>
@@ -210,7 +239,10 @@ const Borrowing = (props) => {
                 Notify("warning", "Fetching your collateral, please wait!");
                 return;
               }
-
+              // Floor
+              const floor = Number(obj.floorPrice)
+                ? Number(obj.floorPrice)
+                : 30000;
               // Assets
               let assets = collateralData?.filter(
                 (p) => p.collectionSymbol === obj.symbol
@@ -218,7 +250,7 @@ const Borrowing = (props) => {
               // Terms
               const term = Number(obj.terms);
               // Converting ordinal asset price into dollar
-              const ordinalPrice = obj.floorPrice / BTC_ZERO;
+              const ordinalPrice = floor / BTC_ZERO;
               // Max amount user can be avail for the ordinal
               const maxQuoted = Number(ordinalPrice.toFixed(6));
               // Cutoff the amount by 2 for initial display
@@ -323,6 +355,7 @@ const Borrowing = (props) => {
         borrowJson,
         BorrowContractAddress
       );
+      // const API = agentCreator(rootstockApiFactory, rootstock);
 
       try {
         const isApproved = await tokensContract.methods
@@ -426,7 +459,7 @@ const Borrowing = (props) => {
             .call({ from: metaAddress });
           res({
             ...asset,
-            request: result?.requestId ? result : {},
+            request: result?.isActive ? result : {},
           });
         });
       });
@@ -443,7 +476,7 @@ const Borrowing = (props) => {
   useEffect(() => {
     // For setting user assets, after fetching user collateral when modal is open
     if (borrowCollateral?.length && borrowModalData?.symbol) {
-      let assets = borrowCollateral?.filter(
+      let assets = collateralData?.filter(
         (p) => p.collectionSymbol === borrowModalData.symbol
       );
       setBorrowModalData({

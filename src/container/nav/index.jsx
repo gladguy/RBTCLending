@@ -17,22 +17,18 @@ import {
 import gsap from "gsap";
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineDisconnect } from "react-icons/ai";
-import { FaAngleDown } from "react-icons/fa6";
 import { PiCopyBold } from "react-icons/pi";
 import { RiWallet3Fill } from "react-icons/ri";
 import { RxHamburgerMenu } from "react-icons/rx";
-import TailSpin from "react-loading-icons/dist/esm/components/tail-spin";
 import { AddressPurpose, BitcoinNetworkType, getAddress } from "sats-connect";
 import Web3 from "web3";
 import ordinals_O_logo from "../../assets/brands/ordinals_O_logo.png";
 import Bitcoin from "../../assets/coin_logo/Bitcoin.png";
 import bitcoin_rootstock from "../../assets/coin_logo/bitcoin-rootstock.png";
-import Eth from "../../assets/coin_logo/cketh.png";
 import rootstock_logo from "../../assets/coin_logo/rootstock_orange_logo.jpg";
 import logo from "../../assets/logo/RBTC_logo.png";
 import CustomButton from "../../component/Button";
 import CardDisplay from "../../component/card";
-import Loading from "../../component/loading-wrapper/secondary-loader";
 import ModalDisplay from "../../component/modal";
 import Notify from "../../component/notification";
 import {
@@ -49,22 +45,22 @@ import {
 } from "../../redux/slice/wallet";
 import { rootstockApiFactory } from "../../rootstock_canister";
 import {
-  API_METHODS,
-  BTCWallets,
-  MAGICEDEN_WALLET_KEY,
-  META_WALLET_KEY,
-  UNISAT_WALLET_KEY,
-  XVERSE_WALLET_KEY,
   agentCreator,
+  API_METHODS,
   apiUrl,
+  BTCWallets,
   contractGenerator,
   IndexContractAddress,
+  MAGICEDEN_WALLET_KEY,
+  META_WALLET_KEY,
   paymentWallets,
   rootstock,
   sliceAddress,
+  UNISAT_WALLET_KEY,
+  XVERSE_WALLET_KEY,
 } from "../../utils/common";
-import { propsContainer } from "../props-container";
 import indexJson from "../../utils/index_abi.json";
+import { propsContainer } from "../props-container";
 
 const Nav = (props) => {
   const { Text } = Typography;
@@ -76,8 +72,8 @@ const Nav = (props) => {
   const { dispatch, reduxState } = props.redux;
 
   const walletState = reduxState.wallet;
-  const constantState = reduxState.constant;
-
+  // const constantState = reduxState.constant;
+  const activeWallet = reduxState.wallet.active;
   const metaAddress = walletState.meta.address;
   const xverseAddress = walletState.xverse.ordinals.address;
   const unisatAddress = walletState.unisat.address;
@@ -388,7 +384,13 @@ const Nav = (props) => {
         try {
           await window.ethereum.request({ method: "eth_requestAccounts" });
           const accounts = await web3.eth.getAccounts();
-          // dispatch(setMetaAddress(accounts[0]));
+          const networkId = await web3.eth.net.getId();
+
+          if (Number(networkId) !== 31) {
+            Notify("error", "Switch to the tCORE network!");
+            return;
+          }
+
           setWalletConnection({
             ...walletConnection,
             [META_WALLET_KEY]: {
@@ -584,7 +586,7 @@ const Nav = (props) => {
     return () => {
       window.removeEventListener("resize", getScreenDimensions);
     };
-  });
+  }, []);
 
   const onClick = (e) => {
     setCurrent(e.key);
@@ -615,35 +617,24 @@ const Nav = (props) => {
     ),
     getItem(
       <Row
+        className="font-style"
+        onClick={() => {
+          navigate("/borrowing");
+          setOpen(false);
+        }}
+      >
+        Borrowing
+      </Row>
+    ),
+    getItem(
+      <Row
         className="font-style "
         onClick={() => {
-          navigate("/myassets");
+          navigate("/bridge");
           setOpen(false);
         }}
       >
-        My Assets
-      </Row>
-    ),
-    getItem(
-      <Row
-        className="font-style"
-        onClick={() => {
-          navigate("/staking");
-          setOpen(false);
-        }}
-      >
-        Staking
-      </Row>
-    ),
-    getItem(
-      <Row
-        className="font-style"
-        onClick={() => {
-          navigate("/airdrop");
-          setOpen(false);
-        }}
-      >
-        Air Drop
+        Bridge Ordinals
       </Row>
     ),
     getItem(
@@ -655,31 +646,6 @@ const Nav = (props) => {
         }}
       >
         Portfolio
-      </Row>
-    ),
-  ];
-
-  const optionsXs = [
-    getItem(
-      <Row
-        className="font-style"
-        onClick={() => {
-          navigate("/");
-          setOpen(false);
-        }}
-      >
-        Browse
-      </Row>
-    ),
-    getItem(
-      <Row
-        className="font-style"
-        onClick={() => {
-          navigate("/lending");
-          setOpen(false);
-        }}
-      >
-        Lending
       </Row>
     ),
   ];
@@ -725,7 +691,7 @@ const Nav = (props) => {
   return (
     <>
       <Row
-        style={{ marginTop: "10px" }}
+        className="mt-7"
         justify={{
           xs: "space-between",
           lg: "space-between",
@@ -854,34 +820,28 @@ const Nav = (props) => {
 
         <Col>
           <Flex gap={10} justify="end" align={"center"} ref={ref4}>
-            {xverseAddress ||
-            unisatAddress ||
-            magicEdenAddress ||
-            metaAddress ? (
+            {activeWallet.length ? (
               <Col>
                 <Flex
                   gap={5}
                   align="center"
-                  className="pointer avatar-wrapper"
+                  className="pointer"
                   onClick={showDrawer}
                   justify="space-evenly"
                 >
-                  {avatarRenderer(45)}
-                  {screenDimensions.width > 767 && (
-                    <>
-                      <Text className="text-color-two font-weight-600">
-                        {xverseAddress ? (
-                          <>{sliceAddress(xverseAddress, 5)}</>
-                        ) : unisatAddress ? (
-                          <>{sliceAddress(unisatAddress, 5)}</>
-                        ) : magicEdenAddress ? (
-                          <>{sliceAddress(magicEdenAddress, 5)}</>
-                        ) : (
-                          <>{sliceAddress(metaAddress, 5)}</>
-                        )}
-                      </Text>
-                      <FaAngleDown color="white" size={20} />
-                    </>
+                  {screenDimensions.width > 767 ? (
+                    <>{avatarRenderer(45)}</>
+                  ) : (
+                    <label class="hamburger">
+                      <input type="checkbox" checked={open} />
+                      <svg viewBox="0 0 32 32">
+                        <path
+                          class="line line-top-bottom"
+                          d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"
+                        ></path>
+                        <path class="line" d="M7 16 27 16"></path>
+                      </svg>
+                    </label>
                   )}
                 </Flex>
               </Col>
@@ -1288,9 +1248,9 @@ const Nav = (props) => {
                 defaultOpenKeys={["sub1"]}
                 selectedKeys={[current]}
                 mode="inline"
-                items={breakPoint.xs ? optionsXs : options}
+                items={options}
               />
-              {screenDimensions.width < 992 && (
+              {/* {screenDimensions.width < 992 && (
                 <Row style={{ padding: " 0px 24px", marginTop: "10px" }}>
                   <Col>
                     <Loading
@@ -1323,42 +1283,7 @@ const Nav = (props) => {
                     </Loading>
                   </Col>
                 </Row>
-              )}
-
-              {screenDimensions.width < 992 && (
-                <Row style={{ padding: " 0px 24px", marginTop: "20px" }}>
-                  <Col>
-                    <Loading
-                      spin={!constantState.ethvalue}
-                      indicator={
-                        <TailSpin
-                          stroke="#6a85f1"
-                          alignmentBaseline="central"
-                        />
-                      }
-                    >
-                      {constantState.ethvalue ? (
-                        <Flex gap={5}>
-                          <Text className="gradient-text-one font-small heading-one">
-                            ETH
-                          </Text>
-                          <img
-                            src={Eth}
-                            alt="noimage"
-                            style={{ justifyContent: "center" }}
-                            width="35dvw"
-                          />{" "}
-                          <Text className="gradient-text-one font-small heading-one">
-                            $ {constantState.ethvalue}
-                          </Text>
-                        </Flex>
-                      ) : (
-                        ""
-                      )}
-                    </Loading>
-                  </Col>
-                </Row>
-              )}
+              )} */}
             </>
           )}
         </>

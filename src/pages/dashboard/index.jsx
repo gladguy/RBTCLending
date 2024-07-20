@@ -39,7 +39,7 @@ import { RiInformationFill } from "react-icons/ri";
 import { Bars } from "react-loading-icons";
 import ThreeDots from "react-loading-icons/dist/esm/components/three-dots";
 import { Link } from "react-router-dom";
-import Bitcoin from "../../assets/coin_logo/ckbtc.png";
+import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
 import Aptos from "../../assets/wallet-logo/aptos_logo.png";
 import CustomButton from "../../component/Button";
 import Loading from "../../component/loading-wrapper/secondary-loader";

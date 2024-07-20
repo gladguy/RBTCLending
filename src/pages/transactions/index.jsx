@@ -13,7 +13,7 @@ import { FaRegSmileWink } from "react-icons/fa";
 import { FiArrowDownLeft } from "react-icons/fi";
 import { ImSad } from "react-icons/im";
 import { MdArrowOutward } from "react-icons/md";
-import Bitcoin from "../../assets/coin_logo/ckbtc.png";
+import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
 import Etherium from "../../assets/coin_logo/cketh.png";
 import TableComponent from "../../component/table";
 import { propsContainer } from "../../container/props-container";

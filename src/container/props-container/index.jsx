@@ -15,6 +15,7 @@ import {
   setUserCollateral,
 } from "../../redux/slice/constant";
 import { rootstockApiFactory } from "../../rootstock_canister";
+import borrowJson from "../../utils/borrow_abi.json";
 import {
   API_METHODS,
   BorrowContractAddress,
@@ -30,7 +31,6 @@ import {
   rootstock,
 } from "../../utils/common";
 import tokenAbiJson from "../../utils/tokens_abi.json";
-import borrowJson from "../../utils/borrow_abi.json";
 
 export const propsContainer = (Component) => {
   function ComponentWithRouterProp(props) {
@@ -241,51 +241,76 @@ export const propsContainer = (Component) => {
     };
 
     const getCollaterals = async () => {
-      const API = agentCreator(rootstockApiFactory, rootstock);
-      const userAssets = await API.getUserSupply(
-        IS_USER ? address : WAHEED_ADDRESS
-      );
-      const supplyData = userAssets.map((asset) => JSON.parse(asset));
-      const colResult = await getCollectionDetails(supplyData);
-      // --------------------------------------------------
-      const contract = await contractGenerator(
-        tokenAbiJson,
-        TokenContractAddress
-      );
+      try {
+        const API = agentCreator(rootstockApiFactory, rootstock);
+        const userAssets = await API.getUserSupply(
+          IS_USER ? address : WAHEED_ADDRESS
+        );
+        const supplyData = userAssets.map((asset) => JSON.parse(asset));
+        const colResult = await getCollectionDetails(supplyData);
+        // --------------------------------------------------
+        const contract = await contractGenerator(
+          tokenAbiJson,
+          TokenContractAddress
+        );
 
-      const tokens = await contract.methods.tokensOfOwner(metaAddress).call();
+        const tokens = await contract.methods.tokensOfOwner(metaAddress).call();
 
-      const userMintedTokens = tokens.map((token) => Number(token));
+        const userMintedTokens = tokens.map((token) => Number(token));
 
-      const finalData = colResult.map((asset) => {
-        let data = { ...asset, collection: {} };
-        approvedCollections.forEach((col) => {
-          if (col.symbol === asset.collection.symbol) {
-            data = {
-              ...asset,
-              collection: col,
-              isToken: userMintedTokens.includes(asset.inscriptionNumber)
-                ? true
-                : false,
-            };
-          }
+        const finalData = colResult.map((asset) => {
+          let data = { ...asset, collection: {} };
+          approvedCollections.forEach((col) => {
+            if (col.symbol === asset.collection.symbol) {
+              data = {
+                ...asset,
+                collection: col,
+                isToken: userMintedTokens.includes(asset.inscriptionNumber)
+                  ? true
+                  : false,
+              };
+            }
+          });
+          return data;
         });
-        return data;
-      });
 
-      const borrowCollateral = finalData.filter((asset) => asset.isToken);
-      dispatch(setBorrowCollateral(borrowCollateral));
-      dispatch(setUserCollateral(finalData));
+        const borrowCollateral = finalData.filter((asset) => asset.isToken);
+        dispatch(setBorrowCollateral(borrowCollateral));
+        dispatch(setUserCollateral(finalData));
+      } catch (error) {
+        console.log("Collateral fetching error", error);
+      }
+    };
+
+    const getContractCollaterals = async () => {
+      try {
+        // --------------------------------------------------
+        // const contract = await contractGenerator(
+        //   tokenAbiJson,
+        //   TokenContractAddress
+        // );
+        // const tokens = await contract.methods
+        //   .tokensOfOwner(TokenContractAddress)
+        //   .call();
+        // console.log("Contract tokens", tokens);
+      } catch (error) {
+        console.log("Collateral fetching error", error);
+      }
     };
 
     const getAllBorrowRequests = async () => {
-      const contract = await contractGenerator(
-        borrowJson,
-        BorrowContractAddress
-      );
-      const ActiveReq = await contract.methods.getActiveBorrowRequests().call();
-
-      dispatch(setAllBorrowRequest(ActiveReq));
+      try {
+        const contract = await contractGenerator(
+          borrowJson,
+          BorrowContractAddress
+        );
+        const ActiveReq = await contract.methods
+          .getActiveBorrowRequests()
+          .call();
+        dispatch(setAllBorrowRequest(ActiveReq));
+      } catch (error) {
+        console.log("fetching all borrow request error", error);
+      }
     };
 
     useEffect(() => {
@@ -346,6 +371,13 @@ export const propsContainer = (Component) => {
     useEffect(() => {
       if (activeWallet.length && approvedCollections[0]) {
         getCollaterals();
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeWallet, approvedCollections]);
+
+    useEffect(() => {
+      if (activeWallet.length && approvedCollections[0]) {
+        getContractCollaterals();
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeWallet, approvedCollections]);

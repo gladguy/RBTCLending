@@ -37,6 +37,7 @@ const eth = process.env.REACT_APP_ETH_CANISTER_ID;
 const affiliates = process.env.REACT_APP_AFFILIATES_CANISTER_ID;
 const hostLink = process.env.REACT_APP_HOST;
 export const ordiscan_bearer = process.env.REACT_APP_ORDISCAN_BEARER;
+export const foundaryId = Number(process.env.REACT_APP_FOUNDARY_ID);
 
 export const whitelist = [ordinals, btc, eth, affiliates];
 export const host = hostLink;

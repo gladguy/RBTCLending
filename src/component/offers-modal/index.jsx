@@ -1,14 +1,13 @@
 import { Col, Flex, Row, Typography } from "antd";
 import Bars from "react-loading-icons/dist/esm/components/bars";
 import { useSelector } from "react-redux";
-import ckBtc from "../../assets/coin_logo/ckbtc.png";
+import ckBtc from "../../assets/coin_logo/bitcoin-rootstock.png";
 import { getTimeAgo } from "../../utils/common";
 import CustomButton from "../Button";
 import ModalDisplay from "../modal";
 import TableComponent from "../table";
 
 const OffersModal = ({
-  userAssets,
   modalState,
   offerModalData,
   toggleOfferModal,
@@ -19,6 +18,7 @@ const OffersModal = ({
   const state = useSelector((state) => state);
   const offers = state.constant.offers;
   const BTC_ZERO = process.env.REACT_APP_BTC_ZERO;
+  const ETH_ZERO = process.env.REACT_APP_ETH_ZERO;
 
   const activeOffersColumns = [
     {
@@ -33,7 +33,7 @@ const OffersModal = ({
           className={`text-color-one font-size-16 letter-spacing-small`}
         >
           <img src={ckBtc} alt="noimage" width="20px" />{" "}
-          {Number(obj.loanAmount) / BTC_ZERO}
+          {Number(obj.loanAmount) / ETH_ZERO}
         </Flex>
       ),
     },
@@ -43,9 +43,13 @@ const OffersModal = ({
       align: "center",
       dataIndex: "loanToValue",
       render: (_, obj) => {
+        const floor = Number(offerModalData.floorPrice);
+        const loanAmount = Number(obj.loanAmount) / BTC_ZERO;
+        const LTV = Math.round(loanAmount / floor);
+
         return (
           <Text className={`text-color-one font-size-16 letter-spacing-small`}>
-            {obj.loanToValue}%
+            {LTV}%
           </Text>
         );
       },
@@ -57,7 +61,7 @@ const OffersModal = ({
       dataIndex: "loanTime",
       render: (_, obj) => (
         <Text className={`text-color-one font-size-16 letter-spacing-small`}>
-          {getTimeAgo(Number(obj.loanTime) / 1000000)}
+          {getTimeAgo(Number(obj.createdAt) * 1000)}
         </Text>
       ),
     },
@@ -114,10 +118,9 @@ const OffersModal = ({
                     align: "center",
                     dataIndex: "borrow",
                     render: (_, obj) => {
-                      // const userOffer = userOffers?.find(
-                      //   (predict) =>
-                      //     predict.ckTransactionID === obj.ckTransactionID
-                      // );
+                      const floor = Number(offerModalData.floorPrice);
+                      const loanAmount = Number(obj.loanAmount) / BTC_ZERO;
+                      const LTV = Math.round(loanAmount / floor);
                       return (
                         <CustomButton
                           className={
@@ -138,6 +141,7 @@ const OffersModal = ({
                             setLendModalData({
                               ...obj,
                               ...offerModalData,
+                              LTV,
                             });
                           }}
                         />
