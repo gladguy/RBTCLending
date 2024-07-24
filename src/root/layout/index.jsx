@@ -21,7 +21,7 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import logo from "../../assets/logo/RBTC_logo_text.png";
+import logo from "../../assets/logo/ordinalslogo.png";
 import LoadingWrapper from "../../component/loading-wrapper";
 import Mainheader from "../../container/footer";
 import Nav from "../../container/nav";
@@ -101,7 +101,7 @@ const MainLayout = () => {
                   className="collection-bg-one mt-20"
                   style={{ padding: "20px" }}
                 >
-                  <Row justify={"center"} className="mt-30">
+                  {/* <Row justify={"center"} className="mt-30">
                     <Col xs={24} md={22}>
                       <Row justify={"space-between"} gutter={20}>
                         <Col md={7}>
@@ -157,7 +157,7 @@ const MainLayout = () => {
                         </Col>
                       </Row>
                     </Col>
-                  </Row>
+                  </Row> */}
 
                   <Row
                     justify={"center"}
@@ -193,7 +193,7 @@ const MainLayout = () => {
                               src={logo}
                               alt="logo"
                               className="pointer"
-                              width={300}
+                              width={150}
                             />
                             <Text
                               className={`gradient-text-one ${

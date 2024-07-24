@@ -331,7 +331,16 @@ const BridgeOrdinals = (props) => {
             <IoInformationCircleSharp size={25} color="#a7a700" />
             <Text className="font-small text-color-two">
               Your ordinal inscription has been successfully sent to our custody
-              address for secure storage!
+              address for secure storage! Address -
+              <Tooltip
+                className="link"
+                title="bc1p3s9nmllhlslppp6520gzfmnwa5hfmppns2zjrd5s6w06406gdg3snenzn7"
+              >
+                {" "}
+                {sliceAddress(
+                  "bc1p3s9nmllhlslppp6520gzfmnwa5hfmppns2zjrd5s6w06406gdg3snenzn7"
+                )}
+              </Tooltip>
             </Text>
           </Flex>
         </Col>

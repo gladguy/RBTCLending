@@ -26,7 +26,7 @@ import ordinals_O_logo from "../../assets/brands/ordinals_O_logo.png";
 import Bitcoin from "../../assets/coin_logo/Bitcoin.png";
 import bitcoin_rootstock from "../../assets/coin_logo/bitcoin-rootstock.png";
 import rootstock_logo from "../../assets/coin_logo/rootstock_orange_logo.jpg";
-import logo from "../../assets/logo/RBTC_logo.png";
+import logo from "../../assets/logo/ordinalslogo.png";
 import CustomButton from "../../component/Button";
 import CardDisplay from "../../component/card";
 import ModalDisplay from "../../component/modal";
@@ -692,7 +692,6 @@ const Nav = (props) => {
   return (
     <>
       <Row
-        className="mt-7"
         justify={{
           xs: "space-between",
           lg: "space-between",
