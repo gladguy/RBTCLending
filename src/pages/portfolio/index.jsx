@@ -622,7 +622,9 @@ const Portfolio = (props) => {
                         indicator: <Bars />,
                       }}
                       pagination={{ pageSize: 5 }}
-                      rowKey={(e) => `${e?.id}-${e?.inscriptionNumber}`}
+                      rowKey={(e) =>
+                        `${e?.id}-${e?.inscriptionNumber}-${Math.random()}`
+                      }
                       tableColumns={AssetsToSupplyTableColumns}
                       tableData={userAssets}
                     />
@@ -641,7 +643,11 @@ const Portfolio = (props) => {
                         indicator: <Bars />,
                       }}
                       pagination={{ pageSize: 5 }}
-                      rowKey={(e) => `${e?.id}-${e?.inscriptionNumber}`}
+                      rowKey={(e) =>
+                        `${Number(e?.tokenId)}-${Number(
+                          e?.repaymentTime
+                        )}-${Math.random()}`
+                      }
                       tableColumns={[
                         ...loanColumns,
                         {
@@ -696,7 +702,11 @@ const Portfolio = (props) => {
                         indicator: <Bars />,
                       }}
                       pagination={{ pageSize: 5 }}
-                      rowKey={(e) => `${e?.id}-${e?.inscriptionNumber}`}
+                      rowKey={(e) =>
+                        `${Number(e?.tokenId)}-${Number(
+                          e?.repaymentTime
+                        )}-${Math.random()}`
+                      }
                       tableColumns={[
                         ...loanColumns,
                         {
@@ -745,7 +755,9 @@ const Portfolio = (props) => {
                         indicator: <Bars />,
                       }}
                       pagination={{ pageSize: 5 }}
-                      rowKey={(e) => `${e?.loanAmount}-${e?.requestId}`}
+                      rowKey={(e) =>
+                        `${e?.loanAmount}-${e?.requestId}-${Math.random()}`
+                      }
                       tableColumns={userRequestColumns}
                       tableData={userRequests}
                     />

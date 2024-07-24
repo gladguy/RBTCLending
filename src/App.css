@@ -221,6 +221,10 @@ a {
   border-radius: 15px;
 }
 
+.border-color-ash {
+  border: 1px solid #7c7c7c;
+}
+
 /* togglebutton color */
 .ant-switch {
   background-color: #222222;
@@ -1679,6 +1683,10 @@ input::-webkit-input-placeholder {
   border: none !important;
 }
 
+.border-padding-medium {
+  padding: 8px;
+}
+
 .ant-modal-close {
   color: whitesmoke !important;
   border: 1px solid !important;
@@ -2798,4 +2806,22 @@ figure:hover+span {
 
 .svg_back {
   transform: scaleX(-1);
+}
+
+.stamp {
+  transform: rotate(4deg);
+  color: #fff;
+  bottom: 60px;
+  left: 3px;
+  font-size: 1rem;
+  position: absolute;
+  font-weight: 600;
+  border: 0.25rem solid #fff;
+  display: inline-block;
+  padding: 0.25rem 1rem;
+  text-transform: uppercase;
+  border-radius: 1rem;
+  font-family: 'Courier';
+  -webkit-mask-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/8399/grunge.png");
+  -webkit-mask-size: 944px 604px;
 }

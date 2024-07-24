@@ -104,6 +104,7 @@ const Nav = (props) => {
   const ref3 = useRef(null);
   const ref4 = useRef(null);
   const ref5 = useRef(null);
+  const ref6 = useRef(null);
 
   const [openTour, setOpenTour] = useState(
     localStorage.getItem("isTourEnabled") ?? true
@@ -812,6 +813,23 @@ const Nav = (props) => {
                   ref={ref5}
                 >
                   Portfolio
+                </Text>
+
+                <Text className="font-xsmall color-grey">|</Text>
+
+                <Text
+                  className={`${
+                    location.pathname === "/activeloans"
+                      ? "headertitle headerStyle"
+                      : "font-style headerCompanyName"
+                  } pointer heading-one `}
+                  onClick={() => {
+                    navigate("/activeloans");
+                    dispatch(setLendHeader(false));
+                  }}
+                  ref={ref6}
+                >
+                  Active Loans
                 </Text>
               </Flex>
             </>
