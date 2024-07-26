@@ -330,8 +330,8 @@ const BridgeOrdinals = (props) => {
           <Flex className="page-box" align="center" gap={3}>
             <IoInformationCircleSharp size={25} color="#a7a700" />
             <Text className="font-small text-color-two">
-              Your ordinal inscription has been successfully sent to our custody
-              address for secure storage! Address -
+              Your ordinal inscription stored in custody address.
+              Address -
               <Tooltip
                 className="link"
                 title="bc1pjj4uzw3svyhezxqq7cvqdxzf48kfhklxuahyx8v8u69uqfmt0udqlhwhwz"
