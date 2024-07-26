@@ -375,10 +375,9 @@ const Borrowing = (props) => {
               gasPrice: 1000000000,
             });
 
-          isApproved = await tokensContract.isApprovedForAll(
-            metaAddress,
-            BorrowContractAddress
-          );
+          isApproved = await tokensContract.methods
+            .isApprovedForAll(metaAddress, BorrowContractAddress)
+            .call({ from: metaAddress });
         }
 
         if (isApproved) {

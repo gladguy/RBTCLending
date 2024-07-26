@@ -9,7 +9,7 @@ import {
   Typography,
 } from "antd";
 import gsap from "gsap";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import bitcoin from "../../assets/coin_logo/Bitcoin.png";
 import borrows from "../../assets/logo/Borrowing.png";
 import lends from "../../assets/logo/Lending.png";
@@ -40,6 +40,12 @@ const Home = (props) => {
       repeat: 1, // Repeats immediately, not waiting for the other staggered animations to finish
     },
   });
+
+  useEffect(() => {
+    if (collections[0]) {
+      setCollectionList(collections.slice(0, 9));
+    }
+  }, [collections]);
 
   return (
     <React.Fragment>
