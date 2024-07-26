@@ -285,6 +285,7 @@ const Borrowing = (props) => {
                 APY: obj.APY,
                 interestTerm,
                 interestPerDay,
+                floorPrice: floor,
                 sliderLTV: obj.LTV ? obj.LTV : sliderLTV,
               });
             }}
@@ -434,6 +435,7 @@ const Borrowing = (props) => {
   };
 
   const fetchBorrowRequests = async () => {
+    console.log("INSIDE");
     try {
       const borrowContract = await contractGenerator(
         borrowJson,
@@ -456,7 +458,7 @@ const Borrowing = (props) => {
       const revealed = await Promise.all(promises);
 
       const finalData = revealed.filter((asset) => !asset.request?.requestId);
-
+      console.log("finalData", finalData);
       if (finalData?.length) {
         setCollateralData(finalData);
       } else {
@@ -485,10 +487,13 @@ const Borrowing = (props) => {
     if (activeWallet.length && borrowCollateral?.length && isEthConnected) {
       fetchBorrowRequests();
     }
+
+    if (!borrowCollateral?.length) {
+      setCollateralData([]);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeWallet, borrowCollateral, isEthConnected]);
 
-  // console.log("borrowModalData", borrowModalData);
   return (
     <>
       <Row justify={"space-between"} align={"middle"}>
@@ -564,7 +569,7 @@ const Borrowing = (props) => {
         onCancel={toggleBorrowModal}
         width={"38%"}
       >
-        {/* Lend Image Display */}
+        {/* Borrow Image Display */}
         <Row justify={"space-between"} className="mt-15">
           <Col md={3}>
             <img
@@ -599,7 +604,7 @@ const Borrowing = (props) => {
                   style={{ justifyContent: "center" }}
                   width={15}
                 />{" "}
-                {(borrowModalData.floorPrice / BTC_ZERO).toFixed(3)}
+                {(borrowModalData.floorPrice / BTC_ZERO).toFixed(4)}
               </Text>
             </Flex>
           </Col>

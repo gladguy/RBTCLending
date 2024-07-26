@@ -322,7 +322,7 @@ const BridgeOrdinals = (props) => {
       },
     },
   ];
-
+  console.log("userCollateral", userCollateral);
   return (
     <>
       <Row justify={"space-between"} align={"middle"}>
@@ -352,7 +352,9 @@ const BridgeOrdinals = (props) => {
                     "bc1pjj4uzw3svyhezxqq7cvqdxzf48kfhklxuahyx8v8u69uqfmt0udqlhwhwz"
                   )}
                 </Tooltip>
-              </Link>
+                .
+              </Link>{" "}
+              Ordinals sent will reflect here in 15 minutes.
             </Text>
           </Flex>
         </Col>
@@ -414,7 +416,9 @@ const BridgeOrdinals = (props) => {
                     indicator: <Bars />,
                   }}
                   pagination={{ pageSize: 5 }}
-                  rowKey={(e) => `${e?.id}-${e?.inscriptionNumber}`}
+                  rowKey={(e) =>
+                    `${e?.id}-${e?.inscriptionNumber}-${Math.random()}`
+                  }
                   tableColumns={AssetsToSupplyTableColumns}
                   tableData={userCollateral}
                 />
