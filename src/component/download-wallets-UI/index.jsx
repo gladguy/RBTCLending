@@ -1,34 +1,18 @@
 import { Col, Row, Typography } from "antd";
 import { IoCloudDownload } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import claimed from "../../assets/airdrop/claimed.png";
-import plug from "../../assets/wallet-logo/plug_logo.png";
 import unisat from "../../assets/wallet-logo/unisat_logo.png";
-import myordinals from "../../assets/logo/ordinalslogo.png";
 import xverse from "../../assets/wallet-logo/xverse_logo_whitebg.png";
-import petra from "../../assets/wallet-logo/petra.png";
 import magiceden from "../../assets/brands/magiceden.svg";
 
 const WalletUI = ({ isAirdrop, isPlugError }) => {
   const { Text } = Typography;
-  const plugLink = process.env.REACT_APP_PLUG;
   const unisatLink = process.env.REACT_APP_UNISAT;
   const xverseLink = process.env.REACT_APP_XVERSE;
   const magicedenLink = process.env.REACT_APP_MAGICEDEN;
-  const petraLink = process.env.REACT_APP_PETRA;
 
   return (
     <>
-      <Row justify={"center"} className="mt-70">
-        <img
-          className="egg airdrop_claimed"
-          src={isAirdrop ? claimed : myordinals}
-          alt="noimage"
-          style={{ justifyContent: "center", borderRadius: "25%" }}
-          width="80dvw"
-        />
-      </Row>
-
       <Row justify={"center"} className="mt-15">
         <Text className="text-color-one font-large font-weight-600">
           {isAirdrop
@@ -40,7 +24,6 @@ const WalletUI = ({ isAirdrop, isPlugError }) => {
             : "Download the below wallets !"}
         </Text>
       </Row>
-
       <Row justify={"center"} align={"middle"} className="mt-7" gutter={10}>
         <Col>
           <Text className="text-color-two font-small">
@@ -55,7 +38,6 @@ const WalletUI = ({ isAirdrop, isPlugError }) => {
           />
         </Col>
       </Row>
-
       {!isAirdrop && (
         <Row justify={"center"}>
           <Col md={20}>
@@ -64,7 +46,7 @@ const WalletUI = ({ isAirdrop, isPlugError }) => {
               align={"middle"}
               className="mt-20 walletsCard"
             >
-              <Col>
+              {/* <Col>
                 <Link
                   className="iconalignment float-up-medium"
                   target="_blank"
@@ -77,7 +59,7 @@ const WalletUI = ({ isAirdrop, isPlugError }) => {
                     width="60dvw"
                   />
                 </Link>
-              </Col>
+              </Col> */}
               <Col>
                 <Link
                   className="iconalignment float-up-medium"
@@ -120,7 +102,7 @@ const WalletUI = ({ isAirdrop, isPlugError }) => {
                   />
                 </Link>
               </Col>
-              <Col>
+              {/* <Col>
                 <Link
                   className="iconalignment float-up-medium"
                   target="_blank"
@@ -133,7 +115,7 @@ const WalletUI = ({ isAirdrop, isPlugError }) => {
                     width="60dvw"
                   />
                 </Link>
-              </Col>
+              </Col> */}
             </Row>
           </Col>
         </Row>

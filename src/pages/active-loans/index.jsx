@@ -110,8 +110,7 @@ const ActiveLoans = (props) => {
       }
     }
   };
-  console.log("contractTokens", contractTokens);
-  console.log("collateralCount", collateralCount);
+
   useEffect(() => {
     if (active.length && approvedCollections[0]) {
       getContractCollaterals();

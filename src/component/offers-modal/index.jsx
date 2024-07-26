@@ -76,7 +76,7 @@ const OffersModal = ({
     >
       <Row justify={"center"}>
         <Text className={"gradient-text-one font-xlarge letter-spacing-small"}>
-          Requests on {offerModalData.collectionName}
+          Accept Loan on {offerModalData.collectionName}
         </Text>
       </Row>
 

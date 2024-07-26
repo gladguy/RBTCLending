@@ -388,7 +388,7 @@ const Nav = (props) => {
           const networkId = await web3.eth.net.getId();
 
           if (Number(networkId) !== 31) {
-            Notify("error", "Switch to the tCORE network!");
+            Notify("error", "Switch to the RBTC network!");
             return;
           }
 

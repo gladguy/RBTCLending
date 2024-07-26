@@ -92,7 +92,7 @@ const Borrowing = (props) => {
           let assets = collateralData?.filter(
             (p) => p.collectionSymbol === record.symbol
           );
-          if (assets.length) {
+          if (assets?.length) {
             return record;
           }
         } else {
@@ -358,7 +358,7 @@ const Borrowing = (props) => {
       // const API = agentCreator(rootstockApiFactory, rootstock);
 
       try {
-        const isApproved = await tokensContract.methods
+        let isApproved = await tokensContract.methods
           .isApprovedForAll(metaAddress, BorrowContractAddress)
           .call({ from: metaAddress });
 
@@ -374,6 +374,11 @@ const Borrowing = (props) => {
               gas: Number(approveEstimateGas).toString(),
               gasPrice: 1000000000,
             });
+
+          isApproved = await tokensContract.isApprovedForAll(
+            metaAddress,
+            BorrowContractAddress
+          );
         }
 
         if (isApproved) {
@@ -467,7 +472,11 @@ const Borrowing = (props) => {
 
       const finalData = revealed.filter((asset) => !asset.request?.requestId);
 
-      setCollateralData(finalData);
+      if (finalData?.length) {
+        setCollateralData(finalData);
+      } else {
+        setCollateralData([]);
+      }
     } catch (error) {
       console.log("request fetching error", error);
     }
@@ -1164,7 +1173,7 @@ const Borrowing = (props) => {
           </Col>
         </Row>
 
-        {/* Lend button */}
+        {/* Borrow button */}
         <Row
           justify={activeWallet.length ? "end" : "center"}
           className={`${

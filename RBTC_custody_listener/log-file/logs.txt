@@ -1,0 +1,17 @@
+(2024-07-26 12:45:24) - [INFO] --> *********** --- IN PRODUCTION PHASE --- ***********
+(2024-07-26 12:45:25) - [INFO] --> Current inscriptions 
+(2024-07-26 12:45:27) - [INFO] --> Read txid from file:
+(2024-07-26 12:45:27) - [INFO] --> Index_Of_Tx
+(2024-07-26 12:45:27) - [INFO] --> TYPE 2
+(2024-07-26 12:45:27) - [INFO] --> SLICED TXS , [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+(2024-07-26 12:45:27) - [INFO] --> New Assets 😍 , [object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+(2024-07-26 12:45:37) - [INFO] --> -- ALL DONE 😉 --
+(2024-07-26 12:45:37) - [INFO] --> *********** --- IN PRODUCTION PHASE --- ***********
+(2024-07-26 12:45:39) - [INFO] --> Current inscriptions 6
+(2024-07-26 12:45:39) - [INFO] --> -- No New Assets 😏 --
+(2024-07-26 12:50:37) - [INFO] --> *********** --- IN PRODUCTION PHASE --- ***********
+(2024-07-26 12:50:39) - [INFO] --> -- No New Assets 😏 --
+(2024-07-26 12:50:39) - [INFO] --> Current inscriptions 6
+(2024-07-26 12:55:37) - [INFO] --> *********** --- IN PRODUCTION PHASE --- ***********
+(2024-07-26 12:55:39) - [INFO] --> -- No New Assets 😏 --
+(2024-07-26 12:55:39) - [INFO] --> Current inscriptions 6

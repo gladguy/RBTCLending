@@ -200,6 +200,13 @@ const MainLayout = () => {
                                 screens.xs ? "font-xssmall" : "font-small"
                               } font-family-one letter-spacing-small`}
                             >
+                              My Ordinals.Loan - Rootstock
+                            </Text>
+                            <Text
+                              className={`gradient-text-one ${
+                                screens.xs ? "font-xssmall" : "font-small"
+                              } font-family-one letter-spacing-small`}
+                            >
                               {footerText}
                             </Text>
                           </Flex>

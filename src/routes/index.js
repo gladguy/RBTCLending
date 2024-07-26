@@ -17,19 +17,9 @@ export const publicRoutes = [
     component: lazy(() => import("../pages/portfolio")),
   },
   {
-    name: "MyAssets",
-    path: `/myassets`,
-    component: lazy(() => import("../pages/my-assets")),
-  },
-  {
     name: "BridgeOrdinals",
     path: `/bridge`,
     component: lazy(() => import("../pages/bridgeOrdinals")),
-  },
-  {
-    name: "Dashboard",
-    path: `/dashboard`,
-    component: lazy(() => import("../pages/dashboard")),
   },
   {
     name: "Lending",

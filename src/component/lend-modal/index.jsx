@@ -215,7 +215,7 @@ const LendModal = ({
                   <Text
                     className={`font-small text-color-one letter-spacing-small`}
                   >
-                    Request Summary
+                    Accept Summary
                   </Text>
                 ),
                 children: (

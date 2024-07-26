@@ -1,23 +1,20 @@
 import { Col, Flex, Grid, Row, Skeleton, Tooltip, Typography } from "antd";
 import React, { useState } from "react";
 import { BiSolidOffer } from "react-icons/bi";
+import { MdOutlineTimer } from "react-icons/md";
 import { Bars } from "react-loading-icons";
 import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
 import CustomButton from "../../component/Button";
+import CardDisplay from "../../component/card";
 import LendModal from "../../component/lend-modal";
 import Notify from "../../component/notification";
 import OffersModal from "../../component/offers-modal";
 import TableComponent from "../../component/table";
 import { propsContainer } from "../../container/props-container";
 import { setOffers } from "../../redux/slice/constant";
-import CardDisplay from "../../component/card";
-import { MdOutlineTimer } from "react-icons/md";
-import { agentCreator, rootstock } from "../../utils/common";
-import { rootstockApiFactory } from "../../rootstock_canister";
 
 const Lending = (props) => {
   const { reduxState, dispatch } = props.redux;
-  const { getAllBorrowRequests } = props.wallet;
   const approvedCollections = reduxState.constant.approvedCollections;
   const userAssets = reduxState.constant.userAssets;
   const allBorrowRequest = reduxState.constant.allBorrowRequest;
@@ -101,7 +98,7 @@ const Lending = (props) => {
                   className={`text-color-one grey-bg-color border-radius-30 card-box pointer border-color-dark iconalignment shine font-size-16 letter-spacing-small`}
                 >
                   <BiSolidOffer size={20} />
-                  Requests
+                  Accept
                 </Text>
               </Flex>
             </Col>
@@ -187,14 +184,16 @@ const Lending = (props) => {
             title={"Lend"}
             size="medium"
             onClick={() => {
-              toggleLendModal();
-              setLendModalData({
-                collateral: "",
-                symbol: obj.symbol,
-                canisterId: obj.canister,
-                collectionName: obj.name,
-                thumbnailURI: obj.thumbnailURI,
-              });
+              fetchRequests(obj);
+
+              // toggleLendModal();
+              // setLendModalData({
+              //   collateral: "",
+              //   symbol: obj.symbol,
+              //   canisterId: obj.canister,
+              //   collectionName: obj.name,
+              //   thumbnailURI: obj.thumbnailURI,
+              // });
             }}
           />
         );

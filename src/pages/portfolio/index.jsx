@@ -52,6 +52,7 @@ const Portfolio = (props) => {
   //   : magicEdenAddress;
   const CONTENT_API = process.env.REACT_APP_ORDINALS_CONTENT_API;
   const BTC_ZERO = process.env.REACT_APP_BTC_ZERO;
+  const ETH_ZERO = process.env.REACT_APP_ETH_ZERO;
 
   const { Text } = Typography;
   const [copy, setCopy] = useState("Copy");
@@ -350,7 +351,7 @@ const Portfolio = (props) => {
         <Flex align="center" justify="center" gap={3}>
           <img src={Bitcoin} alt="noimage" width="20px" />{" "}
           <Text className="text-color-one">
-            {Number(obj.loanAmount) / BTC_ZERO}
+            {Number(obj.loanAmount) / ETH_ZERO}
           </Text>
         </Flex>
       ),
@@ -364,7 +365,7 @@ const Portfolio = (props) => {
         <Flex align="center" justify="center" gap={3}>
           <img src={Bitcoin} alt="noimage" width="20px" />{" "}
           <Text className="text-color-one">
-            {Number(obj.platformFee) / BTC_ZERO}
+            {Number(obj.platformFee) / ETH_ZERO}
           </Text>
         </Flex>
       ),
@@ -378,7 +379,7 @@ const Portfolio = (props) => {
         <Flex align="center" justify="center" gap={3}>
           <img src={Bitcoin} alt="noimage" width="20px" />{" "}
           <Text className="text-color-one">
-            {Number(obj.repayAmount) / BTC_ZERO}
+            {Number(obj.repayAmount) / ETH_ZERO}
           </Text>
         </Flex>
       ),

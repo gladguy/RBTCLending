@@ -5,6 +5,7 @@ import { FcApproval, FcHighPriority } from "react-icons/fc";
 import { ImSad } from "react-icons/im";
 import { IoInformationCircleSharp, IoWarningSharp } from "react-icons/io5";
 import { MdContentCopy } from "react-icons/md";
+import { LuRefreshCw } from "react-icons/lu";
 import { Bars } from "react-loading-icons";
 import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
 import CustomButton from "../../component/Button";
@@ -13,7 +14,11 @@ import Notify from "../../component/notification";
 import TableComponent from "../../component/table";
 import WalletConnectDisplay from "../../component/wallet-error-display";
 import { propsContainer } from "../../container/props-container";
-import { setLoading } from "../../redux/slice/constant";
+import {
+  setBorrowCollateral,
+  setLoading,
+  setUserCollateral,
+} from "../../redux/slice/constant";
 import {
   Capitalaize,
   MAGICEDEN_WALLET_KEY,
@@ -346,12 +351,28 @@ const BridgeOrdinals = (props) => {
         </Col>
       </Row>
 
+      <Row justify={"end"} align={"middle"} className="mt-20">
+        <Col
+          onClick={() => {
+            dispatch(setBorrowCollateral(null));
+            dispatch(setUserCollateral(null));
+            getCollaterals();
+          }}
+        >
+          <LuRefreshCw
+            className={`pointer ${userCollateral === null ? "spin" : ""}`}
+            color="whitesmoke"
+            size={25}
+          />
+        </Col>
+      </Row>
+
       {walletState.active.includes(XVERSE_WALLET_KEY) ||
       walletState.active.includes(UNISAT_WALLET_KEY) ||
       walletState.active.includes(MAGICEDEN_WALLET_KEY) ? (
         <Row
           justify={"space-between"}
-          className="mt-40 pad-bottom-30"
+          className="mt-20 pad-bottom-30"
           gutter={32}
         >
           <Col xl={24}>

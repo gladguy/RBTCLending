@@ -28,6 +28,7 @@ import {
   apiUrl,
   calculateAPY,
   contractGenerator,
+  ordinals,
   rootstock,
 } from "../../utils/common";
 import tokenAbiJson from "../../utils/tokens_abi.json";
@@ -74,8 +75,6 @@ export const propsContainer = (Component) => {
       : unisatAddress
       ? unisatAddress
       : magicEdenAddress;
-
-    const ordinalCanisterId = process.env.REACT_APP_ORDINAL_CANISTER_ID;
     const WAHEED_ADDRESS = process.env.REACT_APP_WAHEED_ADDRESS;
 
     const btcPrice = async () => {
@@ -109,7 +108,7 @@ export const propsContainer = (Component) => {
 
             const agent = Actor.createActor(apiFactory, {
               agent: ordinalAgent,
-              canisterId: ordinalCanisterId,
+              canisterId: ordinals,
             });
 
             dispatch(setAgent(agent));
@@ -234,6 +233,8 @@ export const propsContainer = (Component) => {
           );
           const finalPromise = await getCollectionDetails(filteredData);
           return finalPromise;
+        } else {
+          return [];
         }
       } catch (error) {
         console.log("error", error);
@@ -241,13 +242,14 @@ export const propsContainer = (Component) => {
     };
 
     const getCollaterals = async () => {
+      let colResult;
       try {
         const API = agentCreator(rootstockApiFactory, rootstock);
         const userAssets = await API.getUserSupply(
           IS_USER ? address : WAHEED_ADDRESS
         );
         const supplyData = userAssets.map((asset) => JSON.parse(asset));
-        const colResult = await getCollectionDetails(supplyData);
+        colResult = await getCollectionDetails(supplyData);
         // --------------------------------------------------
         const contract = await contractGenerator(
           tokenAbiJson,
@@ -279,6 +281,23 @@ export const propsContainer = (Component) => {
         dispatch(setUserCollateral(finalData));
       } catch (error) {
         console.log("Collateral fetching error", error);
+        const finalData = colResult.map((asset) => {
+          let data = { ...asset, collection: {} };
+          approvedCollections.forEach((col) => {
+            if (col.symbol === asset.collection.symbol) {
+              data = {
+                ...asset,
+                collection: col,
+                isToken: [].includes(asset.inscriptionNumber) ? true : false,
+              };
+            }
+          });
+          return data;
+        });
+
+        const borrowCollateral = finalData.filter((asset) => asset.isToken);
+        dispatch(setBorrowCollateral(borrowCollateral));
+        dispatch(setUserCollateral(finalData));
       }
     };
 
@@ -362,6 +381,8 @@ export const propsContainer = (Component) => {
 
           if (testData?.length) {
             dispatch(setUserAssets(testData));
+          } else {
+            dispatch(setUserAssets([]));
           }
         }
       })();
