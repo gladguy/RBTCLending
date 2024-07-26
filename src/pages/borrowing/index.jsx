@@ -324,20 +324,6 @@ const Borrowing = (props) => {
       } else {
         Notify("info", "Please wait!");
       }
-
-      // const contract = await contractGenerator();
-      // console.log("contract", contract, "obj.collectionID", obj.collectionID);
-      // const offers = await contract.methods
-      //   .getRequestByCollectionID(Number(obj.collectionID))
-      //   .call({ from: metaAddress });
-      // console.log("requests", offers);
-      // toggleOfferModal();
-      // // dispatch(setOffers(offers));
-      // setOfferModalData({
-      //   ...obj,
-      //   thumbnailURI: obj.thumbnailURI,
-      //   collectionName: obj.name,
-      // });
     } catch (error) {
       console.log("fetch offers modal error", error);
     }

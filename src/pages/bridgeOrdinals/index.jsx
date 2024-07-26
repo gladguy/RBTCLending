@@ -29,6 +29,7 @@ import {
   sliceAddress,
 } from "../../utils/common";
 import tokenAbiJson from "../../utils/tokens_abi.json";
+import { Link } from "react-router-dom";
 
 const BridgeOrdinals = (props) => {
   const { getCollaterals } = props.wallet;
@@ -335,17 +336,23 @@ const BridgeOrdinals = (props) => {
           <Flex className="page-box" align="center" gap={3}>
             <IoInformationCircleSharp size={25} color="#a7a700" />
             <Text className="font-small text-color-two">
-              Your ordinal inscription stored in custody address.
-              Address -
-              <Tooltip
-                className="link"
-                title="bc1pjj4uzw3svyhezxqq7cvqdxzf48kfhklxuahyx8v8u69uqfmt0udqlhwhwz"
+              Your ordinal inscription stored in custody address. Address -
+              <Link
+                to={
+                  "https://ordiscan.com/address/bc1pjj4uzw3svyhezxqq7cvqdxzf48kfhklxuahyx8v8u69uqfmt0udqlhwhwz"
+                }
+                target="_blank"
               >
-                {" "}
-                {sliceAddress(
-                  "bc1pjj4uzw3svyhezxqq7cvqdxzf48kfhklxuahyx8v8u69uqfmt0udqlhwhwz"
-                )}
-              </Tooltip>
+                <Tooltip
+                  className="link"
+                  title="bc1pjj4uzw3svyhezxqq7cvqdxzf48kfhklxuahyx8v8u69uqfmt0udqlhwhwz"
+                >
+                  {" "}
+                  {sliceAddress(
+                    "bc1pjj4uzw3svyhezxqq7cvqdxzf48kfhklxuahyx8v8u69uqfmt0udqlhwhwz"
+                  )}
+                </Tooltip>
+              </Link>
             </Text>
           </Flex>
         </Col>

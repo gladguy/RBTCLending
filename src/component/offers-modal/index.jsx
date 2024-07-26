@@ -120,7 +120,9 @@ const OffersModal = ({
                     align: "center",
                     dataIndex: "borrow",
                     render: (_, obj) => {
-                      const floor = Number(offerModalData.floorPrice);
+                      const floor = Number(offerModalData.floorPrice)
+                        ? Number(offerModalData.floorPrice)
+                        : 30000;
                       const loanAmount = Number(obj.loanAmount) / BTC_ZERO;
                       const LTV = Math.round(loanAmount / floor);
                       return (

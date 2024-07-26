@@ -54,13 +54,6 @@ const LendModal = ({
         return;
       }
 
-      // const API = agentCreator(rootstockApiFactory, rootstock);
-      // await API.addTokenToAddress(
-      //   metaAddress,
-      //   [lendModalData.inscriptionNumber],
-      //   foundaryId
-      // );
-
       const borrowContract = await contractGenerator(
         borrowJson,
         BorrowContractAddress
