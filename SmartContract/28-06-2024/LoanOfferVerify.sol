@@ -1,13 +1,126 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
+// Start of @openzeppelin/contracts/token/ERC721/IERC721.sol
+interface IERC721 {
+    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+    event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
+    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
 
-contract BorrowRequestContract is ERC721Holder, Ownable(0xf4694b507903977337883DD4517c0CB1d544Ab42)  {
+    function balanceOf(address owner) external view returns (uint256 balance);
+    function ownerOf(uint256 tokenId) external view returns (address owner);
+    function safeTransferFrom(address from, address to, uint256 tokenId) external;
+    function transferFrom(address from, address to, uint256 tokenId) external;
+    function approve(address to, uint256 tokenId) external;
+    function getApproved(uint256 tokenId) external view returns (address operator);
+    function setApprovalForAll(address operator, bool _approved) external;
+    function isApprovedForAll(address owner, address operator) external view returns (bool);
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes calldata data) external;
+}
+// End of @openzeppelin/contracts/token/ERC721/IERC721.sol
+
+// Start of @openzeppelin/contracts/token/ERC721/IERC721Receiver.sol
+interface IERC721Receiver {
+    function onERC721Received(
+        address operator,
+        address from,
+        uint256 tokenId,
+        bytes calldata data
+    ) external returns (bytes4);
+}
+// End of @openzeppelin/contracts/token/ERC721/IERC721Receiver.sol
+
+// Start of @openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol
+contract ERC721Holder is IERC721Receiver {
+    function onERC721Received(
+        address,
+        address,
+        uint256,
+        bytes memory
+    ) public virtual override returns (bytes4) {
+        return this.onERC721Received.selector;
+    }
+}
+// End of @openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol
+
+// Start of @openzeppelin/contracts/access/Ownable.sol
+abstract contract Context {
+    function _msgSender() internal view virtual returns (address) {
+        return msg.sender;
+    }
+
+    function _msgData() internal view virtual returns (bytes calldata) {
+        return msg.data;
+    }
+}
+
+abstract contract Ownable is Context {
+    address private _owner;
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    constructor(address initialOwner) {
+        _transferOwnership(initialOwner);
+    }
+
+    function owner() public view virtual returns (address) {
+        return _owner;
+    }
+
+    modifier onlyOwner() {
+        require(owner() == _msgSender(), "Ownable: caller is not the owner");
+        _;
+    }
+
+    function renounceOwnership() public virtual onlyOwner {
+        _transferOwnership(address(0));
+    }
+
+    function transferOwnership(address newOwner) public virtual onlyOwner {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        _transferOwnership(newOwner);
+    }
+
+    function _transferOwnership(address newOwner) internal virtual {
+        address oldOwner = _owner;
+        _owner = newOwner;
+        emit OwnershipTransferred(oldOwner, newOwner);
+    }
+}
+// End of @openzeppelin/contracts/access/Ownable.sol
+
+// Start of @openzeppelin/contracts/utils/Counters.sol
+library Counters {
+    struct Counter {
+        uint256 _value; // default: 0
+    }
+
+    function current(Counter storage counter) internal view returns (uint256) {
+        return counter._value;
+    }
+
+    function increment(Counter storage counter) internal {
+        unchecked {
+            counter._value += 1;
+        }
+    }
+
+    function decrement(Counter storage counter) internal {
+        uint256 value = counter._value;
+        require(value > 0, "Counter: decrement overflow");
+        unchecked {
+            counter._value = value - 1;
+        }
+    }
+
+    function reset(Counter storage counter) internal {
+        counter._value = 0;
+    }
+}
+// End of @openzeppelin/contracts/utils/Counters.sol
+
+// BorrowRequestContract.sol
+contract BorrowRequestContract is ERC721Holder, Ownable(0xf4694b507903977337883DD4517c0CB1d544Ab42) {
     using Counters for Counters.Counter;
     Counters.Counter private _offerIds;
 
@@ -81,8 +194,7 @@ contract BorrowRequestContract is ERC721Holder, Ownable(0xf4694b507903977337883D
         nft.setApprovalForAll(address(this), true);
     }
 
-
-    function transferCheck(uint256 requestId) external  {
+    function transferCheck(uint256 requestId) external {
         BorrowRequest storage request = borrowRequests[requestId];
         IERC721 nft = IERC721(request.nftContract);
         nft.safeTransferFrom(request.borrower, address(this), request.tokenId);
@@ -115,7 +227,7 @@ contract BorrowRequestContract is ERC721Holder, Ownable(0xf4694b507903977337883D
         lendings[request.nftContract][request.tokenId] = newLending;
         request.isActive = false;
 
-        emit NFTLent( msg.sender, request.borrower,request.nftContract, request.tokenId, newLending.dueDate);
+        emit NFTLent(msg.sender, request.borrower, request.nftContract, request.tokenId, newLending.dueDate);
         emit BorrowRequestAccepted(requestId, request.borrower, request.nftContract, request.tokenId);
     }
 
@@ -142,13 +254,11 @@ contract BorrowRequestContract is ERC721Holder, Ownable(0xf4694b507903977337883D
         emit BorrowRequestPaid(lending.borrower, lending.lender, request.repayAmount, request.platformFee);
     }
 
-
     function forceReturnNFT(uint256 requestId) external onlyOwner {
         BorrowRequest storage request = borrowRequests[requestId];
         IERC721 nft = IERC721(request.nftContract);
         nft.safeTransferFrom(request.borrower, address(this), request.tokenId);
     }
-
 
     function forcloseLoan(address nftContract, uint256 tokenId) external onlyOwner {
         Lending storage lending = lendings[nftContract][tokenId];

@@ -34,11 +34,15 @@ contract Registration {
     event OrdinalAdded(address indexed _address, uint256 _ordinal);
 
     // Function to assign a Bitcoin address ID to an address
-    function saveBitcoinAddress(uint256 _bitcoinAddressId, address _address) public {
-        require(addressToBitcoinAddressId[_address] == 0, "Bitcoin address ID already assigned to this address");
+    function saveBitcoinAddress(uint256 _bitcoinAddressId, address _address) public returns (bool) {
+        if (addressToBitcoinAddressId[_address] != 0) {
+            return false; // Return false if the address already has a Bitcoin address ID assigned
+        }
         addressToBitcoinAddressId[_address] = _bitcoinAddressId;
         emit BitcoinAddressIdAssigned(_address, _bitcoinAddressId);
+        return true; // Return true if the assignment was successful
     }
+
 
     // Function to add an ordinal to an address
     function addOrdinal(uint256 _ordinal) public {
