@@ -30,6 +30,7 @@ import {
 } from "../../utils/common";
 import tokenAbiJson from "../../utils/tokens_abi.json";
 import { Link } from "react-router-dom";
+import { PiCopyBold } from "react-icons/pi";
 
 const BridgeOrdinals = (props) => {
   const { getCollaterals } = props.wallet;
@@ -114,7 +115,7 @@ const BridgeOrdinals = (props) => {
         .send({
           from: metaAddress,
           gas: Number(estimateGas).toString(),
-          gasPrice: 1000000000,
+          gasPrice: 0.065,
         });
 
       if (storeResult.transactionHash) {
@@ -322,7 +323,7 @@ const BridgeOrdinals = (props) => {
       },
     },
   ];
-  console.log("userCollateral", userCollateral);
+
   return (
     <>
       <Row justify={"space-between"} align={"middle"}>
@@ -354,6 +355,17 @@ const BridgeOrdinals = (props) => {
                 </Tooltip>
                 .
               </Link>{" "}
+              <Tooltip title="Copied" trigger={"click"}>
+                <PiCopyBold
+                  className="pointer"
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      "bc1pjj4uzw3svyhezxqq7cvqdxzf48kfhklxuahyx8v8u69uqfmt0udqlhwhwz"
+                    );
+                  }}
+                  size={15}
+                />{" "}
+              </Tooltip>
               Ordinals sent will reflect here in 15 minutes.
             </Text>
           </Flex>
@@ -361,19 +373,23 @@ const BridgeOrdinals = (props) => {
       </Row>
 
       <Row justify={"end"} align={"middle"} className="mt-20">
-        <Col
-          onClick={() => {
-            dispatch(setBorrowCollateral(null));
-            dispatch(setUserCollateral(null));
-            getCollaterals();
-          }}
-        >
-          <LuRefreshCw
-            className={`pointer ${userCollateral === null ? "spin" : ""}`}
-            color="whitesmoke"
-            size={25}
-          />
-        </Col>
+        {activeWallet.length ? (
+          <Col
+            onClick={() => {
+              dispatch(setBorrowCollateral(null));
+              dispatch(setUserCollateral(null));
+              getCollaterals();
+            }}
+          >
+            <LuRefreshCw
+              className={`pointer ${userCollateral === null ? "spin" : ""}`}
+              color="whitesmoke"
+              size={25}
+            />
+          </Col>
+        ) : (
+          ""
+        )}
       </Row>
 
       {walletState.active.includes(XVERSE_WALLET_KEY) ||

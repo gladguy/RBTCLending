@@ -20,10 +20,7 @@ import {
   API_METHODS,
   BorrowContractAddress,
   IS_USER,
-  MAGICEDEN_WALLET_KEY,
   TokenContractAddress,
-  UNISAT_WALLET_KEY,
-  XVERSE_WALLET_KEY,
   agentCreator,
   apiUrl,
   calculateAPY,
@@ -334,14 +331,7 @@ export const propsContainer = (Component) => {
 
     useEffect(() => {
       (async () => {
-        if (
-          api_agent &&
-          (activeWallet.includes(XVERSE_WALLET_KEY) ||
-            activeWallet.includes(UNISAT_WALLET_KEY) ||
-            activeWallet.includes(MAGICEDEN_WALLET_KEY)) &&
-          collections[0]?.symbol &&
-          !userAssets
-        ) {
+        if (activeWallet.length && collections[0]?.symbol && !userAssets) {
           const result = await fetchWalletAssets(
             IS_USER
               ? xverseAddress
@@ -381,13 +371,11 @@ export const propsContainer = (Component) => {
 
           if (testData?.length) {
             dispatch(setUserAssets(testData));
-          } else {
-            dispatch(setUserAssets([]));
           }
         }
       })();
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeWallet, api_agent, dispatch, collections]);
+    }, [activeWallet, collections]);
 
     useEffect(() => {
       if (activeWallet.length && approvedCollections[0]) {

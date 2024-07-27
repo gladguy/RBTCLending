@@ -1844,7 +1844,7 @@ input::-webkit-input-placeholder {
 .borrowDataStyle {
   border-width: 1px;
   border-style: solid;
-  border-image: linear-gradient(#883cf9, #4402a5) 1 1;
+  /* border-image: linear-gradient(#883cf9, #4402a5) 1 1; */
   border-radius: 5px;
   padding: 0px 50px 0px 10px;
 }

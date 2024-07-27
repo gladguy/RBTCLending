@@ -86,7 +86,6 @@ const Nav = (props) => {
 
   const [isConnectModal, setConnectModal] = useState(false);
   const [open, setOpen] = useState(false);
-  const [finishBtn, setFinishBtn] = useState(false);
   const [screenDimensions, setScreenDimensions] = React.useState({
     width: window.screen.width,
     height: window.screen.height,
@@ -428,8 +427,9 @@ const Nav = (props) => {
   };
 
   const handleConnectionFinish = async () => {
+    collapseConnectedModal();
     try {
-      setFinishBtn(true);
+      dispatch(setLoading(true));
       let isConnectionExist = false;
       const API = agentCreator(rootstockApiFactory, rootstock);
       const btcAddress = walletConnection?.xverse
@@ -475,7 +475,7 @@ const Nav = (props) => {
             .send({
               from: metaAddress,
               gas: Number(estimateGas).toString(),
-              gasPrice: 1000000000,
+              gasPrice: 0.065,
             });
 
           if (storeResult.transactionHash) {
@@ -500,11 +500,10 @@ const Nav = (props) => {
           storeWallets(wallet);
         });
         Notify("success", "Wallet connection success!");
-        collapseConnectedModal();
       }
-      setFinishBtn(false);
+      dispatch(setLoading(false));
     } catch (error) {
-      setFinishBtn(false);
+      dispatch(setLoading(false));
       console.log("finish connection error", error);
     }
   };
@@ -925,6 +924,7 @@ const Nav = (props) => {
       <ModalDisplay
         open={isConnectModal}
         footer={""}
+        destroyOnClose={true}
         onCancel={() => {
           collapseConnectedModal();
           setWalletConnection({});
@@ -983,7 +983,7 @@ const Nav = (props) => {
                       />
                       <Text className="font-weight-600 letter-spacing-medium text-color-one font-large">
                         {" "}
-                        ROOT STOCK
+                        ROOTSTOCK
                       </Text>
                     </Row>
                   ),
@@ -1027,20 +1027,30 @@ const Nav = (props) => {
                     </>
                   ),
                 },
+                {
+                  key: "3",
+                  label: (
+                    <>
+                      {activeConnections.length === 2 ? (
+                        <Row align={"middle"}>
+                          <CustomButton
+                            block
+                            title={"Sign in"}
+                            onClick={handleConnectionFinish}
+                            className={
+                              "click-btn font-weight-600 letter-spacing-small"
+                            }
+                          />
+                        </Row>
+                      ) : (
+                        ""
+                      )}
+                    </>
+                  ),
+                },
               ]}
             />
           </Col>
-        </Row>
-
-        <Row justify={"start"} align={"middle"} className="mt-7">
-          <CustomButton
-            block
-            title={"Finish"}
-            loading={finishBtn}
-            onClick={handleConnectionFinish}
-            disabled={activeConnections.length !== 2}
-            className={"click-btn font-weight-600 letter-spacing-small"}
-          />
         </Row>
       </ModalDisplay>
 

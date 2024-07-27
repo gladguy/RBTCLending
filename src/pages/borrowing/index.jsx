@@ -68,6 +68,7 @@ const Borrowing = (props) => {
 
   const [collapseActiveKey, setCollapseActiveKey] = useState(["2"]);
   const [isRequestBtnLoading, setIsRequestBtnLoading] = useState(false);
+  const [isBorrowApproved, setIsBorrowApproved] = useState(null);
   const BTC_ZERO = process.env.REACT_APP_BTC_ZERO;
   const ETH_ZERO = process.env.REACT_APP_ETH_ZERO;
 
@@ -149,7 +150,7 @@ const Borrowing = (props) => {
                   className={`text-color-one grey-bg-color border-radius-30 card-box pointer border-color-dark iconalignment shine font-size-16 letter-spacing-small`}
                 >
                   <BiSolidOffer size={20} />
-                  Requests
+                  Accept
                 </Text>
               </Flex>
             </Col>
@@ -334,40 +335,13 @@ const Borrowing = (props) => {
     if (borrowModalData.collateral) {
       setIsRequestBtnLoading(true);
 
-      const tokensContract = await contractGenerator(
-        tokensJson,
-        TokenContractAddress
-      );
       const borrowContract = await contractGenerator(
         borrowJson,
         BorrowContractAddress
       );
-      // const API = agentCreator(rootstockApiFactory, rootstock);
 
       try {
-        let isApproved = await tokensContract.methods
-          .isApprovedForAll(metaAddress, BorrowContractAddress)
-          .call({ from: metaAddress });
-
-        if (!isApproved) {
-          const approveEstimateGas = await tokensContract.methods
-            .setApprovalForAll(BorrowContractAddress, true)
-            .estimateGas({ from: metaAddress });
-
-          await tokensContract.methods
-            .setApprovalForAll(BorrowContractAddress, true)
-            .send({
-              from: metaAddress,
-              gas: Number(approveEstimateGas).toString(),
-              gasPrice: 1000000000,
-            });
-
-          isApproved = await tokensContract.methods
-            .isApprovedForAll(metaAddress, BorrowContractAddress)
-            .call({ from: metaAddress });
-        }
-
-        if (isApproved) {
+        if (isBorrowApproved) {
           const amount = borrowModalData.amount * ETH_ZERO;
           const platformFee = Number(borrowModalData.platformFee);
           const repaymentAmount =
@@ -401,7 +375,7 @@ const Borrowing = (props) => {
             .send({
               from: metaAddress,
               gas: Number(estimateGas).toString(),
-              gasPrice: 1000000000,
+              gasPrice: 0.065,
             });
 
           if (requestResult.transactionHash) {
@@ -435,7 +409,6 @@ const Borrowing = (props) => {
   };
 
   const fetchBorrowRequests = async () => {
-    console.log("INSIDE");
     try {
       const borrowContract = await contractGenerator(
         borrowJson,
@@ -458,7 +431,6 @@ const Borrowing = (props) => {
       const revealed = await Promise.all(promises);
 
       const finalData = revealed.filter((asset) => !asset.request?.requestId);
-      console.log("finalData", finalData);
       if (finalData?.length) {
         setCollateralData(finalData);
       } else {
@@ -466,6 +438,43 @@ const Borrowing = (props) => {
       }
     } catch (error) {
       console.log("request fetching error", error);
+    }
+  };
+
+  const approveBorrowRequest = async () => {
+    setIsRequestBtnLoading(true);
+    const tokensContract = await contractGenerator(
+      tokensJson,
+      TokenContractAddress
+    );
+
+    let isApproved = await tokensContract.methods
+      .isApprovedForAll(metaAddress, BorrowContractAddress)
+      .call({ from: metaAddress });
+
+    if (isApproved) {
+      setIsBorrowApproved(isApproved);
+      setIsRequestBtnLoading(false);
+    } else {
+      const approveEstimateGas = await tokensContract.methods
+        .setApprovalForAll(BorrowContractAddress, true)
+        .estimateGas({ from: metaAddress });
+
+      await tokensContract.methods
+        .setApprovalForAll(BorrowContractAddress, true)
+        .send({
+          from: metaAddress,
+          gas: Number(approveEstimateGas).toString(),
+          gasPrice: 0.065,
+        });
+      setTimeout(async () => {
+        isApproved = await tokensContract.isApprovedForAll(
+          metaAddress,
+          BorrowContractAddress
+        );
+        setIsBorrowApproved(isApproved);
+        setIsRequestBtnLoading(false);
+      }, [3000]);
     }
   };
 
@@ -493,6 +502,13 @@ const Borrowing = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeWallet, borrowCollateral, isEthConnected]);
+
+  useEffect(() => {
+    if (activeWallet.length) {
+      approveBorrowRequest();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeWallet]);
 
   return (
     <>

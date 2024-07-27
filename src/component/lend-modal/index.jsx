@@ -72,7 +72,7 @@ const LendModal = ({
           from: metaAddress,
           value: Number(lendModalData.loanAmount),
           gas: Number(estimateGas).toString(),
-          gasPrice: 1000000000,
+          gasPrice: 0.065,
         });
 
       if (acceptLoan.transactionHash) {

@@ -194,9 +194,6 @@ const Portfolio = (props) => {
                     ? obj?.meta?.collection_page_img_url
                     : `${process.env.PUBLIC_URL}/collections/${obj?.collectionSymbol}`
                 }`}
-                // NatBoys
-                // src={`https://ipfs.io/ipfs/QmdQboXbkTdwEa2xPkzLsCmXmgzzQg3WCxWFEnSvbnqKJr/1842.png`}
-                // src={`${process.env.PUBLIC_URL}/collections/${obj?.collectionSymbol}.png`}
                 onError={(e) =>
                   (e.target.src = `${process.env.PUBLIC_URL}/collections/${obj?.collectionSymbol}.png`)
                 }
@@ -448,7 +445,7 @@ const Portfolio = (props) => {
           from: metaAddress,
           value: Number(request.repayAmount) + 4000,
           gas: Number(estimateGas).toString(),
-          gasPrice: 1000000000,
+          gasPrice: 0.065,
         });
 
       if (requestResult.transactionHash) {
@@ -804,7 +801,7 @@ const Portfolio = (props) => {
       <ModalDisplay
         width={"50%"}
         title={
-          <Row className="black-bg white-color font-large letter-spacing-small">
+          <Row className="white-color font-large letter-spacing-small">
             Details
           </Row>
         }
@@ -822,37 +819,66 @@ const Portfolio = (props) => {
           <Col md={18}>
             <Row>
               <Col md={12}>
-                {supplyModalItems &&
-                  (supplyModalItems?.mimeType === "text/html" ? (
-                    <iframe
-                      className="border-radius-30"
-                      title={`${supplyModalItems?.id}-borrow_image`}
-                      height={300}
-                      width={300}
-                      src={`${CONTENT_API}/content/${supplyModalItems?.id}`}
-                    />
-                  ) : (
-                    <>
-                      <img
-                        src={`${CONTENT_API}/content/${supplyModalItems?.id}`}
-                        alt={`${supplyModalItems?.id}-borrow_image`}
-                        className="border-radius-30"
-                        width={125}
-                      />
-                      <Row>
-                        <Text className="text-color-one ml">
-                          <span className="font-weight-600 font-small ">
-                            ${" "}
-                          </span>
-                          {(
-                            (Number(supplyModalItems?.collection?.floorPrice) /
-                              BTC_ZERO) *
-                            btcValue
-                          ).toFixed(2)}
-                        </Text>
-                      </Row>
-                    </>
-                  ))}
+                {supplyModalItems && (
+                  <>
+                    <Flex gap={5} vertical align="center">
+                      {supplyModalItems.contentType === "image/webp" ||
+                      supplyModalItems.contentType === "image/jpeg" ||
+                      supplyModalItems.contentType === "image/png" ? (
+                        <img
+                          src={`${CONTENT_API}/content/${supplyModalItems.id}`}
+                          alt={`${supplyModalItems.id}-borrow_image`}
+                          className="border-radius-30"
+                          width={70}
+                          height={70}
+                        />
+                      ) : supplyModalItems.contentType === "image/svg" ||
+                        supplyModalItems.contentType ===
+                          "text/html;charset=utf-8" ||
+                        supplyModalItems.contentType === "text/html" ||
+                        supplyModalItems.contentType === "image/svg+xml" ? (
+                        <iframe
+                          loading="lazy"
+                          width={"80px"}
+                          height={"80px"}
+                          style={{ border: "none", borderRadius: "20%" }}
+                          src={`${CONTENT_API}/content/${supplyModalItems.id}`}
+                          title="svg"
+                          sandbox="allow-scripts"
+                        >
+                          <svg
+                            viewBox="0 0 100 100"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <image
+                              href={`${CONTENT_API}/content/${supplyModalItems.id}`}
+                            />
+                          </svg>
+                        </iframe>
+                      ) : (
+                        <img
+                          src={`${
+                            supplyModalItems?.meta?.collection_page_img_url
+                              ? supplyModalItems?.meta?.collection_page_img_url
+                              : `${process.env.PUBLIC_URL}/collections/${supplyModalItems?.collectionSymbol}`
+                          }`}
+                          // NatBoys
+                          // src={`https://ipfs.io/ipfs/QmdQboXbkTdwEa2xPkzLsCmXmgzzQg3WCxWFEnSvbnqKJr/1842.png`}
+                          // src={`${process.env.PUBLIC_URL}/collections/${supplyModalItems?.collectionSymbol}.png`}
+                          onError={(e) =>
+                            (e.target.src = `${process.env.PUBLIC_URL}/collections/${supplyModalItems?.collectionSymbol}.png`)
+                          }
+                          alt={`${supplyModalItems.id}-borrow_image`}
+                          className="border-radius-30"
+                          width={70}
+                          height={70}
+                        />
+                      )}
+                      {Capitalaize(supplyModalItems.collectionSymbol)} - #
+                      {supplyModalItems.inscriptionNumber}
+                    </Flex>
+                  </>
+                )}
               </Col>
 
               <Col md={12}>
