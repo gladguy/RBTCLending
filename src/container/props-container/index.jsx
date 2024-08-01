@@ -1,4 +1,5 @@
 import { Actor, HttpAgent } from "@dfinity/agent";
+import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -24,7 +25,6 @@ import {
   agentCreator,
   apiUrl,
   calculateAPY,
-  contractGenerator,
   ordinals,
   rootstock,
 } from "../../utils/common";
@@ -46,11 +46,6 @@ export const propsContainer = (Component) => {
     const collections = reduxState.constant.collection;
     const approvedCollections = reduxState.constant.approvedCollections;
     const userAssets = reduxState.constant.userAssets;
-    const ckBtcAgent = reduxState.constant.ckBtcAgent;
-    const ckBtcActorAgent = reduxState.constant.ckBtcActorAgent;
-    const ckEthAgent = reduxState.constant.ckEthAgent;
-    const ckEthActorAgent = reduxState.constant.ckEthActorAgent;
-    const withdrawAgent = reduxState.constant.withdrawAgent;
 
     const [isEthConnected, setIsEthConnected] = useState(false);
 
@@ -127,7 +122,7 @@ export const propsContainer = (Component) => {
     useEffect(() => {
       (() => {
         setInterval(async () => {
-          if (ckBtcAgent) fetchBTCLiveValue();
+          fetchBTCLiveValue();
         }, [300000]);
         return () => clearInterval();
       })();
@@ -248,14 +243,26 @@ export const propsContainer = (Component) => {
         const supplyData = userAssets.map((asset) => JSON.parse(asset));
         colResult = await getCollectionDetails(supplyData);
         // --------------------------------------------------
-        const contract = await contractGenerator(
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+          TokenContractAddress,
           tokenAbiJson,
-          TokenContractAddress
+          signer
         );
 
-        const tokens = await contract.methods.tokensOfOwner(metaAddress).call();
+        const tokens = await contract.tokensOfOwner(metaAddress);
+        const userMintedTokens = tokens.map((token) =>
+          Number(token.toString())
+        );
 
-        const userMintedTokens = tokens.map((token) => Number(token));
+        // const contractTokens = await contract.tokensOfOwner(
+        //   BorrowContractAddress
+        // );
+        // const contractMintedTokens = contractTokens.map((token) =>
+        //   Number(token)
+        // );
+        // console.log("contractMintedTokens", contractMintedTokens);
 
         const finalData = colResult.map((asset) => {
           let data = { ...asset, collection: {} };
@@ -267,6 +274,7 @@ export const propsContainer = (Component) => {
                 isToken: userMintedTokens.includes(asset.inscriptionNumber)
                   ? true
                   : false,
+                inLoan: [].includes(asset.inscriptionNumber) ? true : false,
               };
             }
           });
@@ -316,13 +324,14 @@ export const propsContainer = (Component) => {
 
     const getAllBorrowRequests = async () => {
       try {
-        const contract = await contractGenerator(
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const borrowContract = new ethers.Contract(
+          BorrowContractAddress,
           borrowJson,
-          BorrowContractAddress
+          signer
         );
-        const ActiveReq = await contract.methods
-          .getActiveBorrowRequests()
-          .call();
+        const ActiveReq = await borrowContract.getActiveBorrowRequests();
         dispatch(setAllBorrowRequest(ActiveReq));
       } catch (error) {
         console.log("fetching all borrow request error", error);
@@ -405,12 +414,7 @@ export const propsContainer = (Component) => {
         redux={{ dispatch, reduxState }}
         wallet={{
           api_agent,
-          ckBtcAgent,
-          ckEthAgent,
-          withdrawAgent,
           isEthConnected,
-          ckBtcActorAgent,
-          ckEthActorAgent,
           getCollaterals,
           getAllBorrowRequests,
         }}

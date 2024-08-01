@@ -1,6 +1,4 @@
-import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";
 import { WalletStandardProvider } from "@wallet-standard/react";
-import { PetraWallet } from "petra-plugin-wallet-adapter";
 import React from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -11,22 +9,18 @@ import "./../App.css";
 import MainLayout from "./layout";
 
 const App = () => {
-  const wallets = [new PetraWallet()];
-
   return (
     <React.Fragment>
       <Provider store={store}>
-        <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
-          <PersistGate loading={null} persistor={persistor}>
-            <LoadingWrapper>
-              <Router>
-                <WalletStandardProvider>
-                  <MainLayout />
-                </WalletStandardProvider>
-              </Router>
-            </LoadingWrapper>
-          </PersistGate>
-        </AptosWalletAdapterProvider>
+        <PersistGate loading={null} persistor={persistor}>
+          <LoadingWrapper>
+            <Router>
+              <WalletStandardProvider>
+                <MainLayout />
+              </WalletStandardProvider>
+            </Router>
+          </LoadingWrapper>
+        </PersistGate>
       </Provider>
     </React.Fragment>
   );

@@ -8,6 +8,7 @@ import {
   Tooltip,
   Typography,
 } from "antd";
+import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { BiSolidSpreadsheet } from "react-icons/bi";
 import { FaHandHolding, FaMoneyBillAlt } from "react-icons/fa";
@@ -30,7 +31,6 @@ import {
   BorrowContractAddress,
   Capitalaize,
   DateTimeConverter,
-  contractGenerator,
   sliceAddress,
 } from "../../utils/common";
 
@@ -40,7 +40,7 @@ const Portfolio = (props) => {
   const walletState = reduxState.wallet;
   const dashboardData = reduxState.constant.dashboardData;
   // const xverseAddress = walletState.xverse.ordinals.address;
-  const userAssets = reduxState.constant.userAssets;
+  const userAssets = reduxState.constant.userAssets || [];
   // const unisatAddress = walletState.unisat.address;
   // const magicEdenAddress = walletState.magicEden.ordinals.address;
   const btcValue = reduxState.constant.btcvalue;
@@ -393,62 +393,72 @@ const Portfolio = (props) => {
   ];
 
   const fetchLendingRequests = async () => {
-    const contract = await contractGenerator(borrowJson, BorrowContractAddress);
-    const ActiveLendReq = await contract.methods
-      .getActiveLoansByLender(metaAddress)
-      .call();
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const borrowContract = new ethers.Contract(
+      BorrowContractAddress,
+      borrowJson,
+      signer
+    );
+    const ActiveLendReq = await borrowContract.getActiveLoansByLender(
+      metaAddress
+    );
     setUserLendings(ActiveLendReq);
   };
 
   const fetchBorrowingRequests = async () => {
-    const contract = await contractGenerator(borrowJson, BorrowContractAddress);
-    const ActiveBorrowReq = await contract.methods
-      .getActiveLoansByBorrower(metaAddress)
-      .call();
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const borrowContract = new ethers.Contract(
+      BorrowContractAddress,
+      borrowJson,
+      signer
+    );
+    const ActiveBorrowReq = await borrowContract.getActiveLoansByBorrower(
+      metaAddress
+    );
     setUserBorrowings(ActiveBorrowReq);
   };
 
   const fetchUserRequests = async () => {
-    const contract = await contractGenerator(borrowJson, BorrowContractAddress);
-    const UserBorrowReq = await contract.methods
-      .getBorrowRequestsByUser(metaAddress)
-      .call();
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const borrowContract = new ethers.Contract(
+      BorrowContractAddress,
+      borrowJson,
+      signer
+    );
+    const UserBorrowReq = await borrowContract.getBorrowRequestsByUser(
+      metaAddress
+    );
     setUserRequests(UserBorrowReq);
-
-    // const API = agentCreator(rootstockApiFactory, rootstock);
-    // const userBorrowReq = await API.getBorrowRequestsByBorrower(metaAddress);
-    // setUserRequests(UserBorrowReq);
   };
 
   const handleRepay = async (nftContract, tokenId) => {
     try {
       dispatch(setLoading(true));
-      const borrowContract = await contractGenerator(
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const borrowContract = new ethers.Contract(
+        BorrowContractAddress,
         borrowJson,
-        BorrowContractAddress
+        signer
       );
 
-      const request = await borrowContract.methods
-        .getBorrowRequestByTokenId(nftContract, tokenId)
-        .call();
+      const request = await borrowContract.getBorrowRequestByTokenId(
+        nftContract,
+        tokenId
+      );
 
-      const estimateGas = await borrowContract.methods
-        .loanRepayment(nftContract, tokenId)
-        .estimateGas({
-          from: metaAddress,
+      const requestResult = await borrowContract.loanRepayment(
+        nftContract,
+        tokenId,
+        {
           value: Number(request.repayAmount) + 4000,
-        });
+        }
+      );
 
-      const requestResult = await borrowContract.methods
-        .loanRepayment(nftContract, tokenId)
-        .send({
-          from: metaAddress,
-          value: Number(request.repayAmount) + 4000,
-          gas: Number(estimateGas).toString(),
-          gasPrice: 0.065,
-        });
-
-      if (requestResult.transactionHash) {
+      if (requestResult.hash) {
         Notify("success", "Repayment success!");
         fetchBorrowingRequests();
       }

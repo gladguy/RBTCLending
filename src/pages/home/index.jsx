@@ -205,8 +205,12 @@ const Home = (props) => {
               />
             </Flex>
             <Text className="card-box-one font-small text-color-two">
-              Borrow Bitcoin using Inscriptions, Ordinals, Runes, and BRC-20
-              tokens as collateral. Lend and earn up to 350% APY.
+              Borrow Bitcoin using your Inscriptions, Ordinals, and tokens as
+              collateral. This allows you to access funds without selling your
+              assets. Lend your Bitcoin and earn significant returns, with
+              potential annual percentage yields (APY) of up to 350%. This
+              provides a mutually beneficial opportunity for both borrowers
+              seeking liquidity and lenders looking to maximize their earnings.
             </Text>
           </Flex>
         </Col>

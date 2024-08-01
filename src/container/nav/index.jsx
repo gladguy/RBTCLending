@@ -14,6 +14,7 @@ import {
   Tour,
   Typography,
 } from "antd";
+import { ethers } from "ethers";
 import gsap from "gsap";
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineDisconnect } from "react-icons/ai";
@@ -31,11 +32,7 @@ import CustomButton from "../../component/Button";
 import CardDisplay from "../../component/card";
 import ModalDisplay from "../../component/modal";
 import Notify from "../../component/notification";
-import {
-  clearStates,
-  setLendHeader,
-  setLoading,
-} from "../../redux/slice/constant";
+import { setLoading } from "../../redux/slice/constant";
 import {
   clearWalletState,
   setMagicEdenCredentials,
@@ -49,7 +46,6 @@ import {
   API_METHODS,
   apiUrl,
   BTCWallets,
-  contractGenerator,
   IndexContractAddress,
   MAGICEDEN_WALLET_KEY,
   META_WALLET_KEY,
@@ -442,10 +438,16 @@ const Nav = (props) => {
       const isBtcExist = await API.retrieveByEthereumAddress(metaAddress);
       const isEthExist = await API.retrieveByBitcoinAddress(btcAddress);
       const isCounterExist = await API.retrieve(metaAddress);
-      const contract = await contractGenerator(indexJson, IndexContractAddress);
-      const isAccountExistInABI = await contract.methods
-        .getBitcoinAddressId(metaAddress)
-        .call();
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(
+        IndexContractAddress,
+        indexJson,
+        signer
+      );
+      const isAccountExistInABI = await contract.getBitcoinAddressId(
+        metaAddress
+      );
 
       // console.log(isBtcExist, isEthExist, isCounterExist, isAccountExistInABI);
 
@@ -708,7 +710,6 @@ const Nav = (props) => {
                 width="70px"
                 onClick={() => {
                   navigate("/");
-                  dispatch(setLendHeader(false));
                 }}
               />
             </Col>
@@ -727,7 +728,6 @@ const Nav = (props) => {
                   } pointer heading-one `}
                   onClick={() => {
                     navigate("/");
-                    dispatch(setLendHeader(false));
                   }}
                   ref={ref1}
                 >
@@ -742,7 +742,6 @@ const Nav = (props) => {
                   } pointer heading-one `}
                   onClick={() => {
                     navigate("/lending");
-                    dispatch(setLendHeader(false));
                   }}
                   ref={ref2}
                 >
@@ -758,7 +757,6 @@ const Nav = (props) => {
                   } pointer heading-one `}
                   onClick={() => {
                     navigate("/borrowing");
-                    dispatch(setLendHeader(false));
                   }}
                   ref={ref2}
                 >
@@ -774,8 +772,7 @@ const Nav = (props) => {
                   } pointer heading-one `}
                   onClick={() => {
                     navigate("/myassets");
-                    dispatch(setLendHeader(false));
-                  }}
+                    }}
                   ref={ref3}
                 >
                   My Assets
@@ -791,11 +788,10 @@ const Nav = (props) => {
                   } pointer heading-one `}
                   onClick={() => {
                     navigate("/bridge");
-                    dispatch(setLendHeader(false));
                   }}
                   ref={ref3}
                 >
-                  Bridge ordinals
+                  Bridge Ordinals
                 </Text>
                 <Text className="font-xsmall color-grey">|</Text>
                 <Text
@@ -806,7 +802,6 @@ const Nav = (props) => {
                   } pointer heading-one  `}
                   onClick={() => {
                     navigate("/portfolio");
-                    dispatch(setLendHeader(false));
                   }}
                   ref={ref5}
                 >
@@ -823,7 +818,6 @@ const Nav = (props) => {
                   } pointer heading-one `}
                   onClick={() => {
                     navigate("/activeloans");
-                    dispatch(setLendHeader(false));
                   }}
                   ref={ref6}
                 >
@@ -1092,7 +1086,6 @@ const Nav = (props) => {
                 <CustomButton
                   className={"click-btn font-weight-600 letter-spacing-small"}
                   onClick={async () => {
-                    dispatch(clearStates());
                     successMessageNotify("Your are signed out!");
                     dispatch(clearWalletState());
                     setWalletConnection({});
@@ -1243,7 +1236,6 @@ const Nav = (props) => {
                 <CustomButton
                   className={"click-btn font-weight-600 letter-spacing-small"}
                   onClick={async () => {
-                    dispatch(clearStates());
                     successMessageNotify("Your are signed out!");
                     dispatch(clearWalletState());
                     setWalletConnection({});

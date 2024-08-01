@@ -9,6 +9,7 @@ import {
   Tooltip,
   Typography,
 } from "antd";
+import { ethers } from "ethers";
 import React, { useEffect, useRef, useState } from "react";
 import { BiSolidOffer } from "react-icons/bi";
 import { FaCaretDown } from "react-icons/fa";
@@ -33,7 +34,6 @@ import {
   META_WALLET_KEY,
   TokenContractAddress,
   calculateDailyInterestRate,
-  contractGenerator,
 } from "../../utils/common";
 import tokensJson from "../../utils/tokens_abi.json";
 
@@ -335,50 +335,35 @@ const Borrowing = (props) => {
     if (borrowModalData.collateral) {
       setIsRequestBtnLoading(true);
 
-      const borrowContract = await contractGenerator(
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      const borrowContract = new ethers.Contract(
+        BorrowContractAddress,
         borrowJson,
-        BorrowContractAddress
+        signer
       );
 
       try {
         if (isBorrowApproved) {
           const amount = borrowModalData.amount * ETH_ZERO;
-          const platformFee = Number(borrowModalData.platformFee);
+          const platformFee = Number(borrowModalData.platformFee) * ETH_ZERO;
           const repaymentAmount =
             (borrowModalData.amount + Number(borrowModalData.interest)) *
             ETH_ZERO;
 
-          const estimateGas = await borrowContract.methods
-            .createBorrowRequest(
-              TokenContractAddress,
-              Number(borrowModalData.collectionID),
-              borrowModalData.collateral.inscriptionNumber,
-              borrowModalData.terms,
-              Math.round(amount),
-              Math.round(repaymentAmount),
-              Math.round(platformFee * ETH_ZERO)
-            )
-            .estimateGas({
-              from: metaAddress,
-            });
+          const requestResult = await borrowContract.createBorrowRequest(
+            TokenContractAddress,
+            Number(borrowModalData.collectionID),
+            borrowModalData.collateral.inscriptionNumber,
+            borrowModalData.terms,
+            Math.round(amount),
+            Math.round(repaymentAmount),
+            Math.round(platformFee)
+          );
 
-          const requestResult = await borrowContract.methods
-            .createBorrowRequest(
-              TokenContractAddress,
-              Number(borrowModalData.collectionID),
-              borrowModalData.collateral.inscriptionNumber,
-              borrowModalData.terms,
-              Math.round(amount),
-              Math.round(repaymentAmount),
-              Math.round(platformFee * ETH_ZERO)
-            )
-            .send({
-              from: metaAddress,
-              gas: Number(estimateGas).toString(),
-              gasPrice: 0.065,
-            });
-
-          if (requestResult.transactionHash) {
+          await requestResult.wait();
+          if (requestResult.hash) {
             await fetchBorrowRequests();
             await getAllBorrowRequests();
             Notify("success", "Request submitted!");
@@ -410,18 +395,20 @@ const Borrowing = (props) => {
 
   const fetchBorrowRequests = async () => {
     try {
-      const borrowContract = await contractGenerator(
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const borrowContract = new ethers.Contract(
+        BorrowContractAddress,
         borrowJson,
-        BorrowContractAddress
+        signer
       );
+
       const promises = borrowCollateral.map((asset) => {
         return new Promise(async (res) => {
-          const result = await borrowContract.methods
-            .getBorrowRequestByTokenId(
-              TokenContractAddress,
-              asset.inscriptionNumber
-            )
-            .call({ from: metaAddress });
+          const result = await borrowContract.getBorrowRequestByTokenId(
+            TokenContractAddress,
+            asset.inscriptionNumber
+          );
           res({
             ...asset,
             request: result?.isActive ? result : {},
@@ -441,40 +428,41 @@ const Borrowing = (props) => {
     }
   };
 
-  const approveBorrowRequest = async () => {
-    setIsRequestBtnLoading(true);
-    const tokensContract = await contractGenerator(
-      tokensJson,
-      TokenContractAddress
-    );
+  const approveBorrowRequest = async (canIdoApprove) => {
+    try {
+      setIsRequestBtnLoading(true);
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
 
-    let isApproved = await tokensContract.methods
-      .isApprovedForAll(metaAddress, BorrowContractAddress)
-      .call({ from: metaAddress });
+      const tokensContract = new ethers.Contract(
+        TokenContractAddress,
+        tokensJson,
+        signer
+      );
 
-    if (isApproved) {
-      setIsBorrowApproved(isApproved);
-      setIsRequestBtnLoading(false);
-    } else {
-      const approveEstimateGas = await tokensContract.methods
-        .setApprovalForAll(BorrowContractAddress, true)
-        .estimateGas({ from: metaAddress });
-
-      await tokensContract.methods
-        .setApprovalForAll(BorrowContractAddress, true)
-        .send({
-          from: metaAddress,
-          gas: Number(approveEstimateGas).toString(),
-          gasPrice: 0.065,
-        });
-      setTimeout(async () => {
+      let isApproved = await tokensContract.isApprovedForAll(
+        metaAddress,
+        BorrowContractAddress
+      );
+      if (canIdoApprove && !isApproved) {
+        const result = await tokensContract.setApprovalForAll(
+          BorrowContractAddress,
+          true
+        );
+        await result.wait();
         isApproved = await tokensContract.isApprovedForAll(
           metaAddress,
           BorrowContractAddress
         );
         setIsBorrowApproved(isApproved);
         setIsRequestBtnLoading(false);
-      }, [3000]);
+      } else {
+        setIsBorrowApproved(isApproved);
+      }
+      setIsRequestBtnLoading(false);
+    } catch (error) {
+      console.log("Approve borrow req error", error);
+      setIsRequestBtnLoading(false);
     }
   };
 
@@ -660,7 +648,7 @@ const Borrowing = (props) => {
               <Text
                 className={`font-size-16 text-color-two letter-spacing-small`}
               >
-                {borrowModalData.APY}%
+                {Math.round(borrowModalData.APY)}%
               </Text>
             </Flex>
           </Col>
@@ -724,7 +712,7 @@ const Borrowing = (props) => {
               className={`input-themed amount-input`}
             >
               <Text
-                className={`font-size-16 text-color-one letter-spacing-small`}
+                className={`font-small text-color-one letter-spacing-small`}
               >
                 Amount
               </Text>
@@ -780,7 +768,7 @@ const Borrowing = (props) => {
           <Col md={11}>
             <Flex vertical align="start" className={`input-themed`}>
               <Text
-                className={`font-size-16 text-color-one letter-spacing-small`}
+                className={`font-small text-color-one letter-spacing-small`}
               >
                 Interest
               </Text>
@@ -1191,9 +1179,16 @@ const Borrowing = (props) => {
               <CustomButton
                 block
                 loading={isRequestBtnLoading}
+                disabled={isBorrowApproved === null}
                 className="click-btn font-weight-600 letter-spacing-small"
-                title={"Create request"}
-                onClick={handleCreateRequest}
+                title={isBorrowApproved ? "Create request" : "Approve request"}
+                onClick={() => {
+                  if (isBorrowApproved) {
+                    handleCreateRequest();
+                  } else {
+                    approveBorrowRequest(true);
+                  }
+                }}
               />
             ) : (
               <Flex justify="center">

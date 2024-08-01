@@ -1,14 +1,31 @@
-import { Button, Col, Divider, Flex, Row, Tooltip, Typography } from "antd";
+import {
+  Badge,
+  Button,
+  Col,
+  Flex,
+  Input,
+  Row,
+  Tag,
+  Tooltip,
+  Typography,
+} from "antd";
+import { load } from "cheerio";
+import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
-import { FaRegSmileWink } from "react-icons/fa";
+import { FaRegSmileWink, FaTruck } from "react-icons/fa";
+import { FaJetFighterUp } from "react-icons/fa6";
 import { FcApproval, FcHighPriority } from "react-icons/fc";
+import { HiOutlineInformationCircle } from "react-icons/hi2";
 import { ImSad } from "react-icons/im";
 import { IoInformationCircleSharp, IoWarningSharp } from "react-icons/io5";
-import { MdContentCopy } from "react-icons/md";
 import { LuRefreshCw } from "react-icons/lu";
-import { Bars } from "react-loading-icons";
+import { MdContentCopy, MdDashboardCustomize } from "react-icons/md";
+import { PiCopyBold } from "react-icons/pi";
+import { Bars, ThreeDots } from "react-loading-icons";
+import { Link } from "react-router-dom";
 import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
 import CustomButton from "../../component/Button";
+import Loading from "../../component/loading-wrapper/secondary-loader";
 import ModalDisplay from "../../component/modal";
 import Notify from "../../component/notification";
 import TableComponent from "../../component/table";
@@ -20,17 +37,38 @@ import {
   setUserCollateral,
 } from "../../redux/slice/constant";
 import {
+  API_METHODS,
   Capitalaize,
   MAGICEDEN_WALLET_KEY,
   TokenContractAddress,
   UNISAT_WALLET_KEY,
   XVERSE_WALLET_KEY,
-  contractGenerator,
+  calculateFee,
   sliceAddress,
 } from "../../utils/common";
 import tokenAbiJson from "../../utils/tokens_abi.json";
-import { Link } from "react-router-dom";
-import { PiCopyBold } from "react-icons/pi";
+
+const NumericInput = (props) => {
+  const { onChange, data, placeholder } = props;
+
+  const handleChange = (e) => {
+    const { value: inputValue } = e.target;
+    const reg = data.asset === "ckETH" ? /^\d*(\.\d{0,3})?$/ : /^\d*(\.\d*)?$/;
+    if (reg.test(inputValue) || inputValue === "") {
+      onChange(inputValue);
+    }
+  };
+
+  return (
+    <Input
+      {...props}
+      size="large"
+      className={`input-themed`}
+      onChange={handleChange}
+      placeholder={placeholder}
+    />
+  );
+};
 
 const BridgeOrdinals = (props) => {
   const { getCollaterals } = props.wallet;
@@ -41,9 +79,9 @@ const BridgeOrdinals = (props) => {
   const btcValue = reduxState.constant.btcvalue;
   const userCollateral = reduxState.constant.userCollateral;
   const xverseAddress = walletState.xverse.ordinals.address;
-  const metaAddress = walletState.meta.address;
   const unisatAddress = walletState.unisat.address;
   const magicEdenAddress = walletState.magicEden.ordinals.address;
+  const MEMPOOL_API = process.env.REACT_APP_MEMPOOL_API;
 
   const { Text } = Typography;
 
@@ -53,10 +91,15 @@ const BridgeOrdinals = (props) => {
 
   const [copy, setCopy] = useState("Copy");
 
-  const [supplyModalItems, setSupplyModalItems] = useState(null);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [handleSupplyModal, setHandleSupplyModal] = useState(false);
+  const [assetWithdrawModal, setAssetWithdrawModal] = useState(false);
+  const [assetWithdrawModalData, setAssetWithdrawModalData] = useState({});
+  const [withdrawModalData, setWithdrawModalData] = useState({
+    asset: "",
+    balance: "",
+  });
+  const [activeFee, setActiveFee] = useState("High");
+  const [value, setValue] = useState(null);
 
   const BTC_ZERO = process.env.REACT_APP_BTC_ZERO;
   const CONTENT_API = process.env.REACT_APP_ORDINALS_CONTENT_API;
@@ -75,50 +118,28 @@ const BridgeOrdinals = (props) => {
   }
 
   const handleOk = () => {
-    setIsModalOpen(false);
     setHandleSupplyModal(false);
   };
 
   const handleCancel = () => {
-    setIsModalOpen(false);
     setHandleSupplyModal(false);
+    setAssetWithdrawModal(false);
   };
-
-  const options = [
-    {
-      key: "1",
-      label: (
-        <CustomButton
-          className={"click-btn font-weight-600 letter-spacing-small"}
-          title={"Details"}
-          size="medium"
-          onClick={() => setIsModalOpen(true)}
-        />
-      ),
-    },
-  ];
 
   const handleTokenMint = async (inscriptionNumber) => {
     try {
       dispatch(setLoading(true));
-      const contract = await contractGenerator(
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(
+        TokenContractAddress,
         tokenAbiJson,
-        TokenContractAddress
+        signer
       );
 
-      const estimateGas = await contract.methods
-        .mintOrdinal(inscriptionNumber)
-        .estimateGas({ from: metaAddress });
-
-      const storeResult = await contract.methods
-        .mintOrdinal(inscriptionNumber)
-        .send({
-          from: metaAddress,
-          gas: Number(estimateGas).toString(),
-          gasPrice: 0.065,
-        });
-
-      if (storeResult.transactionHash) {
+      const mintResult = await contract.mintOrdinal(inscriptionNumber);
+      await mintResult.wait();
+      if (mintResult.hash) {
         Notify("success", "Minting success!");
         getCollaterals();
       }
@@ -129,28 +150,88 @@ const BridgeOrdinals = (props) => {
     }
   };
 
+  const handleTokenBurn = async (inscriptionNumber) => {
+    try {
+      dispatch(setLoading(true));
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(
+        TokenContractAddress,
+        tokenAbiJson,
+        signer
+      );
+
+      const mintResult = await contract.burn(inscriptionNumber);
+      await mintResult.wait();
+      if (mintResult.hash) {
+        Notify("success", "Burn success!");
+        getCollaterals();
+      }
+      dispatch(setLoading(false));
+    } catch (error) {
+      dispatch(setLoading(false));
+      console.log("Burn error", error);
+    }
+  };
+
+  const handleSupplyAssetWithdraw = async () => {
+    try {
+      const feeValue =
+        activeFee === "High"
+          ? assetWithdrawModalData.fastestFee.toString()
+          : activeFee === "Medium"
+          ? assetWithdrawModalData.halfHourFee.toString()
+          : value;
+      const fee = calculateFee(assetWithdrawModalData.contentLength, feeValue);
+      // setLoadingState((prev) => ({ ...prev, isAssetWithdraw: true }));
+
+      if (activeFee === "Custom" && !feeValue) {
+        Notify("warning", "Please select or input the fee!");
+        return;
+      }
+      // const transferArgs = {
+      //   to: {
+      //     owner: Principal.fromText(ORDINAL_CANISTER),
+      //     subaccount: [],
+      //   },
+      //   fee: [],
+      //   memo: [],
+      //   created_at_time: [],
+      //   from_subaccount: [],
+      //   amount: 1n,
+      // };
+
+      // const transferResult = await ckBtcAgent.icrc1_transfer(transferArgs);
+      // if (transferResult?.Ok) {
+      //   const args = {
+      //     transaction_id: transferResult.Ok.toString(),
+      //     fee_rate: parseInt(feeValue),
+      //     timestamp: Date.now(),
+      //     bitcoinAddress: assetWithdrawModalData.recipient,
+      //     priority: activeFee,
+      //     asset_id: assetWithdrawModalData.id,
+      //     calculated_fee: parseInt(fee),
+      //   };
+
+      //   const withdrawRes = await api_agent.addWithDrawAssetsRequest(args);
+      //   if (withdrawRes) {
+      //     Notify("sucess", "Withdraw request sent, wait untill process!");
+      //     setAssetWithdrawModal(false);
+      //   } else {
+      //     Notify("error", "Something went wrong!");
+      //   }
+      // }
+    } catch (error) {
+      // console.log("Asset Withdraw Error", error);
+    }
+  };
+
   useEffect(() => {
     if (activeWallet.length === 0) {
       setLendData([]);
       setBorrowData([]);
     }
   }, [activeWallet]);
-
-  // useEffect(() => {
-  //   if (activeWallet.length) {
-  //     (async () => {
-  //       const contract = await contractGenerator(
-  //         borrowJson,
-  //         BorrowContractAddress
-  //       );
-  //       const ActiveReq = await contract.methods
-  //         .getActiveBorrowRequests()
-  //         .call();
-  //       console.log("index", ActiveReq);
-  //     })();
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [activeWallet]);
 
   // T1 --------------------------------------------------------------
   const AssetsToSupplyTableColumns = [
@@ -164,7 +245,8 @@ const BridgeOrdinals = (props) => {
           <Flex gap={5} vertical align="center">
             {obj.contentType === "image/webp" ||
             obj.contentType === "image/jpeg" ||
-            obj.contentType === "image/png" ? (
+            obj.contentType === "image/png" ||
+            obj.contentType === "image/svg+xml" ? (
               <img
                 src={`${CONTENT_API}/content/${obj.id}`}
                 alt={`${obj.id}-borrow_image`}
@@ -174,8 +256,8 @@ const BridgeOrdinals = (props) => {
               />
             ) : obj.contentType === "image/svg" ||
               obj.contentType === "text/html;charset=utf-8" ||
-              obj.contentType === "text/html" ||
-              obj.contentType === "image/svg+xml" ? (
+              obj.contentType === "text/html" ? (
+              //  || obj.contentType === "image/svg+xml"
               <iframe
                 loading="lazy"
                 width={"80px"}
@@ -219,7 +301,9 @@ const BridgeOrdinals = (props) => {
       align: "center",
       dataIndex: "APY",
       render: (_, obj) => (
-        <Text className={"text-color-one"}>{obj.collection.APY}%</Text>
+        <Text className={"text-color-one"}>
+          {Math.round(obj.collection.APY)}%
+        </Text>
       ),
     },
     {
@@ -261,7 +345,7 @@ const BridgeOrdinals = (props) => {
               <Flex
                 align="center"
                 gap={3}
-                className="text-color-one font-small letter-spacing-small"
+                className="text-color-one font-xsmall letter-spacing-small"
               >
                 <img src={Bitcoin} alt="noimage" width={20} height={20} />
                 {parseInt(floor.toFixed(2))
@@ -283,7 +367,7 @@ const BridgeOrdinals = (props) => {
       dataIndex: "link",
       render: (_, obj) => (
         <>
-          {obj.isToken ? (
+          {obj.isToken || obj.inLoan ? (
             <FcApproval size={30} />
           ) : (
             <FcHighPriority size={30} />
@@ -302,21 +386,58 @@ const BridgeOrdinals = (props) => {
       render: (_, obj) => {
         return (
           <Flex gap={5} justify="center">
-            {obj.isToken ? (
-              <Text className={"text-color-one font-small"}>Minted</Text>
-            ) : (
+            {obj.isToken && !obj.inLoan ? (
               <Button
-                className="dbButtons-grey font-weight-600 letter-spacing-small"
+                className="click-btn font-weight-600 letter-spacing-small"
                 trigger={"click"}
-                disabled={obj.isToken}
-                onClick={() => handleTokenMint(obj.inscriptionNumber)}
-                menu={{
-                  items: options,
-                  onClick: () => setSupplyModalItems(obj),
+                disabled={!obj.isToken}
+                onClick={() => {
+                  handleTokenBurn(obj.inscriptionNumber);
                 }}
               >
-                Mint
+                Burn
               </Button>
+            ) : obj.inLoan ? (
+              <Text className={"text-color-one font-small"}>In Loan</Text>
+            ) : (
+              <Flex gap={5}>
+                <CustomButton
+                  className="click-btn font-weight-600 letter-spacing-small"
+                  trigger={"click"}
+                  disabled={obj.isToken}
+                  onClick={() => handleTokenMint(obj.inscriptionNumber)}
+                  title="Mint"
+                />
+
+                <CustomButton
+                  className="click-btn font-weight-600 letter-spacing-small"
+                  trigger={"click"}
+                  disabled={obj.isToken}
+                  onClick={async () => {
+                    setAssetWithdrawModal(true);
+                    const info = await API_METHODS.get(
+                      `${MEMPOOL_API}/api/v1/fees/recommended`
+                    );
+                    const inscription = await API_METHODS.get(
+                      `${process.env.REACT_APP_ORDINALS_CONTENT_API}/inscription/${obj.id}`
+                    );
+                    const $ = load(inscription.data);
+                    const contentLength = $('dt:contains("content length")')
+                      .next("dd")
+                      .text();
+
+                    setAssetWithdrawModalData({
+                      ...obj,
+                      ...info.data,
+                      contentLength,
+                    });
+                    setValue(info.data.halfHourFee);
+                  }}
+                  title="
+                  Withdraw
+                  "
+                />
+              </Flex>
             )}
           </Flex>
         );
@@ -433,7 +554,9 @@ const BridgeOrdinals = (props) => {
                   }}
                   pagination={{ pageSize: 5 }}
                   rowKey={(e) =>
-                    `${e?.id}-${e?.inscriptionNumber}-${Math.random()}`
+                    `${e?.id}-${
+                      e?.inscriptionNumber
+                    }-${Math.random()}-${Date.now()}`
                   }
                   tableColumns={AssetsToSupplyTableColumns}
                   tableData={userCollateral}
@@ -450,83 +573,97 @@ const BridgeOrdinals = (props) => {
         />
       )}
 
-      {/* MODAL START */}
-      {/* Asset Details Modal */}
+      {/* Asset Withdraw Modal */}
       <ModalDisplay
         width={"50%"}
+        open={assetWithdrawModal}
+        onCancel={handleCancel}
+        onOk={handleOk}
+        footer={null}
         title={
-          <Row className="black-bg white-color font-large letter-spacing-small">
-            Details
+          <Row className="black-bg white-color font-large">
+            Burn token & Withdraw asset
           </Row>
         }
-        footer={null}
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
       >
-        <Row className="mt-30">
-          <Col md={6}>
-            <Text className="gradient-text-one font-small font-weight-600">
-              Asset Info
-            </Text>
-          </Col>
-          <Col md={18}>
-            <Row>
-              <Col md={12}>
-                {supplyModalItems &&
-                  (supplyModalItems?.mimeType === "text/html" ? (
-                    <iframe
-                      className="border-radius-30"
-                      title={`${supplyModalItems?.id}-borrow_image`}
-                      height={300}
-                      width={300}
-                      src={`${CONTENT_API}/content/${supplyModalItems?.id}`}
-                    />
-                  ) : (
-                    <>
-                      <img
-                        src={`${CONTENT_API}/content/${supplyModalItems?.id}`}
-                        alt={`${supplyModalItems?.id}-borrow_image`}
-                        className="border-radius-30"
-                        width={125}
-                      />
-                      <Row>
-                        <Text className="text-color-one ml">
-                          <span className="font-weight-600 font-small ">
-                            ${" "}
-                          </span>
-                          {(
-                            (Number(supplyModalItems?.collection?.floorPrice) /
-                              BTC_ZERO) *
-                            btcValue
-                          ).toFixed(2)}
-                        </Text>
-                      </Row>
-                    </>
-                  ))}
-              </Col>
-
-              <Col md={12}>
-                <Row>
-                  {" "}
-                  <Flex vertical>
+        {assetWithdrawModalData?.inscriptionNumber ? (
+          <Row justify={"space-between"} gutter={24}>
+            <Col md={12}>
+              <Row className="mt-15" justify={"center"}>
+                <Text className="text-color-one font-medium">
+                  Review Transaction
+                </Text>
+              </Row>
+              <Row justify={"center"} className="mt-15">
+                {assetWithdrawModalData?.mimeType?.includes("text/html") ? (
+                  <iframe
+                    className="border-radius-30 pointer"
+                    title={`Iframe`}
+                    height={70}
+                    width={70}
+                    src={`${CONTENT_API}/content/${assetWithdrawModalData?.id}`}
+                  />
+                ) : (
+                  <img
+                    alt="withdraw_img"
+                    width={80}
+                    height={80}
+                    className="border-radius-30"
+                    src={`${process.env.REACT_APP_ORDINALS_CONTENT_API}/content/${assetWithdrawModalData?.id}`}
+                  />
+                )}
+              </Row>
+              <Flex vertical className="border-color mt-30">
+                <Row justify={"space-between"}>
+                  <Col>
+                    <Text className="text-color-one font-small">Asset</Text>
+                  </Col>
+                  <Col>
                     <Text className="text-color-two font-small">
-                      Inscription Number
+                      #{assetWithdrawModalData?.inscriptionNumber}
                     </Text>
-                    <Text className="text-color-one font-small font-weight-600">
-                      #{supplyModalItems?.inscriptionNumber}
-                    </Text>
-                  </Flex>
+                  </Col>
                 </Row>
-                <Row>
-                  {" "}
-                  <Flex vertical>
-                    <Text className="text-color-two font-small">
-                      Inscription Id
-                    </Text>
-
-                    <Text className="text-color-one font-small font-weight-600 iconalignment">
-                      {sliceAddress(supplyModalItems?.id, 7)}
+                <Row justify={"space-between"}>
+                  <Col>
+                    <Text className="text-color-one font-small">Id</Text>
+                  </Col>
+                  <Col>
+                    <Flex vertical align="end">
+                      <Text className="font-small text-color-two">
+                        {sliceAddress(assetWithdrawModalData?.id, 7)}{" "}
+                        <Tooltip
+                          arrow
+                          title={copy}
+                          trigger={"hover"}
+                          placement="top"
+                        >
+                          <MdContentCopy
+                            className="pointer"
+                            onClick={() => {
+                              navigator.clipboard.writeText(
+                                assetWithdrawModalData?.id
+                              );
+                              setCopy("Copied");
+                              setTimeout(() => {
+                                setCopy("Copy");
+                              }, 2000);
+                            }}
+                            size={20}
+                            color="#1cc2e4"
+                          />
+                        </Tooltip>
+                      </Text>
+                    </Flex>
+                  </Col>
+                </Row>
+                <Row justify={"space-between"}>
+                  <Col>
+                    <Text className="text-color-one font-small">Recipient</Text>
+                  </Col>
+                  <Col>
+                    <Text className="font-small text-color-two">
+                      {sliceAddress(assetWithdrawModalData?.recipient, 7)}{" "}
                       <Tooltip
                         arrow
                         title={copy}
@@ -536,93 +673,285 @@ const BridgeOrdinals = (props) => {
                         <MdContentCopy
                           className="pointer"
                           onClick={() => {
-                            navigator.clipboard.writeText(supplyModalItems?.id);
+                            navigator.clipboard.writeText(
+                              assetWithdrawModalData?.genesis_address
+                            );
                             setCopy("Copied");
                             setTimeout(() => {
                               setCopy("Copy");
                             }, 2000);
                           }}
                           size={20}
-                          color="#764ba2"
+                          color="#1cc2e4"
                         />
                       </Tooltip>
                     </Text>
+                  </Col>
+                </Row>
+                <Row justify={"space-between"}>
+                  <Col>
+                    <Text className="text-color-one font-small iconalignment">
+                      ckBTC{" "}
+                      <img
+                        src={Bitcoin}
+                        alt="noimage"
+                        style={{ justifyContent: "center" }}
+                        width="25dvw"
+                      />
+                    </Text>
+                  </Col>
+                  <Col>
+                    <Text className="font-small text-color-two">
+                      <Tag
+                        color={
+                          activeFee === "High"
+                            ? "lime-inverse"
+                            : activeFee === "Medium"
+                            ? "orange-inverse"
+                            : "purple-inverse"
+                        }
+                        style={{ fontWeight: 600, letterSpacing: "1px" }}
+                      >
+                        {calculateFee(
+                          assetWithdrawModalData?.contentLength,
+                          activeFee === "High"
+                            ? assetWithdrawModalData?.fastestFee
+                            : activeFee === "Medium"
+                            ? assetWithdrawModalData?.halfHourFee
+                            : value
+                            ? value
+                            : 1
+                        ) / BTC_ZERO}
+                      </Tag>
+                    </Text>
+                  </Col>
+                </Row>
+                <Row justify={"space-between"}>
+                  <Col>
+                    <Text className="text-color-one font-small">Fee</Text>
+                  </Col>
+                  <Col>
+                    <Text className="font-small text-color-two">
+                      <Tag
+                        color={
+                          activeFee === "High"
+                            ? "lime-inverse"
+                            : activeFee === "Medium"
+                            ? "orange-inverse"
+                            : "purple-inverse"
+                        }
+                        style={{ fontWeight: 600, letterSpacing: "1px" }}
+                      >
+                        {(
+                          (calculateFee(
+                            assetWithdrawModalData?.contentLength,
+                            activeFee === "High"
+                              ? assetWithdrawModalData?.fastestFee
+                              : activeFee === "Medium"
+                              ? assetWithdrawModalData?.halfHourFee
+                              : value
+                              ? value
+                              : 1
+                          ) /
+                            BTC_ZERO) *
+                          btcValue
+                        ).toFixed(2)}
+                      </Tag>
+                    </Text>
+                  </Col>
+                </Row>
+              </Flex>
+            </Col>
+            <Col md={12}>
+              <Flex vertical>
+                <Badge.Ribbon
+                  text={"~10 mins"}
+                  style={{ color: "black" }}
+                  className="color-black"
+                  color="#a0d911"
+                >
+                  <Flex
+                    className={`${
+                      activeFee === "High" && "border-theme"
+                    } mt-15 pad-15 pointer border-color`}
+                    align="center"
+                    justify="space-between"
+                    onClick={() => setActiveFee("High")}
+                  >
+                    <div>
+                      <FaJetFighterUp color="#a0d911" size={30} />
+                    </div>
+                    <Flex vertical>
+                      <span className="text-color-one font-small">
+                        High priority
+                      </span>
+                      <span className="text-color-two">
+                        {assetWithdrawModalData?.fastestFee} Sats/vByte
+                      </span>
+                    </Flex>
+                    <Flex vertical justify="end">
+                      <span className="text-color-one font-small">
+                        {calculateFee(
+                          assetWithdrawModalData?.contentLength,
+                          assetWithdrawModalData?.fastestFee
+                        )}
+                      </span>
+                      <span className="text-color-two">
+                        ~$
+                        {(
+                          (calculateFee(
+                            assetWithdrawModalData?.contentLength,
+                            assetWithdrawModalData?.fastestFee
+                          ) /
+                            BTC_ZERO) *
+                          btcValue
+                        ).toFixed(2)}
+                      </span>
+                    </Flex>
                   </Flex>
-                </Row>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+                </Badge.Ribbon>
+                {/* Medium */}
 
-        <Divider />
-        <Row className="mt-15">
-          <Col md={6}>
-            <Text className="gradient-text-one font-small font-weight-600">
-              Collection Info
-            </Text>
-          </Col>
-          <Col md={18}>
-            <Row justify={"center"}>
-              <Text className="gradient-text-two font-xslarge font-weight-600 ">
-                {Capitalaize(supplyModalItems?.collection?.symbol)}
-              </Text>
-            </Row>
+                <Badge.Ribbon
+                  text={"~30 mins"}
+                  className="color-black"
+                  color="orange"
+                >
+                  <Flex
+                    className={`${
+                      activeFee === "Medium" && "border-theme"
+                    } mt-15 pad-15 pointer border-color`}
+                    align="center"
+                    justify="space-between"
+                    onClick={() => setActiveFee("Medium")}
+                  >
+                    <div>
+                      <FaTruck color="orange" size={30} />
+                    </div>
+                    <Flex vertical>
+                      <span className="text-color-one font-small">
+                        Medium priority
+                      </span>
+                      <span className="text-color-two">
+                        {assetWithdrawModalData?.halfHourFee} Sats/vByte
+                      </span>
+                    </Flex>
+                    <Flex vertical justify="end">
+                      <span className="text-color-one font-small">
+                        {calculateFee(
+                          assetWithdrawModalData?.contentLength,
+                          assetWithdrawModalData?.halfHourFee
+                        )}
+                      </span>
+                      <span className="text-color-two">
+                        ~$
+                        {(
+                          (calculateFee(
+                            assetWithdrawModalData?.contentLength,
+                            assetWithdrawModalData?.halfHourFee
+                          ) /
+                            BTC_ZERO) *
+                          btcValue
+                        ).toFixed(2)}
+                      </span>
+                    </Flex>
+                  </Flex>
+                </Badge.Ribbon>
 
-            <Row className="mt-30" justify={"space-between"}>
-              <Flex vertical className="borrowDataStyle">
-                <Text className="text-color-two font-small">Floor Price</Text>
+                {/* Custom */}
+                <Flex
+                  className={`${
+                    activeFee === "Custom" && "border-theme"
+                  } mt-15 pad-15 pointer border-color`}
+                  align="center"
+                  justify="space-between"
+                  onClick={() => setActiveFee("Custom")}
+                >
+                  <div>
+                    <MdDashboardCustomize color="purple" size={30} />
+                  </div>
+                  <Flex vertical>
+                    <span className="text-color-one font-small">Custom</span>
+                    <span className="text-color-two">{value} Sats/vByte</span>
+                  </Flex>
+                  <Flex vertical justify="end">
+                    <span className="text-color-one font-small">
+                      {calculateFee(
+                        assetWithdrawModalData?.contentLength,
+                        value ? value : 1
+                      )}
+                    </span>
+                    <span className="text-color-two">
+                      ~$
+                      {(
+                        (calculateFee(
+                          assetWithdrawModalData?.contentLength,
+                          value ? value : 1
+                        ) /
+                          BTC_ZERO) *
+                        btcValue
+                      ).toFixed(2)}
+                    </span>
+                  </Flex>
+                </Flex>
 
-                <Text className="text-color-one font-small font-weight-600">
-                  {supplyModalItems?.collection.floorPrice / BTC_ZERO}
-                </Text>
+                {activeFee === "Custom" && (
+                  <>
+                    <Text className="text-color-one font-small iconalignment mt-15">
+                      Edit fees <HiOutlineInformationCircle />
+                    </Text>
+                    <span className="text-color-two">
+                      Apply a higher fee to help your transaction confirm
+                      quickly, especially when the network is congested
+                    </span>
+                    <div className="mt-15">
+                      <NumericInput
+                        data={withdrawModalData}
+                        value={value}
+                        onChange={setValue}
+                        placeholder={"0"}
+                        suffix={
+                          <Flex vertical align="end">
+                            <span className="text-color-two">Sats/vByte</span>
+                          </Flex>
+                        }
+                      />
+                    </div>
+                  </>
+                )}
               </Flex>
-              <Flex vertical className="borrowDataStyle">
-                <Text className="text-color-two font-small">Total Listed</Text>
 
-                <Text className="text-color-one font-small font-weight-600">
-                  {supplyModalItems?.collection.totalListed}
-                </Text>
-              </Flex>
-              <Flex vertical className="borrowDataStyle">
-                <Text className="text-color-two font-small">Total Volume</Text>
-
-                <Text className="text-color-one font-small font-weight-600">
-                  {supplyModalItems?.collection.totalVolume}
-                </Text>
-              </Flex>
-            </Row>
-
-            <Row justify={"space-between"} className="m-25">
-              <Flex vertical>
-                <Text className="text-color-two font-small">Owners</Text>
-
-                <Row justify={"center"}>
-                  <Text className="text-color-one font-small font-weight-600">
-                    {supplyModalItems?.collection.owners}
-                  </Text>
-                </Row>
-              </Flex>
-              <Flex vertical>
-                <Text className="text-color-two font-small ">
-                  Pending Transactions
-                </Text>
-                <Row justify={"center"}>
-                  <Text className="text-color-one font-small font-weight-600">
-                    {supplyModalItems?.collection.pendingTransactions}
-                  </Text>
-                </Row>
-              </Flex>
-              <Flex vertical>
-                <Text className="text-color-two font-small">Supply</Text>
-                <Row justify={"center"}>
-                  <Text className="text-color-one font-small font-weight-600">
-                    {supplyModalItems?.collection.supply}
-                  </Text>
-                </Row>
-              </Flex>
-            </Row>
-          </Col>
-        </Row>
+              <>
+                <CustomButton
+                  block
+                  className="click-btn m-25 font-weight-600 letter-spacing-small"
+                  title={
+                    <Flex align="center" justify="center" gap={5}>
+                      <span>Pay</span>
+                      <img
+                        src={Bitcoin}
+                        alt="noimage"
+                        style={{ justifyContent: "center" }}
+                        width="25dvw"
+                      />{" "}
+                      & Withdraw
+                    </Flex>
+                  }
+                  onClick={() => handleSupplyAssetWithdraw()}
+                />
+              </>
+            </Col>
+          </Row>
+        ) : (
+          <Row justify={"center"} align={"middle"} style={{ height: "400px" }}>
+            <Loading
+              spin={true}
+              indicator={
+                <ThreeDots stroke="#6a85f1" alignmentBaseline="central" />
+              }
+            />
+          </Row>
+        )}
       </ModalDisplay>
 
       {/* Custody supply address display */}

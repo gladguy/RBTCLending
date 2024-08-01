@@ -2,7 +2,9 @@ import { Col, Row, Typography } from "antd";
 import { IoCloudDownload } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import unisat from "../../assets/wallet-logo/unisat_logo.png";
+import myordinals from "../../assets/logo/ordinalslogo.png";
 import xverse from "../../assets/wallet-logo/xverse_logo_whitebg.png";
+import metamask from "../../assets/wallet-logo/meta.png";
 import magiceden from "../../assets/brands/magiceden.svg";
 
 const WalletUI = ({ isAirdrop, isPlugError }) => {
@@ -10,9 +12,20 @@ const WalletUI = ({ isAirdrop, isPlugError }) => {
   const unisatLink = process.env.REACT_APP_UNISAT;
   const xverseLink = process.env.REACT_APP_XVERSE;
   const magicedenLink = process.env.REACT_APP_MAGICEDEN;
+  const metaLink = process.env.REACT_APP_META;
 
   return (
     <>
+      <Row justify={"center"} className="mt-70">
+        <img
+          className="egg airdrop_claimed"
+          src={myordinals}
+          alt="noimage"
+          style={{ justifyContent: "center", borderRadius: "25%" }}
+          width={80}
+        />
+      </Row>
+
       <Row justify={"center"} className="mt-15">
         <Text className="text-color-one font-large font-weight-600">
           {isAirdrop
@@ -24,9 +37,10 @@ const WalletUI = ({ isAirdrop, isPlugError }) => {
             : "Download the below wallets !"}
         </Text>
       </Row>
+
       <Row justify={"center"} align={"middle"} className="mt-7" gutter={10}>
         <Col>
-          <Text className="text-color-two font-small">
+          <Text className="text-color-two font-medium">
             To install wallets, go to portfolio and click download wallets.
           </Text>
         </Col>
@@ -38,6 +52,7 @@ const WalletUI = ({ isAirdrop, isPlugError }) => {
           />
         </Col>
       </Row>
+
       {!isAirdrop && (
         <Row justify={"center"}>
           <Col md={20}>
@@ -46,32 +61,27 @@ const WalletUI = ({ isAirdrop, isPlugError }) => {
               align={"middle"}
               className="mt-20 walletsCard"
             >
-              {/* <Col>
+              <Col>
                 <Link
                   className="iconalignment float-up-medium"
                   target="_blank"
-                  to={plugLink}
+                  to={metaLink}
                 >
                   <img
-                    src={plug}
+                    src={metamask}
                     alt="logo"
                     className="pointer"
-                    width="60dvw"
+                    width={60}
                   />
                 </Link>
-              </Col> */}
+              </Col>
               <Col>
                 <Link
                   className="iconalignment float-up-medium"
                   target="_blank"
                   to={xverseLink}
                 >
-                  <img
-                    src={xverse}
-                    alt="logo"
-                    className="pointer"
-                    width="50dvw"
-                  />
+                  <img src={xverse} alt="logo" className="pointer" width={45} />
                 </Link>
               </Col>
               <Col>
@@ -80,12 +90,7 @@ const WalletUI = ({ isAirdrop, isPlugError }) => {
                   target="_blank"
                   to={unisatLink}
                 >
-                  <img
-                    src={unisat}
-                    alt="logo"
-                    className="pointer"
-                    width="60dvw"
-                  />
+                  <img src={unisat} alt="logo" className="pointer" width={55} />
                 </Link>
               </Col>
               <Col>
@@ -98,24 +103,10 @@ const WalletUI = ({ isAirdrop, isPlugError }) => {
                     src={magiceden}
                     alt="logo"
                     className="pointer"
-                    width="60dvw"
+                    width={55}
                   />
                 </Link>
               </Col>
-              {/* <Col>
-                <Link
-                  className="iconalignment float-up-medium"
-                  target="_blank"
-                  to={petraLink}
-                >
-                  <img
-                    src={petra}
-                    alt="logo"
-                    className="pointer avatar"
-                    width="60dvw"
-                  />
-                </Link>
-              </Col> */}
             </Row>
           </Col>
         </Row>

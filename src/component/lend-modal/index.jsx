@@ -1,19 +1,22 @@
 import { Col, Collapse, Divider, Flex, Grid, Row, Typography } from "antd";
-import { useState } from "react";
+import { ethers } from "ethers";
+import { useEffect, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import { TbInfoSquareRounded } from "react-icons/tb";
 import { useSelector } from "react-redux";
 import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
 import borrowJson from "../../utils/borrow_abi.json";
 import {
+  API_METHODS,
+  apiUrl,
   BorrowContractAddress,
   TokenContractAddress,
-  contractGenerator,
 } from "../../utils/common";
 import tokensJson from "../../utils/tokens_abi.json";
 import CustomButton from "../Button";
 import ModalDisplay from "../modal";
 import Notify from "../notification";
+import { Link } from "react-router-dom";
 
 const LendModal = ({
   modalState,
@@ -30,7 +33,6 @@ const LendModal = ({
   const reduxState = useSelector((state) => state);
   const btcvalue = reduxState.constant.btcvalue;
   const activeWallet = reduxState.wallet.active;
-  const metaAddress = reduxState.wallet.meta.address;
 
   const ETH_ZERO = process.env.REACT_APP_ETH_ZERO;
 
@@ -39,14 +41,24 @@ const LendModal = ({
   const handleAcceptRequest = async () => {
     try {
       setIsOfferBtnLoading(true);
-      const tokensContract = await contractGenerator(
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const tokensContract = new ethers.Contract(
+        TokenContractAddress,
         tokensJson,
-        TokenContractAddress
+        signer
       );
 
-      const isApproved = await tokensContract.methods
-        .isApprovedForAll(lendModalData.borrower, BorrowContractAddress)
-        .call({ from: metaAddress });
+      const borrowContract = new ethers.Contract(
+        BorrowContractAddress,
+        borrowJson,
+        signer
+      );
+
+      const isApproved = await tokensContract.isApprovedForAll(
+        lendModalData.borrower,
+        BorrowContractAddress
+      );
 
       if (!isApproved) {
         Notify("warning", "Borrower not approved!");
@@ -54,28 +66,16 @@ const LendModal = ({
         return;
       }
 
-      const borrowContract = await contractGenerator(
-        borrowJson,
-        BorrowContractAddress
-      );
+      const requestId = Number(lendModalData.requestId);
+      const loanAmount = Number(lendModalData.loanAmount);
 
-      const estimateGas = await borrowContract.methods
-        .acceptBorrowRequest(Number(lendModalData.requestId))
-        .estimateGas({
-          from: metaAddress,
-          value: Number(lendModalData.loanAmount),
-        });
+      const acceptLoan = await borrowContract.acceptBorrowRequest(requestId, {
+        value: loanAmount.toString(),
+      });
 
-      const acceptLoan = await borrowContract.methods
-        .acceptBorrowRequest(Number(lendModalData.requestId))
-        .send({
-          from: metaAddress,
-          value: Number(lendModalData.loanAmount),
-          gas: Number(estimateGas).toString(),
-          gasPrice: 0.065,
-        });
+      await acceptLoan.wait();
 
-      if (acceptLoan.transactionHash) {
+      if (acceptLoan.hash) {
         Notify("success", "Lending success");
         toggleLendModal();
       }
@@ -87,13 +87,34 @@ const LendModal = ({
     }
   };
 
+  useEffect(() => {
+    (async () => {
+      if (Number(lendModalData.tokenId) && !lendModalData.asset) {
+        const result = await API_METHODS.get(
+          `${apiUrl.Asset_server_base_url}/api/v2/fetch/inscription/${Number(
+            lendModalData.tokenId
+          )}`
+        );
+        setLendModalData({ ...lendModalData, asset: result.data.data.data });
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lendModalData]);
+
   return (
     <ModalDisplay
+      destroyOnClose={true}
       footer={null}
       title={
         <Flex align="center" gap={5} justify="start">
           <Text className={`font-size-20 text-color-one letter-spacing-small`}>
-            {lendModalData.collectionName}
+            {lendModalData.collectionName}{" "}
+            <Link
+              target="_blank"
+              to={`https://magiceden.io/ordinals/item-details/${lendModalData?.asset?.inscription_id}`}
+            >
+              #{Number(lendModalData.tokenId)}
+            </Link>
           </Text>
         </Flex>
       }
@@ -104,15 +125,24 @@ const LendModal = ({
       {/* Lend Image Display */}
       <Row justify={"space-between"} className="mt-30">
         <Col md={4}>
-          <img
-            className="border-radius-8"
-            alt={`lend_image`}
-            src={lendModalData.thumbnailURI}
-            onError={(e) =>
-              (e.target.src = `${process.env.PUBLIC_URL}/collections/${lendModalData.symbol}.png`)
-            }
-            width={screens.xs ? 65 : 80}
-          />
+          {lendModalData?.asset?.mimeType === "text/html" ? (
+            <iframe
+              className="border-radius-8 pointer"
+              title={`Iframe`}
+              height={70}
+              width={70}
+              onError={(e) => (e.target.src = lendModalData.thumbnailURI)}
+              src={`${process.env.REACT_APP_ORDINALS_CONTENT_API}/content/${lendModalData?.asset?.inscription_id}`}
+            />
+          ) : (
+            <img
+              width={70}
+              alt="withdraw_img"
+              onError={(e) => (e.target.src = lendModalData.thumbnailURI)}
+              className="border-radius-8"
+              src={`${process.env.REACT_APP_ORDINALS_CONTENT_API}/content/${lendModalData?.asset?.inscription_id}`}
+            />
+          )}
         </Col>
 
         <Col md={5}>

@@ -1,5 +1,6 @@
 import { Col, Flex, Row, Typography } from "antd";
 import Link from "antd/es/typography/Link";
+import { ethers } from "ethers";
 import _ from "lodash";
 import { useEffect, useState } from "react";
 import { FcInfo } from "react-icons/fc";
@@ -11,7 +12,6 @@ import {
   API_METHODS,
   apiUrl,
   BorrowContractAddress,
-  contractGenerator,
   TokenContractAddress,
 } from "../../utils/common";
 import tokenAbiJson from "../../utils/tokens_abi.json";
@@ -72,14 +72,14 @@ const ActiveLoans = (props) => {
   const getContractCollaterals = async () => {
     try {
       // --------------------------------------------------
-      const tokensContract = await contractGenerator(
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const tokensContract = new ethers.Contract(
+        TokenContractAddress,
         tokenAbiJson,
-        TokenContractAddress
+        signer
       );
-
-      const result = await tokensContract.methods
-        .tokensOfOwner(BorrowContractAddress)
-        .call();
+      const result = await tokensContract.tokensOfOwner(BorrowContractAddress);
       const tokensArray = result.map((token) => Number(token.toString()));
       const promises = tokensArray.map((token) => {
         return new Promise(async (res) => {

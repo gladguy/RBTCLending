@@ -1,15 +1,14 @@
-import axios from "axios";
-import unisat from "../assets/wallet-logo/unisat_logo.png";
-import meta from "../assets/wallet-logo/meta.png";
-import xverse from "../assets/wallet-logo/xverse_logo_whitebg.png";
-import magiceden from "../assets/brands/magiceden.svg"
 import { Actor, HttpAgent } from "@dfinity/agent";
-import Web3 from "web3";
+import axios from "axios";
+import magiceden from "../assets/brands/magiceden.svg";
+import meta from "../assets/wallet-logo/meta.png";
+import unisat from "../assets/wallet-logo/unisat_logo.png";
+import xverse from "../assets/wallet-logo/xverse_logo_whitebg.png";
 
 export const API_METHODS = {
   get: axios.get,
-  post: axios.post,
   put: axios.put,
+  post: axios.post,
   patch: axios.patch,
   delete: axios.delete,
 };
@@ -88,14 +87,9 @@ export const calculateFee = (bytes, preference) => {
 }
 
 export const IndexContractAddress = "0x8696c20154d93f339ea537fbffc72ab78efcc7d2";
-export const TokenContractAddress = "0xfc2fd4c7c243b36236a2fd523ab6195ec7989a2b";
+// export const TokenContractAddress = "0xfc2fd4c7c243b36236a2fd523ab6195ec7989a2b";
+export const TokenContractAddress = "0x99Ed7c08c2310cD52188A0C94F6B01FC0a5dEC2D";
 export const BorrowContractAddress = "0xcd0b8506122ac172da02b355a6051030dacf0e55";
-
-export const contractGenerator = async (abi, contractAddress) => {
-  const web3 = new Web3(window.ethereum);
-  const contract = new web3.eth.Contract(abi, contractAddress);
-  return contract;
-}
 
 export const calculateAPY = (interestRate, numberOfDays, toFixed = 2) => {
   const rateDecimal = interestRate / 100;

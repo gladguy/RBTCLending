@@ -17,6 +17,8 @@ const OffersModal = ({
   const { Text } = Typography;
   const state = useSelector((state) => state);
   const offers = state.constant.offers;
+  const metaAddress = state.wallet.meta.address;
+
   const BTC_ZERO = process.env.REACT_APP_BTC_ZERO;
   const ETH_ZERO = process.env.REACT_APP_ETH_ZERO;
 
@@ -127,6 +129,7 @@ const OffersModal = ({
                       const LTV = Math.round(loanAmount / floor);
                       return (
                         <CustomButton
+                          disabled={obj.borrower === metaAddress}
                           className={
                             "click-btn font-weight-600 letter-spacing-small"
                           }
