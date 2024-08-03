@@ -449,10 +449,15 @@ const Nav = (props) => {
         metaAddress
       );
 
-      // console.log(isBtcExist, isEthExist, isCounterExist, isAccountExistInABI);
+      // console.log(
+      //   isBtcExist,
+      //   isEthExist,
+      //   isCounterExist,
+      //   Number(isAccountExistInABI)
+      // );
 
       if (
-        isAccountExistInABI &&
+        Number(isAccountExistInABI) &&
         isEthExist[0] === metaAddress &&
         isBtcExist[0] === btcAddress
       ) {
@@ -467,20 +472,13 @@ const Nav = (props) => {
             ethereumAddress: metaAddress,
           });
         }
-        if (!isAccountExistInABI) {
-          const estimateGas = await contract.methods
-            .saveBitcoinAddress(Number(counter), metaAddress)
-            .estimateGas({ from: metaAddress });
+        if (!Number(isAccountExistInABI)) {
+          const storeResult = await contract.saveBitcoinAddress(
+            Number(counter),
+            metaAddress
+          );
 
-          const storeResult = await contract.methods
-            .saveBitcoinAddress(Number(counter), metaAddress)
-            .send({
-              from: metaAddress,
-              gas: Number(estimateGas).toString(),
-              gasPrice: 0.065,
-            });
-
-          if (storeResult.transactionHash) {
+          if (storeResult.hash) {
             Notify("success", "Account creation success!", 3000);
           }
         }
