@@ -86,8 +86,9 @@ export const calculateFee = (bytes, preference) => {
   )
 }
 
-export const IndexContractAddress = "0x8696c20154d93f339ea537fbffc72ab78efcc7d2";
+export const IndexContractAddress = "0x692C9efC194e2344a88c32F7EAFee07eE032D68E";
 // export const TokenContractAddress = "0xfc2fd4c7c243b36236a2fd523ab6195ec7989a2b";
+//New with burn
 export const TokenContractAddress = "0x99Ed7c08c2310cD52188A0C94F6B01FC0a5dEC2D";
 export const BorrowContractAddress = "0xcd0b8506122ac172da02b355a6051030dacf0e55";
 

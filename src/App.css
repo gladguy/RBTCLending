@@ -2073,7 +2073,7 @@ figure:hover+span {
 
 .collection-bg-one {
   background-color: #2d3436;
-  background-image: linear-gradient(180deg, #2d3436 5%, #000000 75%);
+  background-image: repeating-linear-gradient(0deg, rgb(6, 6, 6) 0px, rgb(6, 6, 6) 1px, transparent 1px, transparent 21px), repeating-linear-gradient(90deg, rgb(6, 6, 6) 0px, rgb(6, 6, 6) 1px, transparent 1px, transparent 21px), linear-gradient(90deg, hsl(0deg 0% 8.4%), hsl(0deg 0% 8.94%));
 }
 
 .backModel {
