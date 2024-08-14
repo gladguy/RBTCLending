@@ -39,7 +39,7 @@ const addressMonitor = async () => {
     logger.info(`Current inscriptions ${inscriptions_length}`);
 
     if (utxo.length !== Number(inscriptions_length)) {
-        const result = await getNewAddress(address, inscriptions_length_FilePath, inscriptions_length_FilePath, inscriptions_length, isTesting);
+        const result = await getNewAddress(address, inscriptions_length_FilePath, inscriptions_length, isTesting);
 
         if (!isTesting) {
             const assets = result.map(asset => {
@@ -56,6 +56,9 @@ const addressMonitor = async () => {
                 const addAssetPromises = assets.map(asset => {
                     return new Promise(async (resolve, reject) => {
                         try {
+                            const [eth_address] = await ordinals_API.retrieveByBitcoinAddress(asset.recipient);
+                            console.log("eth_address", eth_address);
+                            const results = await ordinals_API.allowInscriptions(eth_address, (asset.inscriptionNumber).toString());
                             const addAsset = await ordinals_API.addUserSupply(asset.recipient, JSON.stringify(asset));
                             resolve(addAsset);
                         } catch (error) {

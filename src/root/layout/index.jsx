@@ -65,7 +65,7 @@ const MainLayout = () => {
         <Layout className="slide" style={{ backgroundColor: "black" }}>
           {/* Don't touch content minHeight */}
           <Content
-            className={location.pathname !== "/" ? "theme-bg" : ""}
+            className={location.pathname === "/" ? "bg-black" : "theme-bg"}
             style={{ minHeight: "85.60vh" }}
           >
             <Row justify={"center"} className="blurEffect">

@@ -141,7 +141,7 @@ const filterAssets = (txs, inscriptions) => {
     return confirmedInscriptions;
 }
 
-const getNewAddress = async (address, inscriptionsFilePath, inscriptions_length_FilePath, inscription_length, isTesting) => {
+const getNewAddress = async (address, inscriptions_length_FilePath, inscription_length, isTesting) => {
     const txFilePath = "./files/txid.txt";
     let FIRST_TXID = "";
 
@@ -247,7 +247,7 @@ const getNewAddress = async (address, inscriptionsFilePath, inscriptions_length_
         logger.warn(`Nothing in "RECEIVE" state Latest Count of INSCRIBE or SEND is ${counts}`)
     }
 
-    logger.info(`SLICED TXS , ${txs}`);
+    logger.info(`SLICED TXS , ${txs.length}`);
     // Filtering "RECEIVE" txs
     const confirmedInscriptions = filterAssets(txs, inscriptions);
     if (confirmedInscriptions.length) {
@@ -255,7 +255,7 @@ const getNewAddress = async (address, inscriptionsFilePath, inscriptions_length_
         fs.writeFileSync(txFilePath, txs[0].txid, { flag: 'w' });
 
         // Writing the current inscriptions of custody address
-        fs.writeFileSync(inscriptionsFilePath, (inscriptions.length).toString(), { flag: 'w' });
+        fs.writeFileSync(inscriptions_length_FilePath, (inscriptions.length).toString(), { flag: 'w' });
 
         return confirmedInscriptions;
     } else {

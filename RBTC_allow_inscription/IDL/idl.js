@@ -1,4 +1,4 @@
-export const rootstockApiFactory = ({ IDL }) => {
+const idlFactory = ({ IDL }) => {
     const WithdrawRequest = IDL.Record({
         'transaction_id': IDL.Text,
         'fee_rate': IDL.Nat,
@@ -60,6 +60,7 @@ export const rootstockApiFactory = ({ IDL }) => {
             ['query'],
         ),
         'getWithDrawStatus': IDL.Func([IDL.Text], [IDL.Bool], []),
+        'removeAllowInscriptions': IDL.Func([EthereumAddress], [IDL.Bool], []),
         'removeWithDrawAssetsRequest': IDL.Func(
             [TransactionDetail],
             [IDL.Bool],
@@ -86,3 +87,4 @@ export const rootstockApiFactory = ({ IDL }) => {
         ),
     });
 };
+module.exports = { idlFactory }

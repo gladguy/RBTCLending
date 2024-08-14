@@ -1,0 +1,96 @@
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0xf3a7ed9c079002df6600330778bbe20b83a2b2f0fc223e09f1b743b33c3cfc97
+Transaction confirmed. Block Number:5419165
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0x237bb7fdf890ad5372bba51af323be39526656f7aad6385cfce877bf322a7421
+Transaction confirmed. Block Number:5419167
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0x55960a74ba6a601af17cf5b213ab7ad5d752a34ab522f08227499c73c4dbae75
+Transaction confirmed. Block Number:5419168
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0x76bf2bd10a1261602c6d3a4ada002f42ebfb49f1f7b21323ac3b05c9b073e670
+Transaction confirmed. Block Number:5419170
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0x8724c0f27a68e056db0733161267f00aad5d90c065b13c0d0b718213be6289ff
+Transaction confirmed. Block Number:5419172
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0xe9af482d734dec19df3e4eaa5da5c8fbc77c1949be25324f6a4122e129ebedea
+Transaction confirmed. Block Number:5419173
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0xd68eda0841ff3f192d0d7594961387639ac3a4efbd5d6e1f67ef03218915dde8
+Transaction confirmed. Block Number:5419174
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0xc6a5285ee4e74c39a3c8fd47c2abd0afa9078360940fb50557e1732076e68c92
+Transaction confirmed. Block Number:5419175
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0xdb61c07f152c55a18638f4209e59b54c9ae15bff71e430ae13407a2ad3f88153
+Transaction confirmed. Block Number:5419177
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0x4751321a87e3f540e649076d61bccf91385102a1a4736c664333e3a3dfaa52aa
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0x18fd140e224b0e962704a9f158e11a29445fb2aab789b8a10b9e30eae5677309
+Transaction confirmed. Block Number:5419226
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0x7641595ca63640ea3941c73a5b4c6854a9717060457cf2223d5274b5d637cd81
+Transaction confirmed. Block Number:5419228
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0x8c432cf1a9c45301c709fb74124e887f0bbbe4b358a0b18c49c50f789242a21e
+Transaction confirmed. Block Number:5419230
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0xf2d1f580d87fb22f88af3e85094a09e68470dda3db9b9365eff079769a3fe407
+Transaction confirmed. Block Number:5419232
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0x6cd90ff3d4b7a4d046e746b5911cc53c1e54100540bd2e87aecca2e273113bed
+Transaction confirmed. Block Number:5419234
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0x4094f6bb4bd4dee2b269050d796980f67d9c55a185fe1fcf2550f1462e0089ce
+Transaction confirmed. Block Number:5419236
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0xa454697c0bbe832b0633b3fdb4bdbd5045f4ff51f22c695306a3af0c8d9ea7ed
+Transaction confirmed. Block Number:5419237
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0xa85afef6f0e33c6affc7d29c6ef71e432c659f7da62a1626eb979259495c1036
+Transaction confirmed. Block Number:5419239
+Connected to the RootStock node.
+0xA9EE082ca9c5C1aA6c1fD17A677E992681420DAB
+Current network gas price: 65800000
+Transaction sent. Hash:0x36e0fd0846e7df1eb242093a6ed4e219c55dca9520c2326b6b5297a2091b3ef0
+Transaction confirmed. Block Number:5419241

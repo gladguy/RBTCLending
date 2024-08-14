@@ -1,14 +1,4 @@
-import {
-  Badge,
-  Button,
-  Col,
-  Flex,
-  Input,
-  Row,
-  Tag,
-  Tooltip,
-  Typography,
-} from "antd";
+import { Badge, Col, Flex, Input, Row, Tag, Tooltip, Typography } from "antd";
 import { load } from "cheerio";
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
@@ -31,11 +21,13 @@ import Notify from "../../component/notification";
 import TableComponent from "../../component/table";
 import WalletConnectDisplay from "../../component/wallet-error-display";
 import { propsContainer } from "../../container/props-container";
+import { fetchEthBalance } from "../../redux/service/UserService";
 import {
   setBorrowCollateral,
   setLoading,
   setUserCollateral,
 } from "../../redux/slice/constant";
+import { rootstockApiFactory } from "../../rootstock_canister";
 import {
   API_METHODS,
   Capitalaize,
@@ -43,7 +35,9 @@ import {
   TokenContractAddress,
   UNISAT_WALLET_KEY,
   XVERSE_WALLET_KEY,
+  agentCreator,
   calculateFee,
+  rootstock,
   sliceAddress,
 } from "../../utils/common";
 import tokenAbiJson from "../../utils/tokens_abi.json";
@@ -81,6 +75,11 @@ const BridgeOrdinals = (props) => {
   const xverseAddress = walletState.xverse.ordinals.address;
   const unisatAddress = walletState.unisat.address;
   const magicEdenAddress = walletState.magicEden.ordinals.address;
+  const btcAddress = xverseAddress
+    ? xverseAddress
+    : unisatAddress
+    ? unisatAddress
+    : magicEdenAddress;
   const MEMPOOL_API = process.env.REACT_APP_MEMPOOL_API;
 
   const { Text } = Typography;
@@ -92,6 +91,7 @@ const BridgeOrdinals = (props) => {
   const [copy, setCopy] = useState("Copy");
 
   const [handleSupplyModal, setHandleSupplyModal] = useState(false);
+  const [isWithdrawBtn, setIsWithdrawBtn] = useState(false);
   const [assetWithdrawModal, setAssetWithdrawModal] = useState(false);
   const [assetWithdrawModalData, setAssetWithdrawModalData] = useState({});
   const [withdrawModalData, setWithdrawModalData] = useState({
@@ -137,11 +137,19 @@ const BridgeOrdinals = (props) => {
         signer
       );
 
-      const mintResult = await contract.mintOrdinal(inscriptionNumber);
-      await mintResult.wait();
-      if (mintResult.hash) {
-        Notify("success", "Minting success!");
-        getCollaterals();
+      const API = agentCreator(rootstockApiFactory, rootstock);
+      const tx = await API.getTransactionByKey(inscriptionNumber.toString());
+
+      if (JSON.parse(tx)?.inscriptionNumber) {
+        const mintResult = await contract.mintOrdinal(inscriptionNumber);
+        await mintResult.wait();
+        if (mintResult.hash) {
+          Notify("success", "Minting success!");
+          getCollaterals();
+          dispatch(fetchEthBalance());
+        }
+      } else {
+        Notify("warning", "Please wait for the asset to settle in custody.");
       }
       dispatch(setLoading(false));
     } catch (error) {
@@ -175,6 +183,15 @@ const BridgeOrdinals = (props) => {
   };
 
   const handleSupplyAssetWithdraw = async () => {
+    setIsWithdrawBtn(true);
+    const API = agentCreator(rootstockApiFactory, rootstock);
+    const status = await API.getWithDrawStatus(assetWithdrawModalData.id);
+    if (status) {
+      Notify("error", "Request already submitted!");
+      setAssetWithdrawModal(false);
+      setIsWithdrawBtn(false);
+      return;
+    }
     try {
       const feeValue =
         activeFee === "High"
@@ -189,49 +206,30 @@ const BridgeOrdinals = (props) => {
         Notify("warning", "Please select or input the fee!");
         return;
       }
-      // const transferArgs = {
-      //   to: {
-      //     owner: Principal.fromText(ORDINAL_CANISTER),
-      //     subaccount: [],
-      //   },
-      //   fee: [],
-      //   memo: [],
-      //   created_at_time: [],
-      //   from_subaccount: [],
-      //   amount: 1n,
-      // };
 
-      // const transferResult = await ckBtcAgent.icrc1_transfer(transferArgs);
-      // if (transferResult?.Ok) {
-      //   const args = {
-      //     transaction_id: transferResult.Ok.toString(),
-      //     fee_rate: parseInt(feeValue),
-      //     timestamp: Date.now(),
-      //     bitcoinAddress: assetWithdrawModalData.recipient,
-      //     priority: activeFee,
-      //     asset_id: assetWithdrawModalData.id,
-      //     calculated_fee: parseInt(fee),
-      //   };
+      const args = {
+        transaction_id: "0",
+        fee_rate: parseInt(feeValue),
+        timestamp: Date.now(),
+        bitcoinAddress: btcAddress,
+        priority: activeFee,
+        asset_id: assetWithdrawModalData.id,
+        calculated_fee: parseInt(fee),
+      };
 
-      //   const withdrawRes = await api_agent.addWithDrawAssetsRequest(args);
-      //   if (withdrawRes) {
-      //     Notify("sucess", "Withdraw request sent, wait untill process!");
-      //     setAssetWithdrawModal(false);
-      //   } else {
-      //     Notify("error", "Something went wrong!");
-      //   }
-      // }
+      const withdrawRes = await API.addWithDrawAssetsRequest(args);
+      if (withdrawRes) {
+        Notify("sucess", "Withdraw request sent, wait untill process!");
+        setAssetWithdrawModal(false);
+      } else {
+        Notify("error", "Something went wrong!");
+      }
+      setIsWithdrawBtn(false);
     } catch (error) {
-      // console.log("Asset Withdraw Error", error);
+      console.log("Asset Withdraw Error", error);
+      setIsWithdrawBtn(false);
     }
   };
-
-  useEffect(() => {
-    if (activeWallet.length === 0) {
-      setLendData([]);
-      setBorrowData([]);
-    }
-  }, [activeWallet]);
 
   // T1 --------------------------------------------------------------
   const AssetsToSupplyTableColumns = [
@@ -387,16 +385,15 @@ const BridgeOrdinals = (props) => {
         return (
           <Flex gap={5} justify="center">
             {obj.isToken && !obj.inLoan ? (
-              <Button
+              <CustomButton
                 className="click-btn font-weight-600 letter-spacing-small"
                 trigger={"click"}
                 disabled={!obj.isToken}
                 onClick={() => {
                   handleTokenBurn(obj.inscriptionNumber);
                 }}
-              >
-                Burn
-              </Button>
+                title={"Burn🔥"}
+              />
             ) : obj.inLoan ? (
               <Text className={"text-color-one font-small"}>In Loan</Text>
             ) : (
@@ -444,6 +441,14 @@ const BridgeOrdinals = (props) => {
       },
     },
   ];
+
+  useEffect(() => {
+    if (activeWallet.length === 0) {
+      setLendData([]);
+      setBorrowData([]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeWallet]);
 
   return (
     <>
@@ -581,9 +586,7 @@ const BridgeOrdinals = (props) => {
         onOk={handleOk}
         footer={null}
         title={
-          <Row className="black-bg white-color font-large">
-            Burn token & Withdraw asset
-          </Row>
+          <Row className="black-bg white-color font-large">Withdraw asset</Row>
         }
       >
         {assetWithdrawModalData?.inscriptionNumber ? (
@@ -708,7 +711,7 @@ const BridgeOrdinals = (props) => {
                             ? "lime-inverse"
                             : activeFee === "Medium"
                             ? "orange-inverse"
-                            : "purple-inverse"
+                            : "#5E263E"
                         }
                         style={{ fontWeight: 600, letterSpacing: "1px" }}
                       >
@@ -738,7 +741,7 @@ const BridgeOrdinals = (props) => {
                             ? "lime-inverse"
                             : activeFee === "Medium"
                             ? "orange-inverse"
-                            : "purple-inverse"
+                            : "#5E263E"
                         }
                         style={{ fontWeight: 600, letterSpacing: "1px" }}
                       >
@@ -812,11 +815,7 @@ const BridgeOrdinals = (props) => {
                 </Badge.Ribbon>
                 {/* Medium */}
 
-                <Badge.Ribbon
-                  text={"~30 mins"}
-                  className="color-black"
-                  color="orange"
-                >
+                <Badge.Ribbon text={"~30 mins"} color="orange">
                   <Flex
                     className={`${
                       activeFee === "Medium" && "border-theme"
@@ -924,17 +923,11 @@ const BridgeOrdinals = (props) => {
               <>
                 <CustomButton
                   block
+                  loading={isWithdrawBtn}
                   className="click-btn m-25 font-weight-600 letter-spacing-small"
                   title={
                     <Flex align="center" justify="center" gap={5}>
-                      <span>Pay</span>
-                      <img
-                        src={Bitcoin}
-                        alt="noimage"
-                        style={{ justifyContent: "center" }}
-                        width="25dvw"
-                      />{" "}
-                      & Withdraw
+                      Request
                     </Flex>
                   }
                   onClick={() => handleSupplyAssetWithdraw()}

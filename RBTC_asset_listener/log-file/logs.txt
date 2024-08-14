@@ -1,0 +1,43 @@
+(2024-08-03 15:21:38) - [INFO] --> *********** --- IN PRODUCTION PHASE --- ***********
+(2024-08-03 15:22:06) - [INFO] --> Current inscriptions 
+(2024-08-03 15:23:54) - [INFO] --> *********** --- IN PRODUCTION PHASE --- ***********
+(2024-08-03 15:23:55) - [INFO] --> Current inscriptions 
+(2024-08-03 15:23:59) - [INFO] --> Read txid from file:
+(2024-08-03 15:23:59) - [INFO] --> Index_Of_Tx
+(2024-08-03 15:23:59) - [INFO] --> TYPE 2
+(2024-08-03 15:24:01) - [INFO] --> SLICED TXS , [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+(2024-08-03 15:24:01) - [INFO] --> New Assets 😍 , [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+(2024-08-03 15:25:22) - [INFO] --> *********** --- IN PRODUCTION PHASE --- ***********
+(2024-08-03 15:25:23) - [INFO] --> Current inscriptions 9
+(2024-08-03 15:25:23) - [INFO] --> -- No New Assets 😏 --
+(2024-08-03 15:26:11) - [INFO] --> *********** --- IN PRODUCTION PHASE --- ***********
+(2024-08-03 15:26:11) - [INFO] --> Current inscriptions 9
+(2024-08-03 15:26:11) - [INFO] --> -- No New Assets 😏 --
+(2024-08-03 15:26:31) - [INFO] --> *********** --- IN PRODUCTION PHASE --- ***********
+(2024-08-03 15:26:31) - [INFO] --> Current inscriptions 
+(2024-08-03 15:26:42) - [INFO] --> Read txid from file:
+(2024-08-03 15:26:42) - [INFO] --> Index_Of_Tx
+(2024-08-03 15:26:42) - [INFO] --> TYPE 2
+(2024-08-03 15:26:43) - [INFO] --> SLICED TXS , [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+(2024-08-03 15:26:43) - [INFO] --> New Assets 😍 , [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+(2024-08-03 15:27:21) - [INFO] --> *********** --- IN PRODUCTION PHASE --- ***********
+(2024-08-03 15:27:23) - [INFO] --> Current inscriptions 9
+(2024-08-03 15:27:23) - [INFO] --> -- No New Assets 😏 --
+(2024-08-03 15:28:06) - [INFO] --> *********** --- IN PRODUCTION PHASE --- ***********
+(2024-08-03 15:28:07) - [INFO] --> Current inscriptions 
+(2024-08-03 15:28:08) - [INFO] --> Read txid from file:
+(2024-08-03 15:28:08) - [INFO] --> TYPE 2
+(2024-08-03 15:28:08) - [INFO] --> Index_Of_Tx
+(2024-08-03 15:28:09) - [INFO] --> SLICED TXS , [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+(2024-08-03 15:28:09) - [INFO] --> New Assets 😍 , [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+(2024-08-03 15:28:17) - [INFO] --> -- ALL DONE 😉 --
+(2024-08-03 15:28:18) - [INFO] --> *********** --- IN PRODUCTION PHASE --- ***********
+(2024-08-03 15:28:19) - [INFO] --> Current inscriptions 9
+(2024-08-03 15:28:19) - [INFO] --> -- No New Assets 😏 --
+(2024-08-08 11:59:36) - [INFO] --> *********** --- IN PRODUCTION PHASE --- ***********
+(2024-08-08 11:59:37) - [INFO] --> Current inscriptions 
+(2024-08-08 11:59:39) - [INFO] --> Read txid from file:
+(2024-08-08 11:59:39) - [INFO] --> TYPE 2
+(2024-08-08 11:59:39) - [INFO] --> Index_Of_Tx
+(2024-08-08 11:59:40) - [INFO] --> SLICED TXS , [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
+(2024-08-08 11:59:40) - [INFO] --> New Assets 😍 , [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]

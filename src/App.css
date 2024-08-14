@@ -54,7 +54,7 @@ body {
 
 .ant-layout-header {
   padding-inline: 0px;
-  background-color: #040d227e !important;
+  background-color: #0006157e !important;
   line-height: 0px !important;
   backdrop-filter: blur(16px);
 }
@@ -124,7 +124,8 @@ body {
 }
 
 .theme-bg {
-  background-image: radial-gradient(circle at top left, #06122e 17%, #040d22 36%, #311d3e 32%, #311d3e 70%, #5e263e 48%, #5e263e 65%);
+  background-color: #09031f;
+  /* background-image: radial-gradient(circle at top left, #06122e 17%, #040d22 36%, #311d3e 32%, #311d3e 70%, #5e263e 48%, #5e263e 65%); */
   border: none;
   height: 100%;
   background-attachment: fixed;
@@ -581,7 +582,6 @@ body {
 
 /* Notify background */
 .ant-notification .ant-notification-notice {
-  background: -webkit-linear-gradient(#261344, #2c0287) !important;
   border-radius: 15px !important;
 }
 
@@ -1014,7 +1014,7 @@ input::placeholder {
 }
 
 .ant-modal {
-  top: 80px;
+  top: 30px;
 }
 
 .ant-picker .ant-picker-suffix {
@@ -1123,17 +1123,20 @@ input::-webkit-input-placeholder {
 }
 
 .click-btn {
-  border-radius: 8px;
-  border: none;
-  color: #bdbdbd;
-  font-size: 1.15em;
-  transition: all 0.5ms ease-in-out;
+  position: relative;
+  display: inline-block;
   height: 50px;
-  min-width: 100px;
-  justify-content: center;
+  text-align: center;
+  font-size: 1.15em;
+  letter-spacing: 1px;
+  text-decoration: none;
+  color: #f5b8c2;
+  background: transparent;
   cursor: pointer;
-  align-items: center;
-  background: linear-gradient(145deg, var(--theme-dark), var(--theme-medium));
+  transition: ease-out 0.4s;
+  border: 2px solid var(--theme-light);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 0 var(--theme-light);
 }
 
 .sparkle {
@@ -1141,14 +1144,12 @@ input::-webkit-input-placeholder {
 }
 
 .click-btn:hover {
-  transform: translate(-0.08em, -0.08em);
-  border: 1px solid #333333;
-  /* box-shadow: 1px 1px 13px #20232e, -1px -1px 13px #545b78; */
+  color: white;
+  box-shadow: inset 0 -100px 0 0 var(--theme-light);
 }
 
 .click-btn:active {
-  transform: translate(0.08em, 0.08em);
-  /* color: #000000; */
+  transform: scale(0.9);
 }
 
 .click-btn:hover .sparkle {
@@ -1345,7 +1346,7 @@ input::-webkit-input-placeholder {
 }
 
 .ant-drawer .ant-drawer-content {
-  background-color: #0d0000 !important;
+  background-color: #02000d !important;
   padding: 20px;
   border-radius: 15px;
 }
@@ -1604,6 +1605,11 @@ input::-webkit-input-placeholder {
   background-color: aliceblue !important;
 }
 
+.ant-pagination .ant-pagination-disabled .ant-pagination-item-link,
+.ant-pagination .ant-pagination-disabled:hover .ant-pagination-item-link {
+  color: #ffffff40;
+}
+
 .ant-table-wrapper .ant-table-tbody>tr.ant-table-placeholder:hover>th,
 .ant-table-wrapper .ant-table-tbody>tr.ant-table-placeholder:hover>td,
 .ant-table-wrapper .ant-table-tbody>tr.ant-table-placeholder {
@@ -1668,6 +1674,25 @@ input::-webkit-input-placeholder {
 
 .ant-tabs .ant-tabs-tab:active {
   color: white;
+}
+
+.ant-pagination-item,
+.ant-pagination-item-active,
+.ant-pagination-item-link {
+  background-color: var(--dark-header) !important;
+}
+
+.ant-pagination .ant-pagination-item-active a {
+  color: whitesmoke;
+}
+
+.ant-pagination .ant-pagination-item-active {
+  border-color: var(--bg-color);
+}
+
+ant-pagination .ant-pagination-disabled .ant-pagination-item-link,
+ant-pagination .ant-pagination-disabled:hover .ant-pagination-item-link {
+  color: #ffffff4d;
 }
 
 /* tab active style */
@@ -2073,7 +2098,7 @@ figure:hover+span {
 
 .collection-bg-one {
   background-color: #2d3436;
-  background-image: repeating-linear-gradient(0deg, rgb(6, 6, 6) 0px, rgb(6, 6, 6) 1px, transparent 1px, transparent 21px), repeating-linear-gradient(90deg, rgb(6, 6, 6) 0px, rgb(6, 6, 6) 1px, transparent 1px, transparent 21px), linear-gradient(90deg, hsl(0deg 0% 8.4%), hsl(0deg 0% 8.94%));
+  background-image: repeating-linear-gradient(0deg, rgb(0 0 0) 0px, rgb(37 37 37) 1px, transparent 1px, transparent 21px), repeating-linear-gradient(90deg, rgb(37 37 37) 0px, rgb(0 0 0) 1px, transparent 1px, transparent 21px), linear-gradient(90deg, hsl(0deg 0% 0%), hsl(0deg 0% 0%));
 }
 
 .backModel {

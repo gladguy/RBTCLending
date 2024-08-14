@@ -6,6 +6,7 @@ const state = {
   collection: ["", "", "", "", "", "", "", "", "", "", "", ""],
   approvedCollections: ["", "", "", "", "", "", "", "", "", "", "", ""],
   btcvalue: null,
+  ethbalance: null,
   agent: undefined,
   userAssets: null,
   userCollateral: null,
@@ -38,6 +39,10 @@ const constantSlice = createSlice({
 
     setBtcValue: (state, action) => {
       state.btcvalue = action.payload;
+    },
+
+    setEthBalance: (state, action) => {
+      state.ethbalance = action.payload;
     },
 
     setAgent: (state, action) => {
@@ -80,6 +85,7 @@ export const {
   setApprovedCollection,
   setBorrowCollateral,
   setBtcValue,
+  setEthBalance,
   setCollection,
   setDashboardData,
   setLoaderTip,

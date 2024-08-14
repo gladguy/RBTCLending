@@ -3,6 +3,7 @@ import gsap from "gsap";
 import React from "react";
 import TailSpin from "react-loading-icons/dist/esm/components/tail-spin";
 import Bitcoin from "../../assets/coin_logo/bitcoin-rootstock.png";
+import rootstock from "../../assets/coin_logo/rootstock_orange_logo.png";
 import Loading from "../../component/loading-wrapper/secondary-loader";
 import { propsContainer } from "../props-container";
 
@@ -12,6 +13,7 @@ const Footer = (props) => {
   const breakpoints = useBreakpoint();
   const { reduxState } = props.redux;
   const constantState = reduxState.constant;
+  const ethbalance = reduxState.constant.ethbalance;
 
   let USDollar = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -28,7 +30,7 @@ const Footer = (props) => {
 
   return (
     <>
-      <Row justify={"center"} align={"middle"}>
+      <Row justify={"space-around"} align={"middle"}>
         <Col>
           <Loading
             spin={!constantState.btcvalue}
@@ -58,6 +60,36 @@ const Footer = (props) => {
               ""
             )}
           </Loading>
+        </Col>
+
+        <Col>
+          <Flex gap={5} align="center">
+            <img
+              className="round"
+              src={rootstock}
+              alt="noimage"
+              style={{ justifyContent: "center" }}
+              width={30}
+              height={breakpoints.xs ? "25px" : ""}
+            />
+            {ethbalance ? (
+              <Text
+                className={`gradient-text-one ${
+                  breakpoints.xs ? "font-xmsmall" : "font-small"
+                } heading-one`}
+              >
+                {ethbalance.toFixed(5)}
+              </Text>
+            ) : (
+              <Text
+                className={`gradient-text-one ${
+                  breakpoints.xs ? "font-xmsmall" : "font-small"
+                } heading-one`}
+              >
+                -
+              </Text>
+            )}
+          </Flex>
         </Col>
       </Row>
     </>

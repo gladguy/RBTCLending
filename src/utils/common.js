@@ -29,6 +29,7 @@ export const ordinals = process.env.REACT_APP_ORDINAL_CANISTER_ID;
 export const rootstock = process.env.REACT_APP_ROOTSTOCK_CANISTER_ID;
 export const ordiscan_bearer = process.env.REACT_APP_ORDISCAN_BEARER;
 export const foundaryId = Number(process.env.REACT_APP_FOUNDARY_ID);
+export const ethscan_API_KEY = process.env.REACT_APP_ETHSCAN_API_KEY;
 
 export const BTCWallets = [
   {

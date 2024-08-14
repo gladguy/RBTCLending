@@ -231,66 +231,68 @@ const Borrowing = (props) => {
       align: "center",
       render: (_, obj) => {
         return (
-          <CustomButton
-            className={"click-btn font-weight-600 letter-spacing-small"}
-            title={"Borrow"}
-            size="medium"
-            onClick={() => {
-              if (collateralData === null) {
-                Notify("warning", "Fetching your collateral, please wait!");
-                return;
-              }
-              // Floor
-              const floor = Number(obj.floorPrice)
-                ? Number(obj.floorPrice)
-                : 30000;
-              // Assets
-              let assets = collateralData?.filter(
-                (p) => p.collectionSymbol === obj.symbol
-              );
-              // Terms
-              const term = Number(obj.terms);
-              // Converting ordinal asset price into dollar
-              const ordinalPrice = floor / BTC_ZERO;
-              // Max amount user can be avail for the ordinal
-              const maxQuoted = Number(ordinalPrice.toFixed(6));
-              // Cutoff the amount by 2 for initial display
-              const amount = maxQuoted / 2;
-              // Calc 85% to display close to floor price message
-              const exceedRange = ((maxQuoted * 85) / 100).toFixed(6);
-              // Calc interest per day
-              const interestPerDay = calculateDailyInterestRate(obj.yield);
-              // Calc interest for given no of days
-              const interestTerm = Number(interestPerDay) * term;
-              // Calc interest for n days
-              const interest = (amount * interestTerm).toFixed(6);
-              // Calc 15% of platformfee from interest
-              const platformFee = ((interest * 15) / 100).toFixed(6);
-              const sliderLTV = Math.round(
-                ((amount * btcvalue) / (ordinalPrice * btcvalue)) * 100
-              );
-              toggleBorrowModal();
-              setTimeout(() => {
-                amountRef.current.focus();
-              }, 300);
-              setBorrowModalData({
-                ...obj,
-                assets,
-                amount,
-                interest,
-                maxQuoted,
-                platformFee,
-                terms: term,
-                exceedRange,
-                ordinalPrice,
-                APY: obj.APY,
-                interestTerm,
-                interestPerDay,
-                floorPrice: floor,
-                sliderLTV: obj.LTV ? obj.LTV : sliderLTV,
-              });
-            }}
-          />
+          <Row justify={"center"}>
+            <CustomButton
+              className={"click-btn font-weight-600 letter-spacing-small"}
+              title={"Borrow"}
+              size="medium"
+              onClick={() => {
+                if (collateralData === null) {
+                  Notify("warning", "Fetching your collateral, please wait!");
+                  return;
+                }
+                // Floor
+                const floor = Number(obj.floorPrice)
+                  ? Number(obj.floorPrice)
+                  : 30000;
+                // Assets
+                let assets = collateralData?.filter(
+                  (p) => p.collectionSymbol === obj.symbol
+                );
+                // Terms
+                const term = Number(obj.terms);
+                // Converting ordinal asset price into dollar
+                const ordinalPrice = floor / BTC_ZERO;
+                // Max amount user can be avail for the ordinal
+                const maxQuoted = Number(ordinalPrice.toFixed(6));
+                // Cutoff the amount by 2 for initial display
+                const amount = maxQuoted / 2;
+                // Calc 85% to display close to floor price message
+                const exceedRange = ((maxQuoted * 85) / 100).toFixed(6);
+                // Calc interest per day
+                const interestPerDay = calculateDailyInterestRate(obj.yield);
+                // Calc interest for given no of days
+                const interestTerm = Number(interestPerDay) * term;
+                // Calc interest for n days
+                const interest = (amount * interestTerm).toFixed(6);
+                // Calc 15% of platformfee from interest
+                const platformFee = ((interest * 15) / 100).toFixed(6);
+                const sliderLTV = Math.round(
+                  ((amount * btcvalue) / (ordinalPrice * btcvalue)) * 100
+                );
+                toggleBorrowModal();
+                setTimeout(() => {
+                  amountRef.current.focus();
+                }, 300);
+                setBorrowModalData({
+                  ...obj,
+                  assets,
+                  amount,
+                  interest,
+                  maxQuoted,
+                  platformFee,
+                  terms: term,
+                  exceedRange,
+                  ordinalPrice,
+                  APY: obj.APY,
+                  interestTerm,
+                  interestPerDay,
+                  floorPrice: floor,
+                  sliderLTV: obj.LTV ? obj.LTV : sliderLTV,
+                });
+              }}
+            />
+          </Row>
         );
       },
     },

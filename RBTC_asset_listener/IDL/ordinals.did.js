@@ -1,21 +1,5 @@
-export const rootstockApiFactory = ({ IDL }) => {
-    const WithdrawRequest = IDL.Record({
-        'transaction_id': IDL.Text,
-        'fee_rate': IDL.Nat,
-        'timestamp': IDL.Nat64,
-        'bitcoinAddress': IDL.Text,
-        'priority': IDL.Text,
-        'asset_id': IDL.Text,
-        'calculated_fee': IDL.Nat,
-    });
+const idlFactory = ({ IDL }) => {
     const EthereumAddress = IDL.Text;
-    const TransactionDetail = IDL.Record({
-        'transaction': IDL.Text,
-        'fee_rate': IDL.Nat,
-        'timestamp': IDL.Nat64,
-        'bitcoinAddress': IDL.Text,
-        'asset_id': IDL.Text,
-    });
     const AddressPair = IDL.Record({
         'bitcoinAddress': IDL.Text,
         'ethereumAddress': IDL.Text,
@@ -24,7 +8,6 @@ export const rootstockApiFactory = ({ IDL }) => {
         'acceptCycles': IDL.Func([], [], []),
         'addTransaction': IDL.Func([IDL.Text, IDL.Text], [], ['oneway']),
         'addUserSupply': IDL.Func([IDL.Text, IDL.Text], [IDL.Bool], []),
-        'addWithDrawAssetsRequest': IDL.Func([WithdrawRequest], [IDL.Bool], []),
         'allowInscriptions': IDL.Func([EthereumAddress, IDL.Text], [IDL.Bool], []),
         'availableCycles': IDL.Func([], [IDL.Nat], ['query']),
         'deleteAllowInscriptions': IDL.Func(
@@ -33,11 +16,6 @@ export const rootstockApiFactory = ({ IDL }) => {
             [],
         ),
         'deleteTransactionByKey': IDL.Func([IDL.Text], [IDL.Bool], []),
-        'getAllTransactionHistory': IDL.Func(
-            [],
-            [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(TransactionDetail)))],
-            [],
-        ),
         'getAllowInscriptions': IDL.Func(
             [],
             [IDL.Vec(IDL.Tuple(EthereumAddress, IDL.Vec(IDL.Text)))],
@@ -48,23 +26,7 @@ export const rootstockApiFactory = ({ IDL }) => {
             [IDL.Opt(IDL.Text)],
             ['query'],
         ),
-        'getTransactionHistory': IDL.Func(
-            [IDL.Text],
-            [IDL.Vec(TransactionDetail)],
-            [],
-        ),
         'getUserSupply': IDL.Func([IDL.Text], [IDL.Vec(IDL.Text)], ['query']),
-        'getWithDrawAssetsRequest': IDL.Func(
-            [],
-            [IDL.Vec(IDL.Tuple(IDL.Nat, WithdrawRequest))],
-            ['query'],
-        ),
-        'getWithDrawStatus': IDL.Func([IDL.Text], [IDL.Bool], []),
-        'removeWithDrawAssetsRequest': IDL.Func(
-            [TransactionDetail],
-            [IDL.Bool],
-            [],
-        ),
         'resetSupply': IDL.Func([IDL.Nat], [IDL.Bool], []),
         'retrieve': IDL.Func([IDL.Text], [IDL.Opt(IDL.Nat)], ['query']),
         'retrieveByBitcoinAddress': IDL.Func(
@@ -86,3 +48,5 @@ export const rootstockApiFactory = ({ IDL }) => {
         ),
     });
 };
+
+module.exports = { idlFactory }

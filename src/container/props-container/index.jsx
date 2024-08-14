@@ -29,6 +29,7 @@ import {
   rootstock,
 } from "../../utils/common";
 import tokenAbiJson from "../../utils/tokens_abi.json";
+import { fetchEthBalance } from "../../redux/service/UserService";
 
 export const propsContainer = (Component) => {
   function ComponentWithRouterProp(props) {
@@ -403,6 +404,7 @@ export const propsContainer = (Component) => {
     useEffect(() => {
       if (activeWallet.length) {
         getAllBorrowRequests();
+        dispatch(fetchEthBalance());
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeWallet]);

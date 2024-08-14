@@ -179,23 +179,25 @@ const Lending = (props) => {
       align: "center",
       render: (_, obj) => {
         return (
-          <CustomButton
-            className={"click-btn font-weight-600 letter-spacing-small"}
-            title={"Lend"}
-            size="medium"
-            onClick={() => {
-              fetchRequests(obj);
+          <Row justify={"center"}>
+            <CustomButton
+              className={"click-btn font-weight-600 letter-spacing-small"}
+              title={"Lend"}
+              size="medium"
+              onClick={() => {
+                fetchRequests(obj);
 
-              // toggleLendModal();
-              // setLendModalData({
-              //   collateral: "",
-              //   symbol: obj.symbol,
-              //   canisterId: obj.canister,
-              //   collectionName: obj.name,
-              //   thumbnailURI: obj.thumbnailURI,
-              // });
-            }}
-          />
+                // toggleLendModal();
+                // setLendModalData({
+                //   collateral: "",
+                //   symbol: obj.symbol,
+                //   canisterId: obj.canister,
+                //   collectionName: obj.name,
+                //   thumbnailURI: obj.thumbnailURI,
+                // });
+              }}
+            />
+          </Row>
         );
       },
     },
