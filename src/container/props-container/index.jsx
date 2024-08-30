@@ -68,7 +68,7 @@ export const propsContainer = (Component) => {
       : unisatAddress
       ? unisatAddress
       : magicEdenAddress;
-    const WAHEED_ADDRESS = process.env.REACT_APP_WAHEED_ADDRESS;
+    const TEST_ADDRESS = process.env.REACT_APP_TEST_ADDRESS;
 
     const btcPrice = async () => {
       const BtcData = await API_METHODS.get(
@@ -239,7 +239,7 @@ export const propsContainer = (Component) => {
       try {
         const API = agentCreator(rootstockApiFactory, rootstock);
         const userAssets = await API.getUserSupply(
-          IS_USER ? address : WAHEED_ADDRESS
+          IS_USER ? address : TEST_ADDRESS
         );
         const supplyData = userAssets.map((asset) => JSON.parse(asset));
         colResult = await getCollectionDetails(supplyData);
@@ -349,7 +349,7 @@ export const propsContainer = (Component) => {
                 : unisatAddress
                 ? unisatAddress
                 : magicEdenAddress
-              : WAHEED_ADDRESS
+              : TEST_ADDRESS
           );
 
           const testData = result?.reduce((acc, curr) => {
