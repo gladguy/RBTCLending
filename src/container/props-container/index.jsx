@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Notify from "../../component/notification";
-import { apiFactory } from "../../ordinal_canister";
+import { fetchEthBalance } from "../../redux/service/UserService";
 import {
   setAgent,
   setAllBorrowRequest,
@@ -13,7 +13,9 @@ import {
   setBtcValue,
   setCollection,
   setUserAssets,
+  setUserBalancePoints,
   setUserCollateral,
+  setUserPoints,
 } from "../../redux/slice/constant";
 import { rootstockApiFactory } from "../../rootstock_canister";
 import borrowJson from "../../utils/borrow_abi.json";
@@ -21,15 +23,14 @@ import {
   API_METHODS,
   BorrowContractAddress,
   IS_USER,
+  PointsTokenAddress,
   TokenContractAddress,
   agentCreator,
   apiUrl,
   calculateAPY,
-  ordinals,
   rootstock,
 } from "../../utils/common";
-import tokenAbiJson from "../../utils/tokens_abi.json";
-import { fetchEthBalance } from "../../redux/service/UserService";
+import tokenJson from "../../utils/tokens_abi.json";
 
 export const propsContainer = (Component) => {
   function ComponentWithRouterProp(props) {
@@ -47,7 +48,7 @@ export const propsContainer = (Component) => {
     const collections = reduxState.constant.collection;
     const approvedCollections = reduxState.constant.approvedCollections;
     const userAssets = reduxState.constant.userAssets;
-
+    const ETH_ZERO = process.env.REACT_APP_ETH_ZERO;
     const [isEthConnected, setIsEthConnected] = useState(false);
 
     useEffect(() => {
@@ -91,6 +92,43 @@ export const propsContainer = (Component) => {
       }
     };
 
+    const fetchContractPoints = async () => {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      const tokensContract = new ethers.Contract(
+        TokenContractAddress,
+        tokenJson,
+        signer
+      );
+
+      const borrowContract = new ethers.Contract(
+        BorrowContractAddress,
+        borrowJson,
+        signer
+      );
+
+      const tokenPoints = await tokensContract.getPoints(metaAddress);
+      const borrowPoints = await borrowContract.getPoints(metaAddress);
+      const sum = Number(tokenPoints) + Number(borrowPoints);
+      dispatch(setUserPoints(sum / ETH_ZERO));
+    };
+
+    const fetchBalancePoints = async () => {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      const tokensContract = new ethers.Contract(
+        PointsTokenAddress,
+        tokenJson,
+        signer
+      );
+
+      const tokenPoints = await tokensContract.balanceOf(metaAddress);
+      const sum = Number(tokenPoints);
+      dispatch(setUserBalancePoints(sum / ETH_ZERO));
+    };
+
     useEffect(() => {
       (async () => {
         try {
@@ -99,9 +137,9 @@ export const propsContainer = (Component) => {
               host: process.env.REACT_APP_HTTP_AGENT_ACTOR_HOST,
             });
 
-            const agent = Actor.createActor(apiFactory, {
+            const agent = Actor.createActor(rootstockApiFactory, {
               agent: ordinalAgent,
-              canisterId: ordinals,
+              canisterId: rootstock,
             });
 
             dispatch(setAgent(agent));
@@ -132,44 +170,43 @@ export const propsContainer = (Component) => {
 
     useEffect(() => {
       (async () => {
-        if (api_agent) {
-          const result = await api_agent.get_collections();
-          const approvedCollections = await api_agent.getApproved_Collections();
-          const collections = JSON.parse(result);
-          if (approvedCollections.length) {
-            const collectionPromise = approvedCollections.map(async (asset) => {
-              const [, col] = asset;
-              const collection = collections.find(
-                (predict) => predict.symbol === col.collectionName
+        const API = agentCreator(rootstockApiFactory, rootstock);
+        const result = await API.get_collections();
+        const approvedCollections = await API.getApproved_Collections();
+        const collections = JSON.parse(result);
+        if (approvedCollections.length) {
+          const collectionPromise = approvedCollections.map(async (asset) => {
+            const [, col] = asset;
+            const collection = collections.find(
+              (predict) => predict.symbol === col.collectionName
+            );
+            return new Promise(async (resolve, _) => {
+              const { data } = await API_METHODS.get(
+                `${apiUrl.Asset_server_base_url}/api/v2/fetch/collection/${col.collectionName}`
               );
-              return new Promise(async (resolve, _) => {
-                const { data } = await API_METHODS.get(
-                  `${apiUrl.Asset_server_base_url}/api/v2/fetch/collection/${col.collectionName}`
-                );
-                resolve({ ...col, ...data.data, ...collection });
-              });
+              resolve({ ...col, ...data.data, ...collection });
             });
+          });
 
-            const collectionDetails = await Promise.all(collectionPromise);
-            const finalResult = collectionDetails.map((col) => {
-              const { yield: yields, terms } = col;
-              const term = Number(terms);
-              const APY = calculateAPY(yields, term);
-              const LTV = 0;
-              return {
-                ...col,
-                terms: term,
-                APY,
-                LTV,
-              };
-            });
-            dispatch(setApprovedCollection(finalResult));
-          }
-          dispatch(setCollection(collections));
+          const collectionDetails = await Promise.all(collectionPromise);
+          const finalResult = collectionDetails.map((col) => {
+            const { yield: yields, terms } = col;
+            const term = Number(terms);
+            const APY = calculateAPY(yields, term);
+            const LTV = 0;
+            return {
+              ...col,
+              terms: term,
+              APY,
+              LTV,
+            };
+          });
+          dispatch(setApprovedCollection(finalResult));
         }
+        dispatch(setCollection(collections));
       })();
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [api_agent, dispatch]);
+    }, [dispatch]);
 
     const getCollectionDetails = async (filteredData) => {
       try {
@@ -248,7 +285,7 @@ export const propsContainer = (Component) => {
         const signer = provider.getSigner();
         const contract = new ethers.Contract(
           TokenContractAddress,
-          tokenAbiJson,
+          tokenJson,
           signer
         );
 
@@ -395,6 +432,14 @@ export const propsContainer = (Component) => {
     }, [activeWallet, approvedCollections]);
 
     useEffect(() => {
+      if (activeWallet.length) {
+        fetchContractPoints();
+        fetchBalancePoints();
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeWallet]);
+
+    useEffect(() => {
       if (activeWallet.length && approvedCollections[0]) {
         getContractCollaterals();
       }
@@ -419,6 +464,8 @@ export const propsContainer = (Component) => {
           isEthConnected,
           getCollaterals,
           getAllBorrowRequests,
+          fetchContractPoints,
+          fetchBalancePoints,
         }}
       />
     );

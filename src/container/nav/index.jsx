@@ -18,6 +18,8 @@ import { ethers } from "ethers";
 import gsap from "gsap";
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineDisconnect } from "react-icons/ai";
+import { GiReceiveMoney } from "react-icons/gi";
+import { MdRedeem } from "react-icons/md";
 import { PiCopyBold } from "react-icons/pi";
 import { RiWallet3Fill } from "react-icons/ri";
 import { RxHamburgerMenu } from "react-icons/rx";
@@ -47,18 +49,36 @@ import {
   apiUrl,
   BTCWallets,
   IndexContractAddress,
+  IS_TESTNET,
   MAGICEDEN_WALLET_KEY,
+  MAINNET_CHAIN_ID,
+  MAINNET_CHAIN_NAME,
+  MAINNET_CURRENCY,
+  MAINNET_CURRENCY_NAME,
+  MAINNET_EXPLORER_URL,
+  MAINNET_RPC_URL,
   META_WALLET_KEY,
   paymentWallets,
   rootstock,
+  ROOTSTOCK_LIVE_NET,
   sliceAddress,
+  TESTNET_CHAIN_ID,
+  TESTNET_CHAIN_NAME,
+  TESTNET_CURRENCY,
+  TESTNET_CURRENCY_NAME,
+  TESTNET_EXPLORER_URL,
+  TESTNET_RPC_URL,
+  TokenContractAddress,
   UNISAT_WALLET_KEY,
   XVERSE_WALLET_KEY,
 } from "../../utils/common";
 import indexJson from "../../utils/index_abi.json";
+import tokensJson from "../../utils/tokens_abi.json";
 import { propsContainer } from "../props-container";
+import { FaWallet } from "react-icons/fa";
 
 const Nav = (props) => {
+  /* global BigInt */
   const { Text } = Typography;
   const { useBreakpoint } = Grid;
   const breakPoint = useBreakpoint();
@@ -66,6 +86,7 @@ const Nav = (props) => {
 
   const { location, navigate } = props.router;
   const { dispatch, reduxState } = props.redux;
+  const { fetchContractPoints, fetchBalancePoints } = props.wallet;
 
   const walletState = reduxState.wallet;
   // const constantState = reduxState.constant;
@@ -82,6 +103,8 @@ const Nav = (props) => {
 
   const [isConnectModal, setConnectModal] = useState(false);
   const [tabKey, setTabKey] = useState("1");
+  const contractPoints = reduxState.constant.userPoints;
+  const tokenBalance = reduxState.constant.balancePoints;
   const [open, setOpen] = useState(false);
   const [screenDimensions, setScreenDimensions] = React.useState({
     width: window.screen.width,
@@ -93,6 +116,7 @@ const Nav = (props) => {
   const [activeAddresses, setActiveAddresses] = useState({});
 
   const avatar = process.env.REACT_APP_AVATAR;
+  const ETH_ZERO = process.env.REACT_APP_ETH_ZERO;
   const SatsConnectNamespace = "sats-connect:";
 
   const { confirm } = Modal;
@@ -225,6 +249,32 @@ const Nav = (props) => {
     setWalletConnection({});
     setActiveConnections([]);
     setActiveAddresses({});
+  };
+
+  const handleRedeemPoints = async () => {
+    try {
+      dispatch(setLoading(true));
+      onClose();
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      const tokensContract = new ethers.Contract(
+        TokenContractAddress,
+        tokensJson,
+        signer
+      );
+
+      const redeemResult = await tokensContract.redeemPoints(
+        BigInt(contractPoints * ETH_ZERO)
+      );
+      await redeemResult.wait();
+      dispatch(setLoading(false));
+      fetchContractPoints();
+      fetchBalancePoints();
+    } catch (error) {
+      dispatch(setLoading(false));
+      console.log("Redeem points error", error);
+    }
   };
 
   const connectWallet = async (walletName) => {
@@ -377,9 +427,20 @@ const Nav = (props) => {
           const accounts = await web3.eth.getAccounts();
           const networkId = await web3.eth.net.getId();
 
-          if (Number(networkId) !== 31) {
-            Notify("error", "Switch to the RBTC network!");
-            const chainId = "0x1f"; // Rootstock BTC Testnet Chain ID in hexadecimal (31 in decimal)
+          if (networkId !== ROOTSTOCK_LIVE_NET) {
+            const chainId = IS_TESTNET ? TESTNET_CHAIN_ID : MAINNET_CHAIN_ID;
+            const chainName = IS_TESTNET
+              ? TESTNET_CHAIN_NAME
+              : MAINNET_CHAIN_NAME;
+            const rpcUrl = IS_TESTNET ? TESTNET_RPC_URL : MAINNET_RPC_URL;
+            const explorerUrl = IS_TESTNET
+              ? TESTNET_EXPLORER_URL
+              : MAINNET_EXPLORER_URL;
+            const symbol = IS_TESTNET ? TESTNET_CURRENCY : MAINNET_CURRENCY;
+            const name = IS_TESTNET
+              ? TESTNET_CURRENCY_NAME
+              : MAINNET_CURRENCY_NAME;
+
             try {
               await window.ethereum.request({
                 method: "wallet_switchEthereumChain",
@@ -394,12 +455,12 @@ const Nav = (props) => {
                     params: [
                       {
                         chainId,
-                        chainName: "Rootstock Testnet",
-                        rpcUrls: ["https://public-node.testnet.rsk.co"],
-                        blockExplorerUrls: ["https://explorer.testnet.rsk.co"],
+                        chainName,
+                        rpcUrls: [rpcUrl],
+                        blockExplorerUrls: [explorerUrl],
                         nativeCurrency: {
-                          name: "Testnet RSK Bitcoin",
-                          symbol: "tRBTC",
+                          name,
+                          symbol,
                           decimals: 18,
                         },
                       },
@@ -412,20 +473,20 @@ const Nav = (props) => {
                 console.error("Failed to switch the network:", switchError);
               }
             }
-          }
 
-          setWalletConnection({
-            ...walletConnection,
-            [META_WALLET_KEY]: {
-              address: accounts[0],
-              publicKey: null,
-            },
-          });
-          setActiveConnections([...activeConnections, META_WALLET_KEY]);
-          setActiveAddresses({
-            ...activeAddresses,
-            [META_WALLET_KEY]: accounts[0],
-          });
+            setWalletConnection({
+              ...walletConnection,
+              [META_WALLET_KEY]: {
+                address: accounts[0],
+                publicKey: null,
+              },
+            });
+            setActiveConnections([...activeConnections, META_WALLET_KEY]);
+            setActiveAddresses({
+              ...activeAddresses,
+              [META_WALLET_KEY]: accounts[0],
+            });
+          }
         } catch (error) {
           console.error("User denied account access", error);
         }
@@ -1092,7 +1153,7 @@ const Nav = (props) => {
       <Drawer
         closeIcon
         width={screenDimensions.width > 425 ? "320px" : "280px"}
-        style={{ height: screenDimensions.width > 1199 ? "43%" : "100%" }}
+        style={{ height: screenDimensions.width > 1199 ? "68%" : "100%" }}
         title={
           <>
             <Row justify={"space-evenly"} align={"middle"}>
@@ -1123,31 +1184,62 @@ const Nav = (props) => {
         footer={
           <>
             {screenDimensions.width > 1199 && (
-              <Row justify={"end"} className="iconalignment pointer">
-                <CustomButton
-                  className={"click-btn font-weight-600 letter-spacing-small"}
-                  onClick={async () => {
-                    successMessageNotify("Your are signed out!");
-                    dispatch(clearWalletState());
-                    resetConnectionStates();
-                    onClose();
+              <>
+                <Row
+                  justify={{
+                    xs: "center",
+                    sm: "center",
+                    md: "end",
+                    lg: "end",
+                    xl: "end",
                   }}
-                  title={
-                    <Flex align="center" justify="center" gap={3}>
-                      <AiOutlineDisconnect
-                        color="white"
-                        style={{ fill: "chocolate" }}
-                        size={25}
-                      />
-                      <Text className="text-color-two font-small heading-one">
-                        Disconnect
-                      </Text>
-                    </Flex>
-                  }
-                  block
-                  size="medium"
-                />
-              </Row>
+                  className="iconalignment pointer"
+                >
+                  <CustomButton
+                    className={"click-btn font-weight-600 letter-spacing-small"}
+                    onClick={handleRedeemPoints}
+                    title={
+                      <Flex align="center" justify="center" gap={5}>
+                        <MdRedeem
+                          color="white"
+                          style={{ fill: "chocolate" }}
+                          size={25}
+                        />
+                        <Text className="text-color-two font-small heading-one">
+                          Redeem points
+                        </Text>
+                      </Flex>
+                    }
+                    block
+                    size="medium"
+                  />
+                </Row>
+                <Row justify={"end"} className="iconalignment pointer mt-15">
+                  <CustomButton
+                    className={"click-btn font-weight-600 letter-spacing-small"}
+                    onClick={async () => {
+                      successMessageNotify("Your are signed out!");
+                      dispatch(clearWalletState());
+                      resetConnectionStates();
+                      onClose();
+                    }}
+                    title={
+                      <Flex align="center" justify="center" gap={3}>
+                        <AiOutlineDisconnect
+                          color="white"
+                          style={{ fill: "chocolate" }}
+                          size={25}
+                        />
+                        <Text className="text-color-two font-small heading-one">
+                          Disconnect
+                        </Text>
+                      </Flex>
+                    }
+                    block
+                    size="medium"
+                  />
+                </Row>
+              </>
             )}
           </>
         }
@@ -1177,22 +1269,6 @@ const Nav = (props) => {
                   </Text>
                 </Flex>
               </Flex>
-            </Col>
-
-            <Col>
-              {walletState.active.includes(META_WALLET_KEY) ? null : (
-                <CustomButton
-                  className="font-size-18 black-bg text-color-one border-none"
-                  title={"Connect"}
-                  onClick={() => {
-                    if (walletState.active.length < 2) {
-                      collapseConnectedModal();
-                    } else {
-                      successMessageNotify("Wallet already connected!");
-                    }
-                  }}
-                />
-              )}
             </Col>
           </Row>
 
@@ -1230,38 +1306,78 @@ const Nav = (props) => {
                 </Flex>
               </Flex>
             </Col>
+          </Row>
 
-            {/* <Col>
-              <CustomButton
-                className="font-size-18 black-bg text-color-one border-none"
-                title={"Connect"}
-                onClick={() => {
-                  handleTransfer();
-                }}
-              />
-            </Col> */}
-
+          <Row justify={"space-between"} align={"middle"}>
             <Col>
-              {walletState.active.includes(XVERSE_WALLET_KEY) ||
-              walletState.active.includes(UNISAT_WALLET_KEY) ||
-              walletState.active.includes(MAGICEDEN_WALLET_KEY) ? null : (
-                <CustomButton
-                  className="font-size-18 black-bg text-color-one border-none"
-                  title={"Connect"}
-                  onClick={() => {
-                    if (walletState.active.length < 2) {
-                      collapseConnectedModal();
-                    } else {
-                      successMessageNotify("Wallet already connected!");
-                    }
-                  }}
+              <Flex align="center">
+                <GiReceiveMoney
+                  color="whitesmoke"
+                  style={{ marginRight: "10px" }}
+                  size={30}
                 />
-              )}
+                <Flex vertical>
+                  <Text className="text-color-two font-medium">Points</Text>
+                  <Text className="text-color-one font-xsmall">
+                    {contractPoints}
+                  </Text>
+                </Flex>
+              </Flex>
+            </Col>
+          </Row>
+
+          <Row justify={"space-between"} align={"middle"}>
+            <Col>
+              <Flex align="center">
+                <FaWallet
+                  color="whitesmoke"
+                  style={{ marginRight: "10px" }}
+                  size={27}
+                />
+                <Flex vertical>
+                  <Text className="text-color-two font-medium">
+                    Points balance
+                  </Text>
+                  <Text className="text-color-one font-xsmall">
+                    {tokenBalance}
+                  </Text>
+                </Flex>
+              </Flex>
             </Col>
           </Row>
 
           {screenDimensions.width < 1200 && (
             <>
+              <Row
+                style={{ marginTop: "10px" }}
+                justify={{
+                  xs: "center",
+                  sm: "center",
+                  md: "end",
+                  lg: "end",
+                  xl: "end",
+                }}
+                className="iconalignment pointer"
+              >
+                <CustomButton
+                  className={"click-btn font-weight-600 letter-spacing-small"}
+                  onClick={handleRedeemPoints}
+                  title={
+                    <>
+                      <AiOutlineDisconnect
+                        color="white"
+                        style={{ fill: "chocolate" }}
+                        size={25}
+                      />
+                      <Text className="text-color-two font-small heading-one">
+                        Redeem points
+                      </Text>
+                    </>
+                  }
+                  block
+                  size="medium"
+                />
+              </Row>
               <Row
                 style={{ marginTop: "10px" }}
                 justify={{
@@ -1308,40 +1424,6 @@ const Nav = (props) => {
                 mode="inline"
                 items={options}
               />
-              {/* {screenDimensions.width < 992 && (
-                <Row style={{ padding: " 0px 24px", marginTop: "10px" }}>
-                  <Col>
-                    <Loading
-                      spin={!constantState.btcvalue}
-                      indicator={
-                        <TailSpin
-                          stroke="#6a85f1"
-                          alignmentBaseline="central"
-                        />
-                      }
-                    >
-                      {constantState.btcvalue ? (
-                        <Flex gap={5}>
-                          <Text className="gradient-text-one font-small heading-one">
-                            BTC
-                          </Text>
-                          <img
-                            src={Bitcoin}
-                            alt="noimage"
-                            style={{ justifyContent: "center" }}
-                            width="35dvw"
-                          />{" "}
-                          <Text className="gradient-text-one font-small heading-one">
-                            $ {constantState.btcvalue}
-                          </Text>
-                        </Flex>
-                      ) : (
-                        ""
-                      )}
-                    </Loading>
-                  </Col>
-                </Row>
-              )} */}
             </>
           )}
         </>

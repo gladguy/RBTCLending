@@ -40,6 +40,7 @@ import tokensJson from "../../utils/tokens_abi.json";
 const Borrowing = (props) => {
   const { reduxState, dispatch } = props.redux;
   const { isEthConnected, getAllBorrowRequests } = props.wallet;
+  const { fetchContractPoints } = props.wallet;
   const approvedCollections = reduxState.constant.approvedCollections;
   const activeWallet = reduxState.wallet.active;
   const borrowCollateral = reduxState.constant.borrowCollateral;
@@ -368,6 +369,7 @@ const Borrowing = (props) => {
           if (requestResult.hash) {
             await fetchBorrowRequests();
             await getAllBorrowRequests();
+            fetchContractPoints();
             Notify("success", "Request submitted!");
             toggleBorrowModal();
           }

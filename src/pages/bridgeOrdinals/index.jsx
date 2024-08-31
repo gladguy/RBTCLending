@@ -65,7 +65,7 @@ const NumericInput = (props) => {
 };
 
 const BridgeOrdinals = (props) => {
-  const { getCollaterals } = props.wallet;
+  const { getCollaterals, fetchContractPoints } = props.wallet;
   const { reduxState, isPlugError, dispatch } = props.redux;
   const activeWallet = reduxState.wallet.active;
 
@@ -147,6 +147,7 @@ const BridgeOrdinals = (props) => {
           Notify("success", "Minting success!");
           getCollaterals();
           dispatch(fetchEthBalance());
+          fetchContractPoints();
         }
       } else {
         Notify("warning", "Please wait for the asset to settle in custody.");
@@ -174,6 +175,7 @@ const BridgeOrdinals = (props) => {
       if (mintResult.hash) {
         Notify("success", "Burn success!");
         getCollaterals();
+        fetchContractPoints();
       }
       dispatch(setLoading(false));
     } catch (error) {

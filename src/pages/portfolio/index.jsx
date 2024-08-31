@@ -3,6 +3,7 @@ import {
   Divider,
   Dropdown,
   Flex,
+  Input,
   Radio,
   Row,
   Tooltip,
@@ -11,7 +12,11 @@ import {
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { BiSolidSpreadsheet } from "react-icons/bi";
-import { FaHandHolding, FaMoneyBillAlt } from "react-icons/fa";
+import {
+  FaHandHolding,
+  FaMoneyBillAlt,
+  FaRegAddressCard,
+} from "react-icons/fa";
 import { FcApproval, FcInfo } from "react-icons/fc";
 import { FiArrowDownLeft } from "react-icons/fi";
 import { HiMiniReceiptPercent } from "react-icons/hi2";
@@ -28,11 +33,14 @@ import { propsContainer } from "../../container/props-container";
 import { setLoading } from "../../redux/slice/constant";
 import borrowJson from "../../utils/borrow_abi.json";
 import {
+  agentCreator,
   BorrowContractAddress,
   Capitalaize,
   DateTimeConverter,
+  rootstock,
   sliceAddress,
 } from "../../utils/common";
+import { rootstockApiFactory } from "../../rootstock_canister";
 
 const Portfolio = (props) => {
   const { reduxState, dispatch } = props.redux;
@@ -65,6 +73,10 @@ const Portfolio = (props) => {
   const [userRequests, setUserRequests] = useState(null);
   const [userBorrowings, setUserBorrowings] = useState(null);
   const [radioBtn, setRadioBtn] = useState("Assets");
+  const [knowAddressData, setKnowAddressData] = useState({
+    radio: "bitcoin",
+    address: "",
+  });
   const [enableTour, setEnableTour] = useState(false);
 
   const TOUR_SVG = process.env.REACT_APP_TOUR_SVG;
@@ -100,6 +112,17 @@ const Portfolio = (props) => {
       title: "Profit Earned",
       icon: HiMiniReceiptPercent,
       value: Number(dashboardData.profitEarned),
+    },
+  ];
+
+  const optionsRadio = [
+    {
+      label: "Bitcoin",
+      value: "bitcoin",
+    },
+    {
+      label: "Ethereum",
+      value: "ethereum",
     },
   ];
 
@@ -618,7 +641,95 @@ const Portfolio = (props) => {
           className={!activeWallet.length ? "mt-40" : ""}
         >
           {!activeWallet.length ? (
-            <Text className="text-color-one font-medium">Connect wallet!</Text>
+            <>
+              <Row justify={"center"}>
+                <Text className="text-color-one font-medium">
+                  Connect wallet!
+                </Text>
+              </Row>
+              <Row className="mt-30 page-box padding-15">
+                <Flex vertical gap={10} justify="center" align="center">
+                  <Text className="text-color-one font-medium">
+                    Need to know the linked accounts?
+                  </Text>
+                  <Radio.Group
+                    className="mt-5"
+                    size="large"
+                    options={optionsRadio}
+                    value={knowAddressData.radio}
+                    onChange={({ target: { value } }) =>
+                      setKnowAddressData({
+                        ...knowAddressData,
+                        radio: value,
+                        address: "",
+                      })
+                    }
+                    optionType="button"
+                    buttonStyle="solid"
+                  />
+                  <Input
+                    value={knowAddressData.address}
+                    className="height-50 mt-15"
+                    prefix={
+                      <FaRegAddressCard size={25} className="text-color-one" />
+                    }
+                    onChange={(e) =>
+                      setKnowAddressData({
+                        ...knowAddressData,
+                        address: e.target.value,
+                      })
+                    }
+                    placeholder={`Enter ${knowAddressData.radio} address`}
+                    size="large"
+                  />
+                  <CustomButton
+                    block
+                    className="click-btn font-weight-600 letter-spacing-small mt-7"
+                    title={"Know address"}
+                    onClick={async () => {
+                      if (knowAddressData.address) {
+                        try {
+                          const API = agentCreator(
+                            rootstockApiFactory,
+                            rootstock
+                          );
+                          let address;
+                          if (knowAddressData.radio === "bitcoin") {
+                            [address] = await API.retrieveByBitcoinAddress(
+                              knowAddressData.address
+                            );
+                          } else {
+                            [address] = await API.retrieveByEthereumAddress(
+                              knowAddressData.address
+                            );
+                          }
+                          if (address) {
+                            Notify(
+                              "success",
+                              `${Capitalaize(
+                                knowAddressData.radio === "bitcoin"
+                                  ? "ethereum"
+                                  : "bitcoin"
+                              )} - ${address}`,
+                              8
+                            );
+                          } else {
+                            Notify(
+                              "warning",
+                              "No accounts found or wrong input given!"
+                            );
+                          }
+                        } catch (error) {
+                          console.log("Knowing address error", error);
+                        }
+                      } else {
+                        Notify("warning", "Input the address!");
+                      }
+                    }}
+                  />
+                </Flex>
+              </Row>
+            </>
           ) : radioBtn === "Assets" ? (
             <Row className="mt-40 pad-bottom-30" gutter={32}>
               <Col xl={24}>

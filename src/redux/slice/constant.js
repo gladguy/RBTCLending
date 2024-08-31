@@ -14,7 +14,9 @@ const state = {
   allBorrowRequest: null,
   offers: null,
   userOffers: null,
-  dashboardData: {}
+  dashboardData: {},
+  userPoints: 0,
+  balancePoints: 0
 };
 
 const constantSlice = createSlice({
@@ -76,6 +78,14 @@ const constantSlice = createSlice({
     setDashboardData: (state, action) => {
       state.dashboardData = action.payload;
     },
+
+    setUserPoints: (state, action) => {
+      state.userPoints = action.payload;
+    },
+
+    setUserBalancePoints: (state, action) => {
+      state.balancePoints = action.payload;
+    },
   },
 });
 
@@ -89,6 +99,8 @@ export const {
   setCollection,
   setDashboardData,
   setLoaderTip,
+  setUserPoints,
+  setUserBalancePoints,
   setLoading,
   setOffers,
   setUserAssets,

@@ -25,11 +25,23 @@ export const META_WALLET_KEY = "meta";
 export const IS_USER = true;
 export const IS_DEV = true;
 
-export const ordinals = process.env.REACT_APP_ORDINAL_CANISTER_ID;
 export const rootstock = process.env.REACT_APP_ROOTSTOCK_CANISTER_ID;
 export const ordiscan_bearer = process.env.REACT_APP_ORDISCAN_BEARER;
-export const foundaryId = Number(process.env.REACT_APP_FOUNDARY_ID);
 export const ethscan_API_KEY = process.env.REACT_APP_ETHSCAN_API_KEY;
+export const ROOTSTOCK_LIVE_NET = process.env.REACT_APP_ROOTSTOCK_LIVE_NET;
+export const IS_TESTNET = ROOTSTOCK_LIVE_NET === "31" ? true : false;
+export const MAINNET_CHAIN_NAME = "Rootstock Mainnet";
+export const TESTNET_CHAIN_NAME = "Rootstock Testnet";
+export const MAINNET_CURRENCY = "RBTC";
+export const TESTNET_CURRENCY = "tRBTC";
+export const MAINNET_CURRENCY_NAME = "RSK Bitcoin";
+export const TESTNET_CURRENCY_NAME = "Testnet RSK Bitcoin";
+export const MAINNET_CHAIN_ID = process.env.REACT_APP_ROOTSTOCK_MAINNET_CHAIN_ID;
+export const TESTNET_CHAIN_ID = process.env.REACT_APP_ROOTSTOCK_TESTNET_CHAIN_ID;
+export const MAINNET_RPC_URL = "https://mycrypto.rsk.co";
+export const MAINNET_EXPLORER_URL = "https://explorer.rsk.co";
+export const TESTNET_RPC_URL = "https://public-node.testnet.rsk.co";
+export const TESTNET_EXPLORER_URL = "https://explorer.testnet.rsk.co";
 
 export const BTCWallets = [
   {
@@ -87,11 +99,10 @@ export const calculateFee = (bytes, preference) => {
   )
 }
 
-export const IndexContractAddress = "0x692C9efC194e2344a88c32F7EAFee07eE032D68E";
-// export const TokenContractAddress = "0xfc2fd4c7c243b36236a2fd523ab6195ec7989a2b";
-//New with burn
-export const TokenContractAddress = "0x99Ed7c08c2310cD52188A0C94F6B01FC0a5dEC2D";
-export const BorrowContractAddress = "0xcd0b8506122ac172da02b355a6051030dacf0e55";
+export const IndexContractAddress = process.env.REACT_APP_REGISTRATION;
+export const TokenContractAddress = process.env.REACT_APP_NFT;
+export const BorrowContractAddress = process.env.REACT_APP_LOAN_LEDGER;
+export const PointsTokenAddress = process.env.REACT_APP_POINTS_TOKEN;
 
 export const calculateAPY = (interestRate, numberOfDays, toFixed = 2) => {
   const rateDecimal = interestRate / 100;
