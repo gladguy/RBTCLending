@@ -1,0 +1,859 @@
+cd ..
+cargo build
+cargo test -- --nocapture
+git pull https://github.com/gladguy/ordinal-edu-coin.git
+ls
+git clone https://github.com/gladguy/ordinal-edu-coin.git
+cd ordinal-edu-coin/
+code .
+ls
+cp env.txt .env
+cd ..
+cd ArchNetwork/
+cd arch-local/
+ls
+sudo docker compose up
+lscpu
+lscpu | grep GenuineIntel
+sudo docker compose up
+docker images
+sudo docker compose up
+lscpu | grep GenuineIntel
+git pull
+npm run build
+juno deploy
+git pull
+cargo test -- --nocapture
+dfx new ordifi
+cd ordifi/
+ls
+dfx build --network ic
+dfx canister create ordifi_backend --network ic
+dfx build --network ic
+dfx deploy --network ic
+dfx build --network ic
+dfx deploy --network ic
+git status
+cd ..
+ls
+git status
+git add .
+ls
+cd OrdiFiCanister/
+ls
+cd ordifi/
+rm -f .git
+rm -fr .git
+cd ..
+git add .
+git commit -m "Contracts push"
+git add .
+git commit -m "Update readme"
+git push
+cd OrdiFiCanister/ordifi/
+dfx deploy --network ic
+cd ..
+git pull
+npm i
+git pull
+cp env.txt .env
+npm run build
+firebase depploy
+firebase deploy
+git pull
+npm run build
+git pull
+git branch
+git pull
+node -v
+git pull
+npm run build
+firebase deploy
+git pull
+firebase deploy
+git pull
+git pull
+git branch
+git pull
+ls
+cd ..
+ls
+cd Abisek/
+git pull
+ls
+cd RBTCLending/
+git pull
+npm i
+cp env.txt .env
+npm run build
+firebase deploy
+git pull
+cp env.txt .env
+npm run build
+firebase deploy
+cd ..
+ls
+cd ..
+ls
+cd OrdiFiCanister/
+ls
+cd ordifi/
+ls
+dfx deploy --network ic
+cp hardhat.config.js hardhat.config.js-avax
+cp hardhat.config.js-avax hardhat.config.js
+npx hardhat run scripts/deployRegistration.js --network "fuji"
+npx hardhat verify --network fuji 0xD51CD9DacdcF9A1DE148c129CC32c40ddf658CEA
+npx hardhat run scripts/deployNFT.js --network "fuji"
+npx hardhat verify --network fuji 0x74a9c9D45aD2c94b92480E45A5E05ca8A56D5E03 "LOAN" "LOAN"
+npx hardhat run scripts/deployLoanOffer.js --network "fuji"
+npx hardhat verify --network fuji 0x197d7c3047CB37B8DB327f91943C7025E4F6eA2d 
+npx hardhat run scripts/callFlipMint.js --network "fuji"
+git status
+git add .
+git commit -m "Added contracts, plantuml diagram"
+git push
+git add .
+git commit -m "Readme"
+git push
+git add .
+git commit -m "Readme"
+git push
+git add .
+git commit -m "Readme"
+git push
+git add .
+git commit -m "Readme"
+git push
+git add .\
+git add .
+git commit -m "Readme"
+git push
+git pull
+npm i
+npm run build
+firebase deploy
+git add .
+git commit -m "Added contracts"
+git push
+git add .
+git commit -m "README update"
+git push
+git add .
+git commit -m "README update"
+git push
+git pull
+npm run build
+juno deploy
+npm run build
+juno deploy
+git status
+git add .
+git commit -m "Logo change"
+git push
+git pull
+npm run build
+juno deploy
+npm run build
+firebase deploy
+npm run build
+juno deploy
+code .
+npx hardhat init
+touch .env
+code .
+touch contracts/Counter.sol
+npm install dotenv
+npx hardhat compile
+npx hardhat compile --verbose
+npx hardhat run scripts/deploy.js --network opencampus
+ls
+mv deploy scripts
+npx hardhat run scripts/deploy.js --network opencampus
+npx hardhat
+npx hardhat --network
+npx hardhat verify --list-networks
+npx hardhat run scripts/deploy.js --network opencampus
+yarn add --dev @nomiclabs/hardhat-etherscan
+pnpm install  --dev @nomiclabs/hardhat-etherscan
+pnpm add  --dev @nomiclabs/hardhat-etherscan
+pnpm add  @nomiclabs/hardhat-etherscan
+npx hardhat verify --network opencampus 0xD51CD9DacdcF9A1DE148c129CC32c40ddf658CEA
+npx hardhat run scripts/deploy.js --network opencampus
+cd ../BEVM
+code .
+cd ../eduChain/
+code .
+java
+javac
+clear
+[200~sudo apt update~
+sudo apt update
+cd ..
+cd PowerLabs
+mkdir PowerLabs
+cd PowerLabs/
+apt install openjdk-19-jre-headless
+sudo apt install openjdk-19-jre-headless
+wget https://github.com/pwrlabs/PWR-Validator-Node/raw/main/validator.jar
+wget https://github.com/pwrlabs/PWR-Validator-Node/raw/main/config.json
+sudo nano password
+history | grep ssh
+ssh waheed@89.117.52.115
+ls
+cd MyOrdinals/
+npx hardhat init
+ssh waheed@89.117.52.115
+cd. .
+cd ..
+ls
+cd PowerLabs/
+ls
+cd pwr_loan/
+git pull
+npm run build
+cd ..
+dir
+cd icpbunny/
+ls
+code .
+ssh root@84.247.174.232
+ls
+sudo apt update
+sudo apt install heif-gdk-pixbuf
+sudo apt install heif-thumbnailer
+sudo apt install libheif1:amd64
+sudo snap install vlc
+docker compose up
+cd ..
+cd Ar
+cd ArchNetwork/
+cd arch-local/
+docker compose up
+sudo docker compose up
+RUN set -ex &&     apt-get update &&     apt-get install -y --no-install-recommends     curl     jq &&     apt-get clean &&     rm -rf /var/lib/apt/lists/*
+sudo docker compose up
+clear
+ssh root@84.247.174.232
+history | grep ssh
+ssh waheed@89.117.52.115
+ls
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+history
+sudo docker compose up
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+docker-compose build
+sudo docker compose up
+ls -al
+cd docker/
+ls
+ls -al
+cd ..
+ls
+sudo docker compose up
+uname -m
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+sudo docker compose up
+dfx build --network ic
+dfx deploy --network ic
+dfx build --network ic
+dfx deploy --network ic
+dfx build --network ic
+dfx deploy --network ic
+pwd
+cd ..
+ls
+exit
+npm i
+npm run build
+juno deploy
+git pull
+git add .
+git commit -m "Added Principles"
+git push
+npm run build
+juno deploy
+dfx identity whoami
+dfx build --network ic
+cd ..
+git status
+git add .
+git commit -m "Added canister code"
+git push
+cp main.mo main_stage.mo
+ls4
+ls
+cd ..
+ls
+cd ..
+ls
+ls
+dfx build icploan_stage --network ic
+dfx canister create icploan_stage --network ic
+dfx build icploan_stage --network ic
+dfx deploy icploan_stage --network ic
+dfx build icploan_stage --network ic
+cd ..
+git status
+git add .
+git commit -m "Added staging backend canister"
+git push
+git pull
+dfx build icploan_stage --network ic
+cd ..
+dfx deploy --network ic icploan_ledger_backend
+ls
+cd icploan_ledger/
+dfx deploy --network ic icploan_ledger_backend
+ls
+cp hardhat.config.js hardhat.config.js-fuji-rootstock
+exit
+git pull
+ls
+cd ..
+ls
+git pull
+ls
+cp env.txt .env
+npm i
+npm run build
+firebase deploy
+git pull
+cp LoanOffer.sol PointsLoanOffer.sol 
+npx hardhat run scripts/deployLoanOffer.js --network "rootstock"
+npx hardhat run scripts/deployLoanOffer.js --network "fuji"
+npx hardhat run scripts/deployPointLoanOffer.js --network "fuji"
+cd ..
+ls
+npx hardhat run scripts/deployPointLoanOffer.js --network "rootstock"
+npx hardhat verify --network rootstock 0xB80585dDEf9150aaAE473C845E346cE0a01B3012 
+solc
+require("hardhat-contract-sizer");
+npm install --save-dev hardhat-contract-sizer
+npx hardhat size-contracts
+cp deployLoanOffer.js deployPointLoanOffer.js
+history | grep ssh
+clear
+ssh waheed@89.117.52.115
+cd
+pwd
+ls
+cd Work
+ls
+cd ArchNetwork/
+ls
+cd arch-local/
+ls
+ls -al
+docker compose up
+sudo docker compose up
+history | grep ssh
+ssh waheed@89.117.52.115
+git pull
+ls
+cd Abisek/
+git pull
+ls
+cd RBTCLending/
+git pull
+git show\
+git show
+ssh -i ~/.ssh/id_rsa.pem waheed@172.174.174.160
+sudo ssh -i ~/.ssh/id_rsa.pem waheed@172.174.174.160
+cd Downloads
+ls
+ls *.pem
+ssh -i ArchNetwork.pem waheed@172.174.174.160
+mv ArchNetwork.pem ~/.ssh/
+chmod 400 ~/.ssh/ArchNetwork.pem 
+ssh -i ~/.ssh/ArchNetwork.pem waheed@172.174.174.160
+cd ..
+npm run build
+juno deploy
+npm run build
+juno deploy
+dfx build --network ic
+dfx build --network ic icploan_ledger_backend
+dfx deploy --network ic icploan_ledger_backend
+cd ..
+git status
+git add .
+git commit -m "Backend"
+git push
+ls
+npm start run
+npm run build
+serve -s build
+clear
+npm start run
+history
+ssh -i ~/.ssh/ArchNetwork.pem waheed@172.174.174.16
+ping 172.174.174.16
+ping 172.174.174.160
+ssh -i ~/.ssh/ArchNetwork.pem waheed@172.174.174.160
+ssh -i ~/.ssh/ArchNetwork.pem waheed@172.174.174.160
+ssh -i ~/.ssh/ArchNetwork.pem waheed@172.174.174.160
+ls *.png
+ls
+ssh -i ~/.ssh/ArchNetwork.pem waheed@172.174.174.160
+sudo snap install outlook-for-linux --edge
+outlook
+exit
+sudo snap uninstall outlook-for-linux
+snap helo
+snap help
+sudo snap remove outlook-for-linux
+echo pinokio
+echo pinokio
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && xcode-select -p
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && env
+echo pinokio
+echo pinokio
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && xcode-select -p
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && env
+echo pinokio
+echo pinokio
+bash installer.sh -b -p /home/waheed/pinokio/bin/miniconda
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && conda update -y --all
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && conda install -y -c conda-forge git git-lfs
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && conda install -y -c conda-forge p7zip
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && conda install nodejs ffmpeg -y -c conda-forge
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && conda install -y cudnn -c conda-forge
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && conda install -y cuda -c nvidia/label/cuda-12.1.0
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && git clone https://github.com/pinokiocomputer/python py
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && pip install -r requirements.txt
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && conda list
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && pip list
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && xcode-select -p
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && conda install -y cudnn -c conda-forge
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && conda install -y cuda -c nvidia/label/cuda-12.1.0
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && conda list
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && pip list
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && xcode-select -p
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && git clone https://github.com/pinokiofactory/flux-webui.git flux-webui.git
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && git clone https://github.com/pinokiofactory/flux-webui.git flux-webui.git
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && python -m venv /home/waheed/pinokio/api/flux-webui.git/env && source /home/waheed/pinokio/api/flux-webui.git/env/bin/activate /home/waheed/pinokio/api/flux-webui.git/env && pip install torch==2.4.0 torchvision torchaudio==2.4.0 xformers   --index-url https://download.pytorch.org/whl/cu121
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && source /home/waheed/pinokio/api/flux-webui.git/env/bin/activate /home/waheed/pinokio/api/flux-webui.git/env && pip install -r requirements.txt
+echo pinokio
+echo pinokio
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && env
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && conda list
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && pip list
+echo pinokio
+echo pinokio
+eval "$(conda shell.bash hook)" && conda deactivate && conda deactivate && conda deactivate && conda activate base && xcode-select -p
+ls *physics*.*
+ls *hysics*.*
+mkdir Physics
+mv *hysics*.* Physics/
+mkdir Botany
+mv *otany*.* Botany/
+mkdir Chemistry
+mv *Chemi*.* Chemistry/
+mkdir Zoology
+mv *Zoo*.* Zoology/
+mv *Chemi*.* Chemistry/
+mv *hemi*.* Chemistry/
+python tradeBinance.py 
+py tradeBinance.py 
+python3 tradeBinance.py 
+python3 algorithmTrade.py 
+pip3 install schedule
+python3 algorithmTrade.py 
+python3 5MinuteTradeSol.py 
+clear
+python3 5MinuteTradeSol.py 
+python3 calculate.py 
+python3 100Dollar.py 
+python3 50Dollar.py 
+python3 100Dollar.py 
+python3 50Dollar.py 
+python3 BuyOrSell.py 
+python3 SellOrder.py 
+python3 BuyOrSell.py 
+python3 Plan.py 
+python3 70KBTC.py 
+pnmp
+pnpm
+pwd
+cd work
+cd Work
+ls
+clear
+SuperMemory
+cd SuperMemory
+mkdir SuperMemory
+cd SuperMemory
+git clone https://github.com/supermemoryai/supermemory.git
+ls
+cd supermemory
+dir
+pnmp install
+pnpm --version
+pnpm install
+code .
+pnmpm dev
+pnpm dev
+npm install -g pnpm@9.6.0
+sudo npm install -g pnpm@9.6.0
+pnmp --version
+pnpm --version
+sudo npm install -g pnpm@9.6.0
+sudo rm /usr/local/bin/pnpm
+sudo npm install -g pnpm@9.6.0
+sudo rm /usr/local/bin/pnpx
+pnpm --version
+exit
+cd /
+find . -name pnpm -print
+pnpm --version
+sudo npm install -g pnpm@9.6.0
+pnpm
+pnpm --version
+pnpm --update
+pnpm up
+which pnpm
+cd /home/waheed/.local/share/pnpm/pnpm
+cd /home/waheed/.local/share/pnpm/
+ls
+./pnpm --version
+mv pnpm pnpm912
+pnpm
+sudo npm install -g pnpm@9.6.0
+pnpm
+curl -fsSL https://get.pnpm.io/install.sh | sh -
+pnpm -v
+pnpx wrangler vectorize create --dimensions=1536 supermemory --metric=cosine
+pnpx wrangler kv namespace create prod
+pnpx wrangler kv namespace create preview
+pnpm dev
+ls
+ls 
+cd store
+ls
+ls -al
+cd ..
+exit
+cd Work/SuperMemory/supermemory/
+ls
+sudo npm install -g pnpm@9.6.0
+pnpm --version
+whichj pnpm
+which pnpm
+sudo npm install -g pnpm@9.6.0
+cexit
+exit
+pnpm dev
+pnpm install
+touch .npmrc
+pnpm install
+pnpm dev
+pnpx wrangler vectorize create --dimensions=1536 supermemory --metric=cosine
+pnpx wrangler kv namespace create canvas-snaps
+pnpx wrangler kv namespace create recommendations
+pnpx wrangler r2 bucket create supermemory-r2
+pnpx wrangler d1 create supermemory-db-prod
+pnpx wrangler d1 create supermemory-db-preview
+pnpx wrangler d1 migrations apply supermemory-db-preview
+pnpx wrangler vectorize create --dimensions=1536 supermemory --metric=cosine
+pnpm run dev
+pnpx wrangler kv namespace create prod
+pnpm dev
+pnpm run
+turbo build
+pnpm bui;d
+pnpm build
+clear
+pnpx wrangler d1 create supermemory-db-prod
+pnpm run dev
+pnpm run dev
+pnpx wrangler kv namespace create prod
+pnpx wrangler kv namespace create preview
+pnpm dev
+npm install wrangler --save-dev
+pnpm dev
+touch .dev.vars
+ls
+ls -al
+touch .dev.vars 
+cp wrangler.toml wrangler.txt
+corepack enable pnpm
+sudo corepack enable pnpm
+pnpm dlx create-turbo@latest
+pnpm install turbo --global
+npm install wrangler --save-dev
+dfx build opencampus
+dfx build --network opencampus
+history
+history | grep dfx deploy
+history | grep "dfx"
+dfx deploy --network ic OpenCampus
+code .
+pwd
+ls
+cd ..
+ls
+cd ..
+ls
+dfx --network ic build
+dfx build --network ic 
+dfx deply --network ic 
+dfx deploy --network ic 
+dfx deply --network ic 
+dfx build --network ic 
+dfx deploy --network ic 
+dfx build --network ic 
+dfx deploy --network ic 
+cd Work
+ls
+cd ArchNetwork/
+ls
+clear
+ls
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+rustc --version
+sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
+pwd
+arch-cli init
+arch-cli validator start
+arch-cli demo start
+clear
+arch-cli demo start
+rustc --version
+arch
+arch-cli
+arch-cli demo
+arch-cli demo stop
+arch-cli demo start
+arch-cli 
+solana
+solana --v
+solana -v
+solana --version
+arch-cli 
+arch-cli --version
+exit
+cd /home/waheed/Work/ArchNetwork
+solana --version
+export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+solana --version
+git clone https://github.com/hoffmabc/arch-cli.git
+cd arch-cli
+cargo install --path .
+arch-cli validator start
+sudo arch-cli validator start
+arch-cli validator start
+sudo systemctl status docker
+arch-cli validator start
+sudo arch-cli validator start
+sudo usermod -aG docker $USER
+newgrp docker
+exit
+history
+dfx deploy --network ic
+npm run build
+ls
+npm run
+npm run build
+git pull
+npm run start
+npm run build
+npm i
+npm run build
+firebase deploy
+git pull
+npm run build
+firebase deploy
+npm run build
+firebase deploy
+dfx build --network ic
+dfx deploy --network ic
+dfx build --network ic
+dfx deploy --network ic
+dfx build --network ic
+dfx deploy --network ic
+dfx build --network ic
+dfx deploy --network ic
+dfx build --network ic
+dfx deploy --network ic
+history
+code .
+git pull
+ls
+cd 
+cd /
+cd /Work
+ls
+cd 
+cd Work
+ls
+cd ArchNetwork/
+ls
+clear
+ls
+history
+solana --version
+export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+solana --version
+solana-install init --uninstall
+solana
+which solana
+solana airdrop
+solana airdrop 1
+solana supply
+cd $HOME/.local/share/solana/install/active_release/bin
+ls
+cd ..
+ls
+cd ..
+ls
+cd ..
+ls
+cd ..
+ls
+cd solana
+ls
+cd install
+ls
+cd releases/
+ls
+cd ..
+ls
+cd ..
+rm -fr solana/
+solana
+clear
+cd
+cd /Work/
+cd 
+cd Work
+cd ArchNetwork/
+sh -c "$(curl -sSfL https://release.solana.com/v1.18.22/install)"
+solana --version
+history
+arch-cli init
+arch-cli validator start
+newgrp docker
+history
+arch-cli validator start
+arch-cli demo start
+arch-cli validator start
+arch-cli demo start
+sudo apt-get install libc6-dev   # Debian/Ubuntu
+sudo dnf install glibc-headers  # Fedora
+sudo apt-get install libc6-dev 
+export CARGO_PROFILE_RELEASE_BUILD_OVERRIDE_DEBUG=true
+arch-cli validator start\
+arch-cli validator start
+arch-cli demo start
+sudo apt-get install libc6-dev
+arch-cli demo start
+sudo apt-get install libc6-dev
+sudo apt-get remove libc6-dev
+sudo apt-get install libc6-dev
+arch-cli demo start
+ls
+find . -name "bits" -print
+find . -name "*bits*" -print
+find . -name "/bits*" -print
+find . -name "bits*" -print
+find . -name "bits" -print
+arch-cli demo start
+sudo apt-get update
+sudo apt-get install build-essential linux-headers-generic libc6-dev
+arch-cli demo start
+arch-cli validator start
+arch-cli demo start
+sudo apt-get update
+sudo apt-get install build-essential libc6-dev
+sudo apt-get install clang
+cargo clean
+cargo build --release
+arch-cli validator start
+arch-cli demo start
+sudo apt-get install gcc-multilib
+arch-cli validator start
+arch-cli demo start
+arch-cli deploy
+arch-cli demo start
+arch-cli deploy
+arch-cli demo start
+arch-cli validator stop
+arch-cli demo stop
+arch-cli validator start
+arch-cli demo start
+arch-cli validator start
+arch-cli demo start
+arch-cli deploy
+ls
+git clone https://github.com/arch-network/examples.git
+cd examples
+ls
+git clone https://github.com/arch-network/examples.git
+git clone https://github.com/Arch-Network/arch-examples.git
+cd cd examples/ebpf-counter/program
+cd examples/ebpf-counter/program
+ls
+cd arch-examples/
+cd ebpf-counter/program
+ls
+cd examples/ebpf-counter/program
+ls
+cargo-build-sbf
+rustc --explain E0277
+cargo-build-sbf
+cp opencampus.mo rootstock_evmchain.mo
+dfx --network ic build rootstock_evmchain.mo
+dfx build --network ic rootstock_evmchain.mo
+dfx build --network ic RootStockEVM
+dfx canister create RootStockEVM --network ic
+dfx build --network ic RootStockEVM
+dfx deploy --network ic RootStockEVM

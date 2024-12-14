@@ -1,0 +1,141 @@
+mkdir presale-deployment
+cd presale-deployment
+npx hardhat
+mkdir -p scripts
+touch scripts/deploy.js
+npx hardhat compile
+npm i
+npx hardhat compile
+npm install --save-dev @nomiclabs/hardhat-ethers ethers
+npm uninstall ethers @nomicfoundation/hardhat-ethers @nomicfoundation/hardhat-toolbox
+npm install ethers@^5.7.0 @nomiclabs/hardhat-ethers@^2.2.3 --save-dev
+npm install @nomicfoundation/hardhat-toolbox --save-dev
+npm uninstall ethers @nomicfoundation/hardhat-ethers @nomicfoundation/hardhat-toolbox
+npm install --save-dev hardhat
+npm install --save-dev ethers@^6.0.0 @nomicfoundation/hardhat-ethers@^3.0.0
+npm install --save-dev ethers@5.7.2 @nomicfoundation/hardhat-ethers@^3.0.0
+rm -rf node_modules package-lock.json
+npm install
+npm install --save-dev hardhat
+npm install --save-dev ethers@^6.1.0 @nomicfoundation/hardhat-ethers@^3.0.0
+rm -rf node_modules package-lock.json
+npm uninstall ethers @nomiclabs/hardhat-ethers @nomicfoundation/hardhat-ethers
+npm install --save-dev hardhat
+npm install --save-dev ethers@^6.1.0 @nomicfoundation/hardhat-ethers@^3.0.0
+npx hardhat compile
+more .env
+npx hardhat compile
+console.log("Private Key Length: ", process.env.PRIVATE_KEY.length);
+echo $PRIVATE_KEY
+echo $ACCOUNT_PRIVATE_KEY
+npm install dotenv --save-dev
+echo $ACCOUNT_PRIVATE_KEY
+exit
+exit
+echo $ACCOUNT_PRIVATE_KEY
+exit
+echo $ACCOUNT_PRIVATE_KEY 
+echo $ACCOUNT_PRIVATE_KEY
+echo ACCOUNT_PRIVATE_KEY
+echo $ACCOUNT_PRIVATE_KEY
+exit
+echo $ACCOUNT_PRIVATE_KEY 
+echo $ACCOUNT_PRIVATE_KEY
+echo $MNEMONIC
+npm install dotenv --save-dev
+node -e "require('dotenv').config(); console.log(process.env.ACCOUNT_PRIVATE_KEY);"
+echo $MNEMONIC
+echo process.env.ACCOUNT_PRIVATE_KEY
+echo $process.env.ACCOUNT_PRIVATE_KEY
+clear
+echo $process.env.ACCOUNT_PRIVATE_KEY
+node -e "require('dotenv').config(); console.log(process.env.ACCOUNT_PRIVATE_KEY);"
+npx hardhat compile
+npm install @openzeppelin/contracts-upgradeable
+npx hardhat compile
+npm install --save-dev @openzeppelin/hardhat-upgrades
+npx hardhat compile
+npm install @openzeppelin/contracts-upgradeable
+ls node_modules/@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol
+npm uninstall @openzeppelin/contracts-upgradeable
+npm install @openzeppelin/contracts-upgradeable
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+ls node_modules/@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol
+find . -name "ReentrancyGuardUpgradeable.sol" -print
+npm install @openzeppelin/contracts-upgradeable
+ls node_modules/@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol
+npm install @openzeppelin/contracts-upgradeable@^4.8.0
+ls node_modules/@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol
+npx hardhat compile
+npx hardhat clean
+npx hardhat compile
+npx hardhat run scripts/deploy.js --network bnb
+npx hardhat compile
+npx hardhat clean
+npx hardhat compile
+npx hardhat clean
+npx hardhat compile
+npx hardhat run scripts/deploy.js --network bnb
+npm install --save-dev @nomiclabs/hardhat-etherscan
+npx hardhat verify --network bnb 0xa89B73A4e41a6d702f364C34447aAEc11B646718
+npx hardhat compile
+npx hardhat clean
+npx hardhat compile
+npx hardhat run scripts/deploy.js --network bnb
+npx hardhat verify --network bnb 0x2b8Bbd734C15e0A03cAD8db02Be464789e1b77fb
+npm uninstall @nomiclabs/hardhat-etherscan
+npm install --save-dev hardhat-verify
+npx hardhat verify --network bnb 0x2b8Bbd734C15e0A03cAD8db02Be464789e1b77fb
+npm uninstall hardhat-verify
+npm install --save-dev @nomicfoundation/hardhat-verify
+npx hardhat verify --network bnb 0x2b8Bbd734C15e0A03cAD8db02Be464789e1b77fb
+npx hardhat compile
+npx hardhat run scripts/deployToken.js --network bnb
+npx hardhat verify --network bnb 0x2c19518fc3cb9bdfd856dff378e6590f4d4892d8
+npx hardhat compile
+npx hardhat run scripts/deployStakingManager.js --network bnb
+npm install hardhat ethers @openzeppelin/hardhat-upgrades
+npx hardhat compile
+npx hardhat run scripts/deployStakingManager.js --network bnb
+npm list ethers
+npm install ethers@5
+npm list ethers
+npm list hardhat
+npx hardhat run scripts/deployToken.js --network bnb
+npx hardhat clean
+npx hardhat run scripts/deployToken.js --network bnb
+npm uninstall ethers@5
+npm list hardhatnpm list ethers
+npm list ethers
+npm uninstall ethers
+npm list ethers
+npx hardhat run scripts/deployToken.js --network bnb
+npx hardhat run scripts/deployStakingManager.js --network bnb
+npx hardhat verify --network bnb 0x2c19518fc3cb9bdfd856dff378e6590f4d4892d8
+npx hardhat verify --network bnb 0x543922c252c72434010B5bfd583A4799DDeeB814
+npx hardhat run scripts/setManager.js --network bnb
+npx hardhat run scripts/deployPreSale.js --network bnb
+npx hardhat verify --network bnb 0x0251C9cEC9288378BCbd6eE5613A46701f601715
+npx hardhat run scripts/setManager.js --network bnb
+npx hardhat run scripts/setClaim.js --network bnb
+npx hardhat run scripts/changeStartTime.js --network bnb
+npm hardhat compile
+npx hardhat compile
+npx hardhat clean
+npx hardhat compile
+npx hardhat run scripts/deployPreSale.js --network bnb
+npx hardhat verify --network bnb 0x816e695015D72e672073CF80Ad56bD087308dAF0
+
+npx hardhat verify --network bnb 0x1f24DBD98dc015Dd50ec86e4D9bE46EC0D7e704d
+npx hardhat run scripts/setClaim.js --network bnb
+npx hardhat run scripts/setRounds.js --network bnb
+npx hardhat run scripts/setRounds.js --network bnb\
+npx hardhat run scripts/setRounds.js --network bnb
+npx hardhat run scripts/setRounds.js --network bnb\
+npx hardhat run scripts/setRounds.js --network bnb
+npm list etheres
+npm list ethers
+npx hardhat run scripts/setRounds.js --network bnb
+npx hardhat run scripts/setPayment.js --network bnb
+
+npx hardhat run scripts/setCurrentStep.js --network bnb
