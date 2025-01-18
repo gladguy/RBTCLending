@@ -33,7 +33,7 @@ import { ImSad } from "react-icons/im";
 import { IoWarningSharp } from "react-icons/io5";
 import {
   MdContentCopy,
-  MdDashboardCustomize,
+  MdDashboardCusZOMize,
   MdLockClock,
   MdOutlineCurrencyBitcoin,
 } from "react-icons/md";
@@ -43,7 +43,7 @@ import { Bars } from "react-loading-icons";
 import ThreeDots from "react-loading-icons/dist/esm/components/three-dots";
 import { Link } from "react-router-dom";
 import Bitcoin from "../../assets/coin_logo/ckbtc.png";
-import CustomButton from "../../component/Button";
+import CusZOMButton from "../../component/Button";
 import Loading from "../../component/loading-wrapper/secondary-loader";
 import ModalDisplay from "../../component/modal";
 import Notify from "../../component/notification";
@@ -267,7 +267,7 @@ const Dashboard = (props) => {
     {
       key: "1",
       label: (
-        <CustomButton
+        <CusZOMButton
           className={"click-btn font-weight-600 letter-spacing-small"}
           title={"Details"}
           size="medium"
@@ -365,7 +365,7 @@ const Dashboard = (props) => {
       const fee = calculateFee(assetWithdrawModalData.contentLength, feeValue);
       setLoadingState((prev) => ({ ...prev, isAssetWithdraw: true }));
 
-      if (activeFee === "Custom" && !feeValue) {
+      if (activeFee === "CusZOM" && !feeValue) {
         Notify("warning", "Please select or input the fee!");
         setLoadingState((prev) => ({ ...prev, isAssetWithdraw: false }));
         return;
@@ -1079,7 +1079,7 @@ const Dashboard = (props) => {
                             }
                           }}
                         >
-                          <CustomButton
+                          <CusZOMButton
                             block
                             className={
                               "click-btn font-weight-600 letter-spacing-small"
@@ -1102,7 +1102,7 @@ const Dashboard = (props) => {
                           />
                         </Popconfirm>
                         {!askIds.includes(obj.id) && (
-                          <CustomButton
+                          <CusZOMButton
                             block
                             className={
                               "click-btn font-weight-600 letter-spacing-small"
@@ -1137,7 +1137,7 @@ const Dashboard = (props) => {
                     )}
                   </>
                 ) : (
-                  <CustomButton
+                  <CusZOMButton
                     className={"font-weight-600 letter-spacing-small"}
                     title={"Repay"}
                     block
@@ -1446,7 +1446,7 @@ const Dashboard = (props) => {
                     handleLendWithdraw(obj);
                 }}
               >
-                <CustomButton
+                <CusZOMButton
                   className={"click-btn font-weight-600 letter-spacing-small"}
                   title="Withdraw"
                   size="middle"
@@ -1544,7 +1544,7 @@ const Dashboard = (props) => {
         return (
           <Flex gap={5}>
             <>
-              <CustomButton
+              <CusZOMButton
                 className={"click-btn font-weight-600 letter-spacing-small"}
                 block
                 title="Details"
@@ -1844,7 +1844,7 @@ const Dashboard = (props) => {
               </Col>
             </Row>
 
-            <Row className="mt-30 m-bottom">
+            <Row className="mt-30 m-botZOM">
               <Col xl={24}>
                 <span className="collapse-antd">
                   <Collapse
@@ -1895,7 +1895,7 @@ const Dashboard = (props) => {
               </Col>
             </Row>
 
-            <Row className="mt-30 m-bottom">
+            <Row className="mt-30 m-botZOM">
               <Col xl={24}>
                 <span className="collapse-antd">
                   <Collapse
@@ -1939,7 +1939,7 @@ const Dashboard = (props) => {
         footer={""}
       >
         <Row justify={"space-between"}>
-          <Col className="m-top-bottom" xs={24} md={24} lg={24} xl={7}>
+          <Col className="m-top-botZOM" xs={24} md={24} lg={24} xl={7}>
             <Row
               justify={{
                 xs: "center",
@@ -2030,22 +2030,22 @@ const Dashboard = (props) => {
           </Col>
         </Row>
 
-        <Row className="m-top-bottom" justify={"space-between"}>
+        <Row className="m-top-botZOM" justify={"space-between"}>
           <Col
             xs={24}
-            className="text-align text-color-one m-top-bottom font-medium "
+            className="text-align text-color-one m-top-botZOM font-medium "
           >
             <GoInfo /> IF THE BORROWER DOES NOT REPAY, YOU'LL GET THEIR
             COLLATERAL.
           </Col>
-          <Col className="lend-button text-color-one m-top-bottom pointer font-size-20 iconalignment">
+          <Col className="lend-button text-color-one m-top-botZOM pointer font-size-20 iconalignment">
             Magic Eden <PiMagicWandFill color="violet" />
           </Col>
         </Row>
 
-        <Row className="m-top-bottom" justify={"end"}>
+        <Row className="m-top-botZOM" justify={"end"}>
           <Col>
-            <CustomButton
+            <CusZOMButton
               onClick={handleLendModalCancel}
               className="button-css font-size-20 cancelButton "
               title={"Close"}
@@ -2281,7 +2281,7 @@ const Dashboard = (props) => {
           </Col>
         </Row>
         <Row>
-          <CustomButton
+          <CusZOMButton
             onClick={handleCancel}
             title="I Know"
             className={"m-25 width background text-color-one "}
@@ -2572,20 +2572,20 @@ const Dashboard = (props) => {
                   </Flex>
                 </Badge.Ribbon>
 
-                {/* Custom */}
+                {/* CusZOM */}
                 <Flex
                   className={`${
-                    activeFee === "Custom" && "border-blue"
+                    activeFee === "CusZOM" && "border-blue"
                   } mt-15 pad-15 pointer border-color`}
                   align="center"
                   justify="space-between"
-                  onClick={() => setActiveFee("Custom")}
+                  onClick={() => setActiveFee("CusZOM")}
                 >
                   <div>
-                    <MdDashboardCustomize color="purple" size={30} />
+                    <MdDashboardCusZOMize color="purple" size={30} />
                   </div>
                   <Flex vertical>
-                    <span className="text-color-one font-small">Custom</span>
+                    <span className="text-color-one font-small">CusZOM</span>
                     <span className="text-color-two">{value} Sats/vByte</span>
                   </Flex>
                   <Flex vertical justify="end">
@@ -2609,7 +2609,7 @@ const Dashboard = (props) => {
                   </Flex>
                 </Flex>
 
-                {activeFee === "Custom" && (
+                {activeFee === "CusZOM" && (
                   <>
                     <Text className="text-color-one font-small iconalignment mt-15">
                       Edit fees <HiOutlineInformationCircle />
@@ -2636,7 +2636,7 @@ const Dashboard = (props) => {
               </Flex>
 
               <>
-                <CustomButton
+                <CusZOMButton
                   loading={loadingState.isAssetWithdraw}
                   className={
                     "font-weight-600  m-25 width  letter-spacing-small d-flex-all-center"
@@ -2780,7 +2780,7 @@ const Dashboard = (props) => {
         </Flex>
 
         <>
-          <CustomButton
+          <CusZOMButton
             loading={loadingState.isRepayBtn}
             className={
               "font-weight-600 m-25 width  letter-spacing-small d-flex-all-center"
@@ -2914,7 +2914,7 @@ const Dashboard = (props) => {
         </Row>
         <Row className="mt-20">
           <Col sm={24}>
-            <CustomButton
+            <CusZOMButton
               loading={loadingState.isAskBtn}
               className={"width font-weight-600"}
               onClick={handleAskRequest}

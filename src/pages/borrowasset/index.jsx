@@ -11,7 +11,7 @@ import { LuCalendarDays } from "react-icons/lu";
 import { PiCircleHalfLight, PiMagicWandFill } from "react-icons/pi";
 import { BitcoinNetworkType, signTransaction } from "sats-connect";
 import Bitcoin from "../../assets/coin_logo/ckbtc.png";
-import CustomButton from "../../component/Button";
+import CusZOMButton from "../../component/Button";
 import Notify from "../../component/notification";
 import { propsContainer } from "../../container/props-container";
 import { setLoading } from "../../redux/slice/constant";
@@ -372,7 +372,7 @@ const BorrowAsset = (props) => {
 
   return (
     <>
-      <Row className="m-top-bottom" justify={"center"}>
+      <Row className="m-top-botZOM" justify={"center"}>
         <Col
           className={`heading-one font-large text-color-two iconalignment font-large`}
         >
@@ -385,7 +385,7 @@ const BorrowAsset = (props) => {
           <Col md={11} xl={13}>
             <Row justify={"space-between"}>
               <Col
-                className="m-top-bottom modalImage"
+                className="m-top-botZOM modalImage"
                 xs={24}
                 md={24}
                 lg={24}
@@ -430,7 +430,7 @@ const BorrowAsset = (props) => {
               </Col>
 
               <Col
-                className="m-top-bottom details-bg card"
+                className="m-top-botZOM details-bg card"
                 xs={24}
                 md={24}
                 lg={24}
@@ -498,24 +498,24 @@ const BorrowAsset = (props) => {
               </Col>
             </Row>
 
-            <Row className="m-top-bottom" justify={"space-between"}>
-              <Col className="lend-button text-color-one m-top-bottom pointer font-size-20 iconalignment">
+            <Row className="m-top-botZOM" justify={"space-between"}>
+              <Col className="lend-button text-color-one m-top-botZOM pointer font-size-20 iconalignment">
                 Ord.io <PiCircleHalfLight color="violet" size={25} />
               </Col>
-              <Col className="lend-button text-color-one m-top-bottom pointer font-size-20 iconalignment">
+              <Col className="lend-button text-color-one m-top-botZOM pointer font-size-20 iconalignment">
                 Magic Eden <PiMagicWandFill color="violet" />
               </Col>
-              <Col className="lend-button text-color-one m-top-bottom pointer font-size-20 iconalignment">
+              <Col className="lend-button text-color-one m-top-botZOM pointer font-size-20 iconalignment">
                 Ordinals wallet <BsFillCircleFill color="lightblue" />
               </Col>
-              <Col className="lend-button text-color-one m-top-bottom pointer font-size-20 iconalignment">
+              <Col className="lend-button text-color-one m-top-botZOM pointer font-size-20 iconalignment">
                 Best in slot <GiOpenTreasureChest color={"brown"} />
               </Col>
             </Row>
           </Col>
 
           <Col xs={24} md={11} xl={10}>
-            <Row className="m-bottom " justify={"space-between"}>
+            <Row className="m-botZOM " justify={"space-between"}>
               <Col className="heading-one font-large text-color-two ">
                 Desired Loan Amount
               </Col>
@@ -525,7 +525,7 @@ const BorrowAsset = (props) => {
             </Row>
 
             <Form.Item
-              style={{ marginBottom: "10px" }}
+              style={{ marginBotZOM: "10px" }}
               name="Desired loan amount"
               rules={[
                 { required: true, message: "Please enter your loan amount!" },
@@ -569,14 +569,14 @@ const BorrowAsset = (props) => {
 
               <Col className=" font-style">{BTCtoUSDvalue} USD</Col>
             </Row>
-            <Row className="m-top-bottom" justify={"start"}>
+            <Row className="m-top-botZOM" justify={"start"}>
               <Col className="heading-one font-large text-color-two ">
                 Desired Loan Duration
               </Col>
             </Row>
 
             <Form.Item
-              style={{ marginBottom: "10px" }}
+              style={{ marginBotZOM: "10px" }}
               name="Desired loan duration"
               rules={[
                 { required: true, message: "Please enter your loan duration!" },
@@ -619,14 +619,14 @@ const BorrowAsset = (props) => {
                 {blockValue} Blocks
               </Col>
             </Row>
-            <Row className="m-top-bottom" justify={"start"} gutter={32}>
+            <Row className="m-top-botZOM" justify={"start"} gutter={32}>
               <Col className="heading-one font-large text-color-two">
                 Desired APR
               </Col>
             </Row>
 
             <Form.Item
-              style={{ marginBottom: "10px" }}
+              style={{ marginBotZOM: "10px" }}
               name="Desired APR"
               rules={[
                 { required: true, message: "Please enter your desired APR!" },
@@ -678,14 +678,14 @@ const BorrowAsset = (props) => {
       </Row>
 
       <Form.Item>
-        <Flex className="m-top-bottom" gap={20} justify={"end"}>
-          <CustomButton
+        <Flex className="m-top-botZOM" gap={20} justify={"end"}>
+          <CusZOMButton
             title="Cancel"
             onClick={handleCancel}
             className="cancelButton btn-common-two"
           />
 
-          <CustomButton
+          <CusZOMButton
             className="continueButton btn-common-two"
             title={"Continue"}
             htmlType={"submit"}

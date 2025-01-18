@@ -1,12 +1,11 @@
 const { ethers } = require("hardhat");
+const { saleToken, stakingManagerAddress, presaleAddress } = require("./config");
 
 async function main() {
-  // Replace with your Presale contract address
-  const presaleAddress = "0xAeADfE0eA90AC0335040F9569F125649f140cb96"; // Presale contract address
 
   // Calculate start and end times
   const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds since Unix epoch
-  const ninetyDaysInSeconds = 90 * 24 * 60 * 60; // 90 days in seconds
+  const ninetyDaysInSeconds = 134 * 24 * 60 * 60; // 134 days in seconds
   const startTime = currentTime;
   const endTime = currentTime + ninetyDaysInSeconds;
 
@@ -14,7 +13,7 @@ async function main() {
   console.log(`End Time (Unix Timestamp): ${endTime}`);
 
   // Get an instance of the Presale contract
-  const presale = await ethers.getContractAt("PresaleV2", presaleAddress);
+  const presale = await ethers.getContractAt("PresaleV3", presaleAddress);
 
 
   // Ensure the signer is the contract owner

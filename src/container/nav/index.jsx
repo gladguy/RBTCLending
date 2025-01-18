@@ -29,7 +29,7 @@ import Eth from "../../assets/coin_logo/cketh.png";
 import logo from "../../assets/logo/ordinalslogo.png";
 import rootstock_logo from "../../assets/coin_logo/rootstock_orange_logo.jpg";
 import bitcoin_rootstock from "../../assets/coin_logo/bitcoin-rootstock.png";
-import CustomButton from "../../component/Button";
+import CusZOMButton from "../../component/Button";
 import CardDisplay from "../../component/card";
 import Loading from "../../component/loading-wrapper/secondary-loader";
 import ModalDisplay from "../../component/modal";
@@ -157,7 +157,7 @@ const Nav = (props) => {
           <Row>
             <Col>
               <Typography
-                style={{ marginBottom: 5, color: "white", fontSize: "18px" }}
+                style={{ marginBotZOM: 5, color: "white", fontSize: "18px" }}
               >
                 Are you sure want to cancel tour?
               </Typography>
@@ -398,7 +398,7 @@ const Nav = (props) => {
   const walletCards = (wallet, index) => (
     <CardDisplay
       key={`${wallet.label}-${index + 1 * 123}`}
-      className={`modalCardBg card-hover width pointer grey-bg m-top-bottom ${isDisabled(
+      className={`modalCardBg card-hover width pointer grey-bg m-top-botZOM ${isDisabled(
         wallet.key
       )}`}
       hoverable={true}
@@ -716,7 +716,7 @@ const Nav = (props) => {
               <Col>
                 {!breakPoint.xs ? (
                   <Row justify={"end"}>
-                    <CustomButton
+                    <CusZOMButton
                       className="click-btn gradient-bg white-color"
                       // old btn style
                       // className="button-css lend-button"
@@ -962,7 +962,7 @@ const Nav = (props) => {
 
             <Col>
               {walletState.active.includes(META_WALLET_KEY) ? null : (
-                <CustomButton
+                <CusZOMButton
                   className="font-size-18 black-bg text-color-one border-none"
                   title={"Connect"}
                   onClick={() => {
@@ -1016,7 +1016,7 @@ const Nav = (props) => {
               {walletState.active.includes(XVERSE_WALLET_KEY) ||
               walletState.active.includes(UNISAT_WALLET_KEY) ||
               walletState.active.includes(MAGICEDEN_WALLET_KEY) ? null : (
-                <CustomButton
+                <CusZOMButton
                   className="font-size-18 black-bg text-color-one border-none"
                   title={"Connect"}
                   onClick={() => {

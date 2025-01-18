@@ -1,13 +1,4 @@
 //SPDX-License-Identifier: MIT
-//               _    _____                                        _
-// __      _____| |__|___ / _ __   __ _ _   _ _ __ ___   ___ _ __ | |_ ___
-// \ \ /\ / / _ \ '_ \ |_ \| '_ \ / _` | | | | '_ ` _ \ / _ \ '_ \| __/ __|
-//  \ V  V /  __/ |_) |__) | |_) | (_| | |_| | | | | | |  __/ | | | |_\__ \
-//   \_/\_/ \___|_.__/____/| .__/ \__,_|\__, |_| |_| |_|\___|_| |_|\__|___/
-//                         |_|          |___/
-//
-//pragma solidity 0.8.9;
-
 pragma solidity 0.8.9;
 
 
@@ -25,8 +16,7 @@ interface StakingManager {
   function depositByPresale(address _user, uint256 _amount) external;
 }
 
-//contract PresaleV2 is Initializable, ReentrancyGuardUpgradeable, OwnableUpgradeable, PausableUpgradeable {
-contract PresaleV2 is Initializable,  OwnableUpgradeable, ReentrancyGuardUpgradeable,PausableUpgradeable {
+contract PresaleV3 is Initializable,  OwnableUpgradeable, ReentrancyGuardUpgradeable,PausableUpgradeable {
 
   uint256 public totalTokensSold;
   uint256 public startTime;
@@ -83,7 +73,7 @@ contract PresaleV2 is Initializable,  OwnableUpgradeable, ReentrancyGuardUpgrade
       // Initialize key variables
       totalTokensSold = 0;
       baseDecimals = 10**18;
-      maxTokensToBuy = 30000000; // * baseDecimals;
+      maxTokensToBuy = 10000000; // * baseDecimals - 10 million;
       timeConstant = 86400; // 1 day in seconds
       currentStep = 0;
       checkPoint = 0;

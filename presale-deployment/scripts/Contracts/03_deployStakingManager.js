@@ -3,13 +3,22 @@ const { BigNumber } = ethers;
 
 async function main() {
   // Actual contract addresses (Replace with your real addresses)
-  const rewardTokenAddress = "0x069Ff44b44070F3D66e8B3829d46174D7Bd062c3"; // Address of the token to be staked
-  const presaleContractAddress = "0xB00903EDd2B4e73E0314a8dEf2C8e716E352185A"; // Address of the presale contract
+  const rewardTokenAddress = "0x2c19518FC3CB9BdfD856DFF378E6590f4d4892D8"; // Address of the token to be staked
+  const presaleContractAddress = "0xF3E1B0E4dEF3D14D60a79DaE6a7983b818D5E4f6"; // Address of the presale contract
+/*
+Banana Token 0x3b087C3f2FDF209d09Babd053aA6C81D6be5Bc0E
+PreSale 0xAeADfE0eA90AC0335040F9569F125649f140cb96
+Staking Address 0x543922c252c72434010B5bfd583A4799DDeeB814
 
-
+0x2c19518FC3CB9BdfD856DFF378E6590f4d4892D8
+0xF3E1B0E4dEF3D14D60a79DaE6a7983b818D5E4f6
+*/
   // Reward tokens per block (Ensure token has 18 decimals)
   //const rewardTokensPerBlock = ethers.utils.parseUnits("10", 18); // 10 tokens with 18 decimals
   
+
+
+
 
   const rewardTokensPerBlock = "1000000000000000000000"; // 1000 tokens with 18 decimals
   const lockTime = 86400 * 30; // Lock time in seconds (30 days)

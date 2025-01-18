@@ -1,10 +1,9 @@
 const { ethers } = require("hardhat");
+const { saleToken, stakingManagerAddress, presaleAddress } = require("./config");
 
 async function main() {
   // Address of your deployed contract
-  const presaleAddress = "0xAeADfE0eA90AC0335040F9569F125649f140cb96";
-
-  const presale = await ethers.getContractAt("PresaleV2", presaleAddress);
+  const presale = await ethers.getContractAt("PresaleV3", presaleAddress);
   
   const owner = await presale.owner();
   console.log("Current Owner:", owner);
@@ -12,6 +11,7 @@ async function main() {
   // Replace with the new payment wallet address
   const newPaymentWallet = owner;
 
+  
   try {
     // Send transaction to change the payment wallet
     const tx = await presale.changePaymentWallet(newPaymentWallet);
@@ -19,9 +19,18 @@ async function main() {
     await tx.wait();
     console.log("Payment wallet updated successfully!");
     console.log(`Transaction hash: ${tx.hash}`);
+
+    const setAdmin = await presale.setAdmin(newPaymentWallet);
+    console.log("Transaction sent! Waiting for confirmation...");
+    await setAdmin.wait();
+    console.log("Payment wallet updated successfully!");
+    console.log(`Transaction hash: ${setAdmin.hash}`);
+
+
+    console.log("Now, transfer all the tokens except from staking to the PreSale Address " , presaleAddress)
   } catch (error) {
     console.error("Error updating payment wallet:", error);
-  }
+  } 
 }
 
 // Run the script

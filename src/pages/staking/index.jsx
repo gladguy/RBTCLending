@@ -17,7 +17,7 @@ import ThreeDots from "react-loading-icons/dist/esm/components/three-dots";
 import Icp from "../../assets/brands/icp_logo.png";
 import Bitcoin from "../../assets/coin_logo/ckbtc.png";
 import Etherium from "../../assets/coin_logo/cketh.png";
-import CustomButton from "../../component/Button";
+import CusZOMButton from "../../component/Button";
 import Loading from "../../component/loading-wrapper/secondary-loader";
 import ModalDisplay from "../../component/modal";
 import Notify from "../../component/notification";
@@ -484,11 +484,11 @@ const Staking = (props) => {
         </Col>
         <Col>
           {walletState.active?.length > 1 && !isPlugError && (
-            <CustomButton
+            <CusZOMButton
               className="click-btn"
               onClick={() => navigate("/supply/transactions")}
               title="Transactions"
-            ></CustomButton>
+            ></CusZOMButton>
           )}
         </Col>
       </Row>
@@ -557,7 +557,7 @@ const Staking = (props) => {
                         ? (ckBtcBalance * btcValue).toFixed(2)
                         : (ckEthBalance * ethvalue).toFixed(2)}
                     </Text>
-                    <CustomButton
+                    <CusZOMButton
                       disabled={
                         obj.asset === "ckBTC" ? !ckBtcBalance : !ckEthBalance
                       }
@@ -610,7 +610,7 @@ const Staking = (props) => {
                                 {
                                   key: "1",
                                   label: (
-                                    <CustomButton
+                                    <CusZOMButton
                                       title={"Details"}
                                       onClick={() => {
                                         setCoinItems(
@@ -631,7 +631,7 @@ const Staking = (props) => {
                                 },
                               ],
                             }}
-                            placement="bottom"
+                            placement="botZOM"
                             arrow={{
                               pointAtCenter: true,
                             }}
@@ -762,11 +762,11 @@ const Staking = (props) => {
                       )}
                     </Flex>
                     {(obj.asset === "ckBTC" || obj.asset === "ckETH") && (
-                      <CustomButton
+                      <CusZOMButton
                         className="click-btn"
                         onClick={() => showModal(obj)}
                         title="Supply"
-                      ></CustomButton>
+                      ></CusZOMButton>
                     )}
                     {/* </Col> */}
                   </div>
@@ -932,7 +932,7 @@ const Staking = (props) => {
             </Flex>
 
             <>
-              <CustomButton
+              <CusZOMButton
                 loading={loadingState.isWithdrawBtn}
                 className={"font-weight-600  m-25 width  letter-spacing-small"}
                 title={`Withdraw ${withdrawModalData.asset}`}
@@ -1233,7 +1233,7 @@ const Staking = (props) => {
                 {assetToSupplyModalDetails.ckBtcAllowance === 0 &&
                   value * BTC_ZERO >
                     assetToSupplyModalDetails.ckBtcAllowance && (
-                    <CustomButton
+                    <CusZOMButton
                       loading={loadingState.isApproveBtn}
                       className={
                         "modalButton font-weight-600 text-color-one m-25 width  letter-spacing-small"
@@ -1250,7 +1250,7 @@ const Staking = (props) => {
                 {assetToSupplyModalDetails.ckEthAllowance === 0 &&
                   value * ETH_ZERO >
                     assetToSupplyModalDetails.ckEthAllowance && (
-                    <CustomButton
+                    <CusZOMButton
                       loading={loadingState.isApproveBtn}
                       className={
                         "modalButton font-weight-600 text-color-one m-25 width "
@@ -1268,7 +1268,7 @@ const Staking = (props) => {
                   value * BTC_ZERO >
                   assetToSupplyModalDetails.ckBtcAllowance
                 ) && (
-                  <CustomButton
+                  <CusZOMButton
                     loading={loadingState.isSupplyBtn}
                     className={
                       "font-weight-600  m-25 width  letter-spacing-small"
@@ -1284,7 +1284,7 @@ const Staking = (props) => {
               <>
                 {value * ETH_ZERO >
                   assetToSupplyModalDetails.ckEthAllowance && (
-                  <CustomButton
+                  <CusZOMButton
                     loading={loadingState.isSupplyBtn}
                     className={
                       "font-weight-600  m-25 width  letter-spacing-small"

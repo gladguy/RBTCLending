@@ -195,7 +195,7 @@ abstract contract Ownable is Context {
   }
 }
 
-contract BananaToken is Context, IERC20Metadata, Ownable {
+contract ZomatoToken is Context, IERC20Metadata, Ownable {
   mapping(address => uint256) private _balances;
 
   mapping(address => mapping(address => uint256)) private _allowances;
@@ -216,8 +216,8 @@ contract BananaToken is Context, IERC20Metadata, Ownable {
    * @dev Contract constructor. 
    */
   constructor() {
-    _name = 'Banana';
-    _symbol = 'BAN';
+    _name = 'Zomato';
+    _symbol = 'ZOM';
     _mint(0xE98b997f529F643Bc67F217B1270A0F7D7a0EcB2, presaleReserve); // 1
     _mint(0xf69DA7C57f3A887B16Af7F068ed2882aff620359, stakingReserve); // 3
     _mint(0x6470c4d86b062fF4e1030D5615c4B04cD78bF9Cf, marketingReserve);  //5

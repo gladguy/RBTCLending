@@ -624,7 +624,7 @@ touch .dev.vars
 ls
 ls -al
 touch .dev.vars 
-cp wrangler.toml wrangler.txt
+cp wrangler.ZOMl wrangler.txt
 corepack enable pnpm
 sudo corepack enable pnpm
 pnpm dlx create-turbo@latest

@@ -196,7 +196,7 @@ const Portfolio = (props) => {
         key: wallet,
         children: (
           <Row justify={"center"}>
-            <Col className="m-bottom">
+            <Col className="m-botZOM">
               {wallet === XVERSE_WALLET_KEY ? (
                 <>{renderWalletAddress(xverseAddress)}</>
               ) : wallet === UNISAT_WALLET_KEY ? (
@@ -264,7 +264,7 @@ const Portfolio = (props) => {
       </Row>
 
       {activeWallet.length ? (
-        <Row className="m-top-bottom" gutter={48}>
+        <Row className="m-top-botZOM" gutter={48}>
           {activeWallet.map((wallet, index) => {
             return (
               <Col
@@ -273,7 +273,7 @@ const Portfolio = (props) => {
                 md={12}
                 xs={24}
                 key={`${wallet.key}-${index}`}
-                className="m-top-bottom"
+                className="m-top-botZOM"
               >
                 <Descriptions
                   className="pointer box-shadow-one float-up"
@@ -360,8 +360,8 @@ const Portfolio = (props) => {
       </Col>
 
       <Row
-        className="m-top-bottom"
-        style={{ paddingBottom: "30px" }}
+        className="m-top-botZOM"
+        style={{ paddingBotZOM: "30px" }}
         justify={{
           md: !borrowData
             ? "center"
@@ -376,9 +376,9 @@ const Portfolio = (props) => {
           activeWallet.includes(UNISAT_WALLET_KEY) ||
           activeWallet.includes(MAGICEDEN_WALLET_KEY)) &&
         borrowData === null ? (
-          <Loading className={"m-top-bottom"} indicator={<Bars />}></Loading>
+          <Loading className={"m-top-botZOM"} indicator={<Bars />}></Loading>
         ) : borrowData === null ? (
-          <Flex className="iconalignment m-bottom">
+          <Flex className="iconalignment m-botZOM">
             <FaRegSmileWink className="text-color-one" size={25} />
             <Text className="text-color-one font-large value-one letter-spacing-medium">
               Connect any BTC wallet !
@@ -419,7 +419,7 @@ const Portfolio = (props) => {
                     hoverable={true}
                     bordered={false}
                     className={
-                      "card-bg dashboard-card-padding m-top-bottom cardrelative dashboard-cards"
+                      "card-bg dashboard-card-padding m-top-botZOM cardrelative dashboard-cards"
                     }
                   >
                     <Row justify={"space-between"}>

@@ -18,7 +18,7 @@ import { MdContentCopy } from "react-icons/md";
 import { RiInformationFill } from "react-icons/ri";
 import { Bars } from "react-loading-icons";
 import Aptos from "../../assets/wallet-logo/aptos_logo.png";
-import CustomButton from "../../component/Button";
+import CusZOMButton from "../../component/Button";
 import ModalDisplay from "../../component/modal";
 import Notify from "../../component/notification";
 import TableComponent from "../../component/table";
@@ -141,7 +141,7 @@ const MyAssets = (props) => {
     {
       key: "1",
       label: (
-        <CustomButton
+        <CusZOMButton
           className={"click-btn font-weight-600 letter-spacing-small"}
           title={"Details"}
           size="medium"
@@ -443,11 +443,11 @@ const MyAssets = (props) => {
       walletState.active.includes(MAGICEDEN_WALLET_KEY) ? (
         <Row
           justify={"space-between"}
-          className="mt-7 pad-bottom-30"
+          className="mt-7 pad-botZOM-30"
           gutter={32}
         >
           <Col xl={24}>
-            <Row className="m-bottom">
+            <Row className="m-botZOM">
               <Col xl={24}>
                 <TableComponent
                   locale={{
@@ -724,7 +724,7 @@ const MyAssets = (props) => {
           </Col>
         </Row>
         <Row>
-          <CustomButton
+          <CusZOMButton
             onClick={handleCancel}
             title="I Know"
             className={"m-25 width background text-color-one "}
@@ -824,7 +824,7 @@ const MyAssets = (props) => {
         </Row>
         <Row className="mt-20">
           <Col sm={24}>
-            <CustomButton
+            <CusZOMButton
               loading={loadingState.isAskBtn}
               className={"width font-weight-600"}
               onClick={handleAskRequest}

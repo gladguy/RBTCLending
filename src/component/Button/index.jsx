@@ -1,7 +1,7 @@
 import { Button, ConfigProvider } from "antd";
 import React from "react";
 
-const CustomButton = ({
+const CusZOMButton = ({
   ref,
   onClick,
   htmlType,
@@ -46,4 +46,4 @@ const CustomButton = ({
     </ConfigProvider>
   );
 };
-export default CustomButton;
+export default CusZOMButton;

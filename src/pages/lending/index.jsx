@@ -18,7 +18,7 @@ import { TbInfoSquareRounded } from "react-icons/tb";
 import { Bars } from "react-loading-icons";
 import ckBtc from "../../assets/coin_logo/ckbtc.png";
 import Aptos from "../../assets/wallet-logo/aptos_logo.png";
-import CustomButton from "../../component/Button";
+import CusZOMButton from "../../component/Button";
 import ModalDisplay from "../../component/modal";
 import TableComponent from "../../component/table";
 import { propsContainer } from "../../container/props-container";
@@ -154,7 +154,7 @@ const Dashboard = (props) => {
       align: "center",
       render: (_, obj) => {
         return (
-          <CustomButton
+          <CusZOMButton
             className={"click-btn font-weight-600 letter-spacing-small"}
             title={"Lend"}
             size="medium"
@@ -201,11 +201,11 @@ const Dashboard = (props) => {
         </Col>
       </Row>
 
-      <Row justify={"center"} className="m-bottom">
+      <Row justify={"center"} className="m-botZOM">
         <Col
           md={24}
           style={{
-            marginBottom: "50px",
+            marginBotZOM: "50px",
           }}
         >
           <TableComponent
@@ -744,7 +744,7 @@ const Dashboard = (props) => {
         >
           <Col md={24}>
             {isPlugError ? (
-              <CustomButton
+              <CusZOMButton
                 block
                 loading={isOfferBtnLoading}
                 className="button-css lend-button"

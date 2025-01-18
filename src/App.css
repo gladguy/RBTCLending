@@ -67,7 +67,7 @@ a {
 
 .value-header {
   position: fixed;
-  bottom: 0px;
+  botZOM: 0px;
   width: 100%;
 }
 
@@ -86,7 +86,7 @@ a {
   z-index: 1;
 }
 
-.m-top-bottom {
+.m-top-botZOM {
   margin: 1rem 0;
 }
 
@@ -142,7 +142,7 @@ a {
 }
 
 .main-bg-t-to-b {
-  background-image: linear-gradient(to bottom, #0f0421, #261344);
+  background-image: linear-gradient(to botZOM, #0f0421, #261344);
 }
 
 .main-bg-b-to-t {
@@ -158,7 +158,7 @@ a {
 }
 
 .main-bg-gradient-three {
-  background-image: linear-gradient(to bottom, 90deg, #000000, #130f40);
+  background-image: linear-gradient(to botZOM, 90deg, #000000, #130f40);
 }
 
 .white-color {
@@ -408,10 +408,10 @@ a {
 .headerCompanyName::after {
   content: "";
   position: absolute;
-  bottom: 0;
+  botZOM: 0;
   left: 0;
   width: 100%;
-  border-bottom: 2px solid transparent;
+  border-botZOM: 2px solid transparent;
   border-image: linear-gradient(0.25turn, #5c65fc, #bb80ff);
   border-image-slice: 1;
   transition: opacity 300ms, transform 300ms;
@@ -427,7 +427,7 @@ a {
 }
 
 .headerStyle {
-  border-bottom: 2px solid transparent;
+  border-botZOM: 2px solid transparent;
   border-image: linear-gradient(0.25turn, #5c65fc, #bb80ff);
   border-image-slice: 1;
 }
@@ -565,7 +565,7 @@ a {
 
 /* Cut off the extra margin in notify text */
 .ant-notification .ant-notification-notice .ant-notification-notice-with-icon .ant-notification-notice-message {
-  margin-bottom: 0 !important;
+  margin-botZOM: 0 !important;
 }
 
 /* Main Ant Tag */
@@ -637,7 +637,7 @@ input::placeholder {
 .ant-badge.ant-badge-status .ant-badge-status-dot {
   width: 11px !important;
   height: 11px !important;
-  margin-bottom: 5px;
+  margin-botZOM: 5px;
   line-height: 35px !important;
 }
 
@@ -653,7 +653,7 @@ input::placeholder {
   margin: 10px !important;
 }
 
-/* Bottom sheet over riden styles */
+/* BotZOM sheet over riden styles */
 
 [data-rsbs-header] {
   background-color: #272727;
@@ -766,8 +766,8 @@ input::placeholder {
   font-size: 15px;
 }
 
-.m-bottom {
-  margin-bottom: 1rem;
+.m-botZOM {
+  margin-botZOM: 1rem;
 }
 
 .m-top {
@@ -839,12 +839,12 @@ input::placeholder {
   left: 25px;
 }
 
-.absolutebottom {
-  bottom: 210px;
+.absolutebotZOM {
+  botZOM: 210px;
 }
 
-.absolutebottomModal {
-  bottom: 25px;
+.absolutebotZOMModal {
+  botZOM: 25px;
 }
 
 .absoluteright {
@@ -1173,7 +1173,7 @@ input::placeholder {
   height: 80px;
 }
 
-.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+.ant-select:not(.ant-select-cusZOMize-input) .ant-select-selector {
   background: -webkit-linear-gradient(#c0d9ff, #f0b9e5) !important;
   border: none !important;
 }
@@ -1192,7 +1192,7 @@ input::placeholder {
 .ant-drawer-right>.ant-drawer-content-wrapper {
   top: 3px;
   /* right: 10px; */
-  bottom: 0px;
+  botZOM: 0px;
   box-shadow: none;
 }
 
@@ -1209,12 +1209,12 @@ input::placeholder {
 
 .ant-menu .ant-menu-item,
 .ant-menu .ant-menu-submenu-title {
-  margin-bottom: 11px !important;
+  margin-botZOM: 11px !important;
 }
 
 .ant-drawer .ant-drawer-footer {
   padding-left: 27px;
-  margin-bottom: 7px;
+  margin-botZOM: 7px;
 }
 
 .ant-drawer .ant-drawer-header {
@@ -1356,12 +1356,12 @@ body::-webkit-scrollbar-thumb {
   /* font-size: 20px; */
   font-weight: 600;
   letter-spacing: 1.3px;
-  border-bottom: 0.01px solid #494c64 !important;
+  border-botZOM: 0.01px solid #494c64 !important;
 }
 
 .ant-table-wrapper .ant-table-thead>tr>th,
 .ant-table-wrapper .ant-table-thead>tr>td {
-  border-bottom: none !important;
+  border-botZOM: none !important;
 }
 
 .ant-table-wrapper .ant-table {
@@ -1611,7 +1611,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 .ant-collapse-borderless>.ant-collapse-item {
-  border-bottom: 1px solid #282a36;
+  border-botZOM: 1px solid #282a36;
 }
 
 .borrowDataStyle {
@@ -1689,7 +1689,7 @@ body::-webkit-scrollbar-thumb {
 
 .column div span {
   position: absolute;
-  bottom: -20px;
+  botZOM: -20px;
   left: 0;
   z-index: -1;
   display: block;
@@ -1711,7 +1711,7 @@ figure {
 }
 
 figure:hover+span {
-  bottom: -36px;
+  botZOM: -36px;
   opacity: 1;
 }
 
@@ -1985,8 +1985,8 @@ figure:hover+span {
   padding: 15px;
 }
 
-.pad-bottom-30 {
-  padding-bottom: 30px;
+.pad-botZOM-30 {
+  padding-botZOM: 30px;
 }
 
 .border-blue {

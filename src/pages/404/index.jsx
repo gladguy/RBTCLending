@@ -1,7 +1,7 @@
 import { Result, Typography } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import CustomButton from "../../component/Button";
+import CusZOMButton from "../../component/Button";
 
 const Page404 = () => {
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const Page404 = () => {
         </Text>
       }
       extra={
-        <CustomButton
+        <CusZOMButton
           className="button-css font-size-20 lend-button"
           title={"Go Back"}
           onClick={() => {

@@ -79,7 +79,7 @@ const Home = (props) => {
         </Col>
       </Row>
 
-      <Row justify={"start"} className="pad-bottom-30" gutter={32}>
+      <Row justify={"start"} className="pad-botZOM-30" gutter={32}>
         {collections?.map((collection, index) => {
           const name = collection?.data?.name;
           const nameSplitted = collection?.data?.name?.split(" ");
@@ -101,7 +101,7 @@ const Home = (props) => {
               <Skeleton loading={!collection.symbol} active>
                 <CardDisplay
                   className={
-                    "main-bg dashboard-card-padding m-top-bottom dashboard-cards pointer box collection-bg"
+                    "main-bg dashboard-card-padding m-top-botZOM dashboard-cards pointer box collection-bg"
                   }
                 >
                   <Row justify={"center"}>
@@ -201,7 +201,7 @@ const Home = (props) => {
           <CardDisplay
             bordered={false}
             className={
-              "main-bg dashboard-card-padding m-top-bottom dashboard-cards"
+              "main-bg dashboard-card-padding m-top-botZOM dashboard-cards"
             }
           >
             <Space direction="vertical" className="flex-grow">
@@ -232,7 +232,7 @@ const Home = (props) => {
           <CardDisplay
             bordered={false}
             className={
-              "main-bg dashboard-card-padding m-top-bottom dashboard-cards "
+              "main-bg dashboard-card-padding m-top-botZOM dashboard-cards "
             }
           >
             <Space direction="vertical" className="flex-grow">
@@ -262,7 +262,7 @@ const Home = (props) => {
           <CardDisplay
             bordered={false}
             className={
-              "main-bg dashboard-card-padding m-top-bottom dashboard-cards"
+              "main-bg dashboard-card-padding m-top-botZOM dashboard-cards"
             }
           >
             <Space direction="vertical" className="flex-grow">
@@ -303,7 +303,7 @@ const Home = (props) => {
           <CardDisplay
             bordered={false}
             className={
-              "main-bg dashboard-card-padding m-top-bottom dashboard-cards"
+              "main-bg dashboard-card-padding m-top-botZOM dashboard-cards"
             }
           >
             <Space direction="vertical" className="flex-grow">
@@ -334,7 +334,7 @@ const Home = (props) => {
           <CardDisplay
             bordered={false}
             className={
-              "main-bg dashboard-card-padding m-top-bottom dashboard-cards"
+              "main-bg dashboard-card-padding m-top-botZOM dashboard-cards"
             }
           >
             <Space direction="vertical" className="flex-grow">
@@ -364,7 +364,7 @@ const Home = (props) => {
           <CardDisplay
             bordered={false}
             className={
-              "main-bg dashboard-card-padding m-top-bottom dashboard-cards"
+              "main-bg dashboard-card-padding m-top-botZOM dashboard-cards"
             }
           >
             <Space direction="vertical" className="flex-grow">

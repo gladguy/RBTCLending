@@ -107,7 +107,7 @@ const WalletAddress = (props) => {
         </Col>
       </Row>
 
-      <Row className="m-top-bottom" justify={"start"} gutter={18}>
+      <Row className="m-top-botZOM" justify={"start"} gutter={18}>
         {assetData?.length !== 0 ? (
           <>
             {assetData.map((card) => {
@@ -138,7 +138,7 @@ const WalletAddress = (props) => {
                         hoverable={true}
                         bordered={false}
                         className={
-                          "card-bg dashboard-card-padding m-top-bottom cardrelative dashboard-cards"
+                          "card-bg dashboard-card-padding m-top-botZOM cardrelative dashboard-cards"
                         }
                       >
                         <Row justify={"space-between"}>

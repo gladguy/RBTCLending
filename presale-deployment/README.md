@@ -9,6 +9,9 @@ npx hardhat help
 npx hardhat test
 REPORT_GAS=true npx hardhat test
 npx hardhat node
+
+npx hardhat run scripts/03_deployStakingManager.js --network bnb
+
 PreSale
 npx hardhat verify --network bnb 0x816e695015D72e672073CF80Ad56bD087308dAF0
 

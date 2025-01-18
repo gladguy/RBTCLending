@@ -5,7 +5,7 @@ import { ImSad } from "react-icons/im";
 import { MdOutlineArrowBack } from "react-icons/md";
 import { Bars } from "react-loading-icons";
 import { useNavigate } from "react-router";
-import CustomButton from "../../component/Button";
+import CusZOMButton from "../../component/Button";
 import CardDisplay from "../../component/card";
 import Loading from "../../component/loading-wrapper/secondary-loader";
 import { propsContainer } from "../../container/props-container";
@@ -86,7 +86,7 @@ const Borrow = (props) => {
     <>
       <Row align={"middle"}>
         <Col md={2}>
-          <CustomButton
+          <CusZOMButton
             size="medium"
             onClick={() => navigate("/")}
             className="buttonStyle mt-15"
@@ -100,7 +100,7 @@ const Borrow = (props) => {
         </Col>
       </Row>
       <Row
-        className="m-top-bottom"
+        className="m-top-botZOM"
         justify={
           !borrowData ? "center" : borrowData.length === 0 ? "center" : "start"
         }
@@ -110,7 +110,7 @@ const Borrow = (props) => {
           activeWallet.includes(UNISAT_WALLET_KEY) ||
           activeWallet.includes(MAGICEDEN_WALLET_KEY)) &&
         borrowData === null ? (
-          <Loading className={"m-top-bottom"} indicator={<Bars />}></Loading>
+          <Loading className={"m-top-botZOM"} indicator={<Bars />}></Loading>
         ) : borrowData === null ? (
           <Flex className="iconalignment">
             <FaRegSmileWink className="text-color-one" size={25} />
@@ -153,7 +153,7 @@ const Borrow = (props) => {
                       hoverable={true}
                       bordered={false}
                       className={
-                        "card-bg dashboard-card-padding m-top-bottom cardrelative loan-cards dashboard-cards borrowCards"
+                        "card-bg dashboard-card-padding m-top-botZOM cardrelative loan-cards dashboard-cards borrowCards"
                       }
                     >
                       <Row className="assetId" justify={"space-between"}>
@@ -170,7 +170,7 @@ const Borrow = (props) => {
                       </Row>
 
                       <Row className="borrowButton">
-                        <CustomButton
+                        <CusZOMButton
                           block
                           onClick={() => navigate("/dashboard")}
                           title={

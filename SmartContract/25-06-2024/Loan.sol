@@ -308,7 +308,7 @@ abstract contract ERC165 is IERC165 {
 
     /**
      * @dev Registers the contract as an implementer of the interface defined by
-     * `interfaceId`. Support of the actual ERC165 interface is automatic and
+     * `interfaceId`. Support of the actual ERC165 interface is auZOMatic and
      * registering its interface id is not required.
      *
      * See {IERC165-supportsInterface}.
@@ -482,11 +482,11 @@ library SafeMath {
     }
 
     /**
-     * @dev Returns the subtraction of two unsigned integers, reverting with custom message on
+     * @dev Returns the subtraction of two unsigned integers, reverting with cusZOM message on
      * overflow (when the result is negative).
      *
      * CAUTION: This function is deprecated because it requires allocating memory for the error
-     * message unnecessarily. For custom revert reasons use {trySub}.
+     * message unnecessarily. For cusZOM revert reasons use {trySub}.
      *
      * Counterpart to Solidity's `-` operator.
      *
@@ -500,11 +500,11 @@ library SafeMath {
     }
 
     /**
-     * @dev Returns the integer division of two unsigned integers, reverting with custom message on
+     * @dev Returns the integer division of two unsigned integers, reverting with cusZOM message on
      * division by zero. The result is rounded towards zero.
      *
      * CAUTION: This function is deprecated because it requires allocating memory for the error
-     * message unnecessarily. For custom revert reasons use {tryDiv}.
+     * message unnecessarily. For cusZOM revert reasons use {tryDiv}.
      *
      * Counterpart to Solidity's `/` operator. Note: this function uses a
      * `revert` opcode (which leaves remaining gas untouched) while Solidity
@@ -521,10 +521,10 @@ library SafeMath {
 
     /**
      * @dev Returns the remainder of dividing two unsigned integers. (unsigned integer modulo),
-     * reverting with custom message when dividing by zero.
+     * reverting with cusZOM message when dividing by zero.
      *
      * CAUTION: This function is deprecated because it requires allocating memory for the error
-     * message unnecessarily. For custom revert reasons use {tryMod}.
+     * message unnecessarily. For cusZOM revert reasons use {tryMod}.
      *
      * Counterpart to Solidity's `%` operator. This function uses a `revert`
      * opcode (which leaves remaining gas untouched) while Solidity uses an
@@ -1203,10 +1203,10 @@ library EnumerableMap {
     }
 
     /**
-     * @dev Same as {_get}, with a custom error message when `key` is not in the map.
+     * @dev Same as {_get}, with a cusZOM error message when `key` is not in the map.
      *
      * CAUTION: This function is deprecated because it requires allocating memory for the error
-     * message unnecessarily. For custom revert reasons use {_tryGet}.
+     * message unnecessarily. For cusZOM revert reasons use {_tryGet}.
      */
     function _get(Map storage map, bytes32 key, string memory errorMessage) private view returns (bytes32) {
         uint256 keyIndex = map._indexes[key];
@@ -1291,10 +1291,10 @@ library EnumerableMap {
     }
 
     /**
-     * @dev Same as {get}, with a custom error message when `key` is not in the map.
+     * @dev Same as {get}, with a cusZOM error message when `key` is not in the map.
      *
      * CAUTION: This function is deprecated because it requires allocating memory for the error
-     * message unnecessarily. For custom revert reasons use {tryGet}.
+     * message unnecessarily. For cusZOM revert reasons use {tryGet}.
      */
     function get(UintToAddressMap storage map, uint256 key, string memory errorMessage) internal view returns (address) {
         return address(uint160(uint256(_get(map._inner, bytes32(key), errorMessage))));
@@ -1493,7 +1493,7 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Enumerable 
 
     /**
     * @dev Returns the base URI set via {_setBaseURI}. This will be
-    * automatically added as a prefix in {tokenURI} to each token's URI, or
+    * auZOMatically added as a prefix in {tokenURI} to each token's URI, or
     * to the token ID if no specific URI is set for that token ID.
     */
     function baseURI() public view virtual returns (string memory) {
@@ -1756,7 +1756,7 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Enumerable 
 
     /**
      * @dev Internal function to set the base URI for all token IDs. It is
-     * automatically added as a prefix to the value returned in {tokenURI},
+     * auZOMatically added as a prefix to the value returned in {tokenURI},
      * or to the token ID if {tokenURI} is empty.
      */
     function _setBaseURI(string memory baseURI_) internal virtual {

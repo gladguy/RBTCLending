@@ -62,7 +62,7 @@ module.exports = {
     apiKey: {
       bnb: "your-etherscan-api-key",
     },
-    customChains: [
+    cusZOMChains: [
       {
         network: "bnb",
         chainId: 97,

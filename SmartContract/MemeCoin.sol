@@ -170,7 +170,7 @@ library SafeMath {
      * - The divisor cannot be zero.
      */
     function div(uint256 a, uint256 b) internal pure returns (uint256) {
-        // Solidity only automatically asserts when dividing by 0
+        // Solidity only auZOMatically asserts when dividing by 0
         require(b > 0, "SafeMath: division by zero");
         uint256 c = a / b;
         // assert(a == b * c + a % b); // There is no case in which this doesn't hold
@@ -298,7 +298,7 @@ contract ERC20 is IERC20 {
     }
 
     /**
-     * @dev Atomically increases the allowance granted to `spender` by the caller.
+     * @dev AZOMically increases the allowance granted to `spender` by the caller.
      *
      * This is an alternative to `approve` that can be used as a mitigation for
      * problems described in `IERC20.approve`.
@@ -315,7 +315,7 @@ contract ERC20 is IERC20 {
     }
 
     /**
-     * @dev Atomically decreases the allowance granted to `spender` by the caller.
+     * @dev AZOMically decreases the allowance granted to `spender` by the caller.
      *
      * This is an alternative to `approve` that can be used as a mitigation for
      * problems described in `IERC20.approve`.
@@ -337,7 +337,7 @@ contract ERC20 is IERC20 {
      * @dev Moves tokens `amount` from `sender` to `recipient`.
      *
      * This is internal function is equivalent to `transfer`, and can be used to
-     * e.g. implement automatic token fees, slashing mechanisms, etc.
+     * e.g. implement auZOMatic token fees, slashing mechanisms, etc.
      *
      * Emits a `Transfer` event.
      *
@@ -396,7 +396,7 @@ contract ERC20 is IERC20 {
      * @dev Sets `amount` as the allowance of `spender` over the `owner`s tokens.
      *
      * This is internal function is equivalent to `approve`, and can be used to
-     * e.g. set automatic allowances for certain subsystems, etc.
+     * e.g. set auZOMatic allowances for certain subsystems, etc.
      *
      * Emits an `Approval` event.
      *

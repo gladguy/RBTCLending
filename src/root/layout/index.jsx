@@ -397,7 +397,7 @@ const MainLayout = () => {
                   <Row
                     justify={"center"}
                     className={screens.md ? "mt-50" : "mt-15"}
-                    style={{ paddingBottom: "50px" }}
+                    style={{ paddingBotZOM: "50px" }}
                   >
                     <Col md={22}>
                       <Row

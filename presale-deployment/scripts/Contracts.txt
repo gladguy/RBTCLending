@@ -1,0 +1,63 @@
+Token 0x5F417FB788b2c1443d4AacCBA4eD23679490e0E0
+Presale 0x48909faB7217F4709b2571F936f649Caff2374F8
+Staking Manager 0xb6802EEd4A6B3503b642f59Cd30C287a3DE5c01A
+
+
+
+
+npx hardhat verify --network bnb 0x5F417FB788b2c1443d4AacCBA4eD23679490e0E0
+0x48909faB7217F4709b2571F936f649Caff2374F8
+npx hardhat verify --network bnb 0x48909faB7217F4709b2571F936f649Caff2374F8
+
+npx hardhat verify --network bnb  0xb6802EEd4A6B3503b642f59Cd30C287a3DE5c01A
+
+npx hardhat run ./scripts/1_setPayment.js --network bnb
+
+npx hardhat run ./scripts/1_setPayment.js --network bnb
+
+npx hardhat run ./scripts/2_setRounds.js --network bnb
+
+npx hardhat run ./scripts/9 --network bnb
+
+
+npx hardhat run ./scripts/01_deployToken.js --network bnb
+npx hardhat verify --network bnb  0x4C432db3Ed53FfeCf5D9002CAF982d423641b1DD
+npx hardhat verify --network bnb  0xa20E51695E8B96d2f59e2e1df14F29D0b94a8d38
+npx hardhat verify --network bnb  0x1FAe20B14B7794C9BfA80D84aF84BC9f42D1B7Fd
+npx hardhat verify --network bnb  0x069Ff44b44070F3D66e8B3829d46174D7Bd062c3
+
+
+npx hardhat run ./scripts/02_deployPreSale.js --network bnb
+npx hardhat verify --network bnb  0x7A8be513F82D9AC181b531EAfA8eB74057ad8995
+npx hardhat verify --network bnb  0xF227d22D19F530D2547bE0Dd04732E22a6516B2F
+
+npx hardhat verify --network bnb  0xB00903EDd2B4e73E0314a8dEf2C8e716E352185A
+
+npx hardhat run ./scripts/03_deployStakingManager.js --network bnb
+npx hardhat verify --network bnb  0xF3819aC5A97fCCB662171Aaf08eebfE3610C3bAd
+npx hardhat verify --network bnb  0xbE2eb2F27b1D1108871E3AA06CC072C04E979cA7
+npx hardhat verify --network bnb  0x858FBeC882C8f1e164A4ddCA19D0b2D10B8cCB86
+
+
+
+npx hardhat run ./scripts/1_setPayment.js --network bnb
+npx hardhat run ./scripts/2_setRounds.js --network bnb
+npx hardhat run ./scripts/3_changeStartTime.js --network bnb
+npx hardhat run ./scripts/4_setCurrentStep.js --network bnb
+
+npx hardhat run ./scripts/5_setClaim.js --network bnb
+
+npx hardhat run ./scripts/6_setStakingManager.js --network bnb
+
+npx hardhat run ./scripts/7_setMaxBuy.js --network bnb
+npx hardhat run ./scripts/8_setCurrentStep.js --network bnb
+
+npx hardhat run ./scripts/9_setStakingClaim.js --network bnb
+npx hardhat run ./scripts/10_setHarvest.js --network bnb
+
+
+npx hardhat run ./scripts/11_setPreSaleAddress.js --network bnb
+
+npx hardhat run ./scripts/12_setStakeToken.js --network bnb
+
+npx hardhat run ./scripts/test --network bnb

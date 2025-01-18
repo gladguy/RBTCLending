@@ -172,7 +172,7 @@ const Faucet = (props) => {
                     cancelText="No"
                     onConfirm={handleClaim}
                   >
-                    <CustomButton
+                    <CusZOMButton
                       block
                       className={
                         "font-weight-600 letter-spacing-small font-medium btn-height click-btn"
@@ -199,7 +199,7 @@ const Faucet = (props) => {
                       cancelText="No"
                       onConfirm={handleRegister}
                     >
-                      <CustomButton
+                      <CusZOMButton
                         block
                         className={
                           "font-weight-600 letter-spacing-small font-medium btn-height"

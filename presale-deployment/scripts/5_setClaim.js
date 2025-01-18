@@ -1,14 +1,13 @@
-async function main() {
-    const claimStart = Math.floor(Date.now() / 1000) + 3600; // 1 hour from now
-    //const noOfTokens = ethers.utils.parseUnits("10000", 18); // 10,000 tokens
-    var noOfTokens = "1599999999999993599936000004"; // 10 tokens with 18 decimals
+const { saleToken, stakingManagerAddress, presaleAddress } = require("./config");
 
-    const saleToken = "0x3b087C3f2FDF209d09Babd053aA6C81D6be5Bc0E"; // Deployed token address
-    const stakingManagerAddress = "0x543922c252c72434010B5bfd583A4799DDeeB814"; // Deployed staking manager address
-    const presaleAddress = "0xAeADfE0eA90AC0335040F9569F125649f140cb96"; // Deployed PresaleV2 contract address
-  
+async function main() {
+    const claimStart = Math.floor(Date.now() / 1000); // + 3600; // 1 hour from now
+    //const noOfTokens = ethers.utils.parseUnits("10000", 18); // 10,000 tokens
+    var noOfTokens = "1600000000"; // 10 tokens with 18 decimals
+
+
     // Get an instance of the PresaleV2 contract
-    const presale = await ethers.getContractAt("PresaleV2", presaleAddress);
+    const presale = await ethers.getContractAt("PresaleV3", presaleAddress);
   
     const owner = await presale.owner();
     console.log("Current Owner:", owner);
@@ -21,13 +20,10 @@ async function main() {
     const balance = await token.balanceOf(owner);
     console.log("Balance:", balance);
 
-    // Token 0x3b087C3f2FDF209d09Babd053aA6C81D6be5Bc0E
-    // Owner 0x34404182397C5f64de3bc3B80Dca8db28E2679CA
-
 
     if(balance > 0)
     {
-        await token.approve(presaleAddress, 5*noOfTokens);
+        await token.approve(presaleAddress, noOfTokens);
         console.log("Token approved");
         
         const tx = await presale.startClaim(claimStart, noOfTokens, saleToken, stakingManagerAddress);
@@ -37,7 +33,7 @@ async function main() {
     }
     else
     {
-      console.log("Balance is zero");
+      console.log("Transfer the tokens from Staking Address to the Owner " + owner);
     }
    
   }

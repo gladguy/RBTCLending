@@ -252,7 +252,7 @@ const Transactions = (props) => {
         />
       </ConfigProvider>
 
-      <Row className="mt-30" style={{ paddingBottom: "100px" }}>
+      <Row className="mt-30" style={{ paddingBotZOM: "100px" }}>
         <Col xs={24}>
           <TableComponent
             locale={{

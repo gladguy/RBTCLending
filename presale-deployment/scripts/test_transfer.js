@@ -2,25 +2,28 @@ const { ethers } = require("hardhat");
 const { saleToken, stakingManagerAddress, presaleAddress } = require("./config");
 
 async function main() {
-
-  const presale = await ethers.getContractAt("PresaleV3", presaleAddress);
+  // Address of your deployed contract
+  const presale = await ethers.getContractAt("ZomatoToken", saleToken);
   
-  const owner = await presale.owner();
-  console.log("Current Owner:", owner);
 
-  // Replace with the new payment wallet address 30000000000000000000000000
-  const maxBuy = 30000000;
-
+  
   try {
     // Send transaction to change the payment wallet
-    const tx = await presale.changeMaxTokensToBuy(maxBuy);
+    // const tx1 = await presale.approve(presaleAddress,stakingManagerAddress,1000);
+    // await tx1.wait();
+    // console.log(`Transaction hash: ${tx1.hash}`);
+
+    const tx = await presale.transferFrom(presaleAddress,stakingManagerAddress,1000);
     console.log("Transaction sent! Waiting for confirmation...");
     await tx.wait();
-    console.log("Max Token updated  successfully!");
+    console.log("Payment wallet updated successfully!");
     console.log(`Transaction hash: ${tx.hash}`);
+
+
+
   } catch (error) {
     console.error("Error updating payment wallet:", error);
-  }
+  } 
 }
 
 // Run the script
