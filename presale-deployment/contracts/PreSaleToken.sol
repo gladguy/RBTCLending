@@ -396,12 +396,6 @@ contract PreSaleToken is Initializable,  OwnableUpgradeable, ReentrancyGuardUpgr
       rounds[0].push(block.timestamp + currentStep * timeConstant);
   }
 
-
-  /**
-   * @dev To get array of round details at once
-   * @param _no array index
-   */
-
   function roundDetails() external view returns (uint256[] memory) {
     return rounds[0];
   }
