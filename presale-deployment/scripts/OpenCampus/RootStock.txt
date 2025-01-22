@@ -1,0 +1,39 @@
+npx hardhat run ./scripts/OpenCampus/00_oc_deployAirdropToken.js --network rootstock
+npx hardhat verify --network rootstock 0x8C1057D08E589034D1A67CB4D288DB7869ADFFFF
+
+
+npx hardhat run ./scripts/OpenCampus/01_oc_deployToken.js --network rootstock
+npx hardhat verify --network rootstock 0x177393cf369bEbe4d992AF114a4e444351a1eD0F
+
+
+npx hardhat run ./scripts/OpenCampus/02_oc_deployPreSale.js --network rootstock
+npx hardhat verify --network rootstock 0x62E3edA85216674d66E4c1521243689E512b9958
+
+npx hardhat run ./scripts/OpenCampus/03_oc_deployStakingManager.js --network rootstock
+npx hardhat verify --network rootstock 0x2b8Bbd734C15e0A03cAD8db02Be464789e1b77fb
+
+
+npx hardhat run ./scripts/OpenCampus/1_oc_setPayment.js --network rootstock
+npx hardhat run ./scripts/OpenCampus/3_oc_changeStartTime.js --network rootstock
+npx hardhat run ./scripts/OpenCampus/4_oc_setCurrentStep.js --network rootstock
+
+npx hardhat run ./scripts/OpenCampus/5_oc_setClaim.js --network rootstock
+
+npx hardhat run ./scripts/OpenCampus/6_oc_setStakingManager.js --network rootstock
+
+npx hardhat run ./scripts/OpenCampus/7_oc_setMaxBuy.js --network rootstock
+npx hardhat run ./scripts/OpenCampus/8_oc_setCurrentStep.js --network rootstock
+
+set setPresaleTime with current Time
+
+1. Airdrop Token  
+   Address: `0x8C1057D08E589034D1A67CB4D288DB7869ADFFFF`  
+
+2. Token  
+   Address: `0x177393cf369bEbe4d992AF114a4e444351a1eD0F`  
+
+3. Pre-Sale  
+   Address: `0x62E3edA85216674d66E4c1521243689E512b9958`  
+
+4. Staking Manager  
+   Address: `0x2b8Bbd734C15e0A03cAD8db02Be464789e1b77fb`  

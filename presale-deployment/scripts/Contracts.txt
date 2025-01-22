@@ -20,6 +20,8 @@ npx hardhat run ./scripts/2_setRounds.js --network bnb
 npx hardhat run ./scripts/9 --network bnb
 
 
+
+
 npx hardhat run ./scripts/01_deployToken.js --network bnb
 npx hardhat verify --network bnb  0x4C432db3Ed53FfeCf5D9002CAF982d423641b1DD
 npx hardhat verify --network bnb  0xa20E51695E8B96d2f59e2e1df14F29D0b94a8d38

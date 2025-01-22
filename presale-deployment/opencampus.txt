@@ -1,10 +1,8 @@
-require("@nomicfoundation/hardhat-ethers");
 require("dotenv").config();
-require("@openzeppelin/hardhat-upgrades");
-require("@nomicfoundation/hardhat-verify");
+require("@nomicfoundation/hardhat-toolbox");
 
 module.exports = {
-  solidity: "0.8.9",
+  solidity: "0.8.19",
   paths: {
     artifacts: "./src",
   },
@@ -19,27 +17,13 @@ module.exports = {
       url: `https://rpc.edu-chain.raas.gelato.cloud`,
       accounts: [process.env.ACCOUNT_PRIVATE_KEY],
     },
-    "rootstock": {
-      // Mainnet configuration
-      url: `https://rpc.testnet.rootstock.io/KNA5rVQdS51lbC6izhT1w1ZCqnzWrG-T`,
-      accounts: [process.env.ACCOUNT_PRIVATE_KEY],
-    },    
   },
   etherscan: {
     apiKey: {
       "edu-chain-testnet": "XXXX",
       "edu-chain": "XXXX",
-      "rootstock": "KNA5rVQdS51lbC6izhT1w1ZCqnzWrG-T",
     },
     customChains: [
-      {
-        network: "rootstock",
-        chainId: 31,
-        urls: {
-          apiURL: "https://rootstock-testnet.blockscout.com/api/",
-          browserURL: "https://rootstock-testnet.blockscout.com/",
-        },
-      },     
       {
         network: "edu-chain-testnet",
         chainId: 656476,
